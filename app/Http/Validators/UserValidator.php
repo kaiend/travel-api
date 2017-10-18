@@ -27,7 +27,7 @@ class UserValidator
 		];
 
 		$input = $request->only($only);
-		dd($input);
+		dd($request->input('phone'));
 
 		$validator = Validator::make($input, $rules, $messages);
 
