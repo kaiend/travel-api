@@ -16,6 +16,7 @@ class UserController extends Controller
 	 * */
 	public function sendCode( Request $request )
 	{
+		dd($request);
 		$input = UserValidator::sendCode($request);
 
 		$code = $this->createCode();
