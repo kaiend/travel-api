@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Helpers\Sms;
 use Illuminate\Http\Request;
 use App\Http\Validators\UserValidator;
-
+use App\Helpers\ReturnMessage;
+use Illuminate\Support\Facades\Redis;
 
 class UserController extends Controller
 {
@@ -13,17 +14,28 @@ class UserController extends Controller
 	 * 发送验证码
 	 * @author yxk
 	 * @param $request
+	 * @return mixed;
 	 * */
 	public function sendCode( Request $request )
 	{
 		$input = UserValidator::sendCode($request);
 
+		if (Redis::exists($input['phone']))
+			return ReturnMessage::success('验证码不要重复发送',1002);
+
 		$code = $this->createCode();
 
 		$res = $this->sendSMS($input['phone'],$code);
 
-		dd($res);
+		if (!empty($res)){
+			$res = json_decode($res,true);
+			if($res['error'] == 0)
+				//添加缓存 以手机号为键 验证码为值 缓存2分钟
+				Redis::setex($input['phone'],120,$code);
+				return ReturnMessage::success();
+		}
 
+		return ReturnMessage::success('验证码发送失败',1002);
 	}
 
 
