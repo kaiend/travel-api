@@ -17,5 +17,7 @@ use Illuminate\Http\Request;
 //    return $request->user();
 //});
 
-
+//发送验证码
 Route::get('/sendCode', 'UserController@sendCode');
+//注册用户
+Route::get('/register', 'UserController@register');

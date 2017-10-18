@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Sms;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Validators\UserValidator;
 use App\Helpers\ReturnMessage;
@@ -38,9 +39,8 @@ class UserController extends Controller
 		return ReturnMessage::success('验证码发送失败',1002);
 	}
 
-
 	/**
-	 * 发生验证码
+	 * 生成验证码
 	 * @author yxk
 	 * @param int $num  长度
 	 * @return int $code
@@ -66,6 +66,26 @@ class UserController extends Controller
 	{
 		$msg = $code.'(验证码):'.'工作人员不会向您索要，请勿向任何人泄露。【时代出行】';
 		return (new Sms)->sendSMS($phone,$msg);
+	}
+
+	/**
+	 * 注册
+	 *
+	 * @author yxk
+	 * @param $request
+	 * @return mixed
+	 * */
+	public function register( Request $request )
+	{
+		$input = UserValidator::register($request);
+
+		try {
+			User::create($input);
+		} catch (\Exception $e) {
+			return ReturnMessage::success('注册失败',1002);
+		}
+
+		return ReturnMessage::success();
 	}
 
 
