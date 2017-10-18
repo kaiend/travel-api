@@ -4,6 +4,7 @@ namespace App\Http\Validators;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Validation\Rule;
 
 class UserValidator
@@ -65,6 +66,9 @@ class UserValidator
 
 		if ($validator->fails())
 			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+
+		if (!Redis::exists($input['phone']) || (Redis::get($input['phone']) != $input['code']))
+			exit(json_encode(['info'=>'验证码错误','code'=>'1002']));
 
 		unset($input['code']);
 		$input['user_pass'] = '###'.md5(md5($input['user_pass']));
