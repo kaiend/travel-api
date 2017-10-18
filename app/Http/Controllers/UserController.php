@@ -102,10 +102,21 @@ class UserController extends Controller
 		$input['user_pass'] = '###'.md5(md5($input['user_pass']));
 		$info  = User::getUserFirst($input);
 
-		if (!empty($info))
-			return ReturnMessage::successData($info->toArray());
+		if (!empty($info)){
+			$info = $info->toArray();
+			$info['token'] = $this->token();
+			return ReturnMessage::successData($info);
+		}
 
 		return ReturnMessage::success('用户或密码错误',1002);
+	}
+
+	/**
+	 * token 生成(留存字段 用与安全验证)
+	 * */
+	private function token()
+	{
+		return '';
 	}
 
 }
