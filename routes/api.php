@@ -20,4 +20,6 @@ use Illuminate\Http\Request;
 //发送验证码
 Route::get('/sendCode', 'UserController@sendCode');
 //注册用户
-Route::get('/register', 'UserController@register');
+Route::post('/register', 'UserController@register');
+//用户登录
+Route::post('/login', 'UserController@login');

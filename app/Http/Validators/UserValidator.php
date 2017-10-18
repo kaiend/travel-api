@@ -77,4 +77,37 @@ class UserValidator
 		return $input;
 	}
 
+	/**
+	 * 登录数据验证
+	 *
+	 * @param Request $request
+	 * @return mixed
+	 * */
+	public static function login( Request $request )
+	{
+		$only = ['phone','user_pass'];
+
+		$rules = [
+			'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
+			'user_pass' => 'required',
+		];
+
+		$messages = [
+			'phone.required' => '手机号不能为空',
+			'phone.regex' => '手机号错误',
+
+			'user_pass.required' => '密码不能为空',
+		];
+
+		$input = $request->only($only);
+
+		$validator = Validator::make($input, $rules, $messages);
+
+		if ($validator->fails())
+			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+
+
+		return $input;
+	}
+
 }

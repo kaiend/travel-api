@@ -88,5 +88,24 @@ class UserController extends Controller
 		return ReturnMessage::success();
 	}
 
+	/**
+	 * 登录
+	 *
+	 * @author yxk
+	 * @param $request
+	 * @return mixed
+	 * */
+	public function login( Request $request )
+	{
+		$input = UserValidator::login($request);
+
+		$input['user_pass'] = '###'.md5(md5($input['user_pass']));
+		$info  = User::getUserFirst($input);
+
+		if (!empty($info))
+			return ReturnMessage::successData($info->toArray());
+
+		return ReturnMessage::success('用户或密码错误',1002);
+	}
 
 }

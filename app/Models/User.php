@@ -25,12 +25,11 @@ class User extends Model
 	 * 获取用户信息
 	 *
 	 * @param $where
-	 * @param $page
 	 * @return array
 	 * */
-	public static function getNews( array $where , array $page )
+	public static function getUserFirst( array $where)
 	{
-		return static::where( $where )->orderBy( 'created_at' , 'desc' )->forPage( $page[ 'page' ] , $page[ 'pageSize' ] )->get()->toArray();
+		return static::where( $where )->first();
 	}
 
 }
