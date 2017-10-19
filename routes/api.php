@@ -23,6 +23,8 @@ Route::get('/sendCode', 'UserController@sendCode');
 Route::post('/register', 'UserController@register');
 //用户登录
 Route::post('/login', 'UserController@login');
+//微信订单
+Route::post('/WxOrder', 'PayController@WxOrder');
 
 
 
