@@ -23,3 +23,8 @@ Route::get('/sendCode', 'UserController@sendCode');
 Route::post('/register', 'UserController@register');
 //用户登录
 Route::post('/login', 'UserController@login');
+
+
+
+
+Route::get('/test', 'ServiceController@carSeriesList');
