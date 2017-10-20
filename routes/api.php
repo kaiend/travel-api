@@ -23,6 +23,8 @@ Route::get('/sendCode', 'UserController@sendCode');
 Route::post('/register', 'UserController@register');
 //用户登录
 Route::post('/login', 'UserController@login');
+//验证码验证
+Route::post('/verifyCode', 'UserController@verifyCode');
 //微信订单
 Route::any('/WxOrder', 'PayController@WxOrder');
 //微信支付异步回调

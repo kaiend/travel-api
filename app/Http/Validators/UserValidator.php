@@ -67,8 +67,7 @@ class UserValidator
 		if ($validator->fails())
 			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
 
-		if (!Redis::exists($input['phone']) || (Redis::get($input['phone']) != $input['code']))
-			exit(json_encode(['info'=>'验证码错误','code'=>'1002']));
+		self::redisVerify($input);
 
 		unset($input['code']);
 		$input['user_pass'] = '###'.md5(md5($input['user_pass']));
@@ -108,6 +107,48 @@ class UserValidator
 
 
 		return $input;
+	}
+
+	/**
+	 * 验证码验证verifyCode
+	 *
+	 * @param Request $request
+	 * @return mixed
+	 * */
+	public static function verifyCode( Request $request )
+	{
+		$only = ['phone','code'];
+
+		$rules = [
+			'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/|unique:user,phone',
+			'code' => 'required',
+		];
+
+		$messages = [
+			'phone.required' => '手机号不能为空',
+			'phone.regex' => '手机号错误',
+			'phone.unique'=> '用户已存在',
+
+			'code.required' => '验证码不能为空',
+		];
+
+		$input = $request->only($only);
+
+		$validator = Validator::make($input, $rules, $messages);
+
+		if ($validator->fails())
+			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+
+		self::redisVerify($input);
+
+		return;
+	}
+
+	//验证码验证
+	private static function redisVerify($input)
+	{
+		if (!Redis::exists($input['phone']) || (Redis::get($input['phone']) != $input['code']))
+			exit(json_encode(['info'=>'验证码错误','code'=>'1002']));
 	}
 
 }

@@ -119,4 +119,18 @@ class UserController extends Controller
 		return '';
 	}
 
+	/**
+	 * 判断验证码是否正确
+	 *
+	 * @author yxk
+	 * @param $request
+	 * @return mixed
+	 * */
+	public function verifyCode( Request $request )
+	{
+		UserValidator::verifyCode($request);
+		return ReturnMessage::success();
+	}
+
+
 }
