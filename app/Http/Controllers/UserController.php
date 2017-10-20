@@ -132,5 +132,16 @@ class UserController extends Controller
 		return ReturnMessage::success();
 	}
 
+	/**
+	 * 用户注销
+	 * @param $request
+	 * @return mixed
+	 * */
+	public function logout( Request $request )
+	{
+		//因暂时没有业务需求，只留出接口
+		return ReturnMessage::success();
+	}
+
 
 }
