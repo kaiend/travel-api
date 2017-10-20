@@ -50,6 +50,7 @@ class UserValidator
 		$rules = [
 			'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/|unique:user,phone',
 			'code' => 'required',
+			'user_pass' => 'required',
 		];
 
 		$messages = [
@@ -58,6 +59,7 @@ class UserValidator
 			'phone.unique'=> '用户已存在',
 
 			'code.required' => '验证码不能为空',
+			'user_pass.required' => '密码不能为空',
 		];
 
 		$input = $request->only($only);
