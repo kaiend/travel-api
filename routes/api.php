@@ -24,7 +24,9 @@ Route::post('/register', 'UserController@register');
 //用户登录
 Route::post('/login', 'UserController@login');
 //微信订单
-Route::post('/WxOrder', 'PayController@WxOrder');
+Route::any('/WxOrder', 'PayController@WxOrder');
+//微信支付异步回调
+Route::any('/WxNotify', 'PayController@WxNotify');
 
 
 

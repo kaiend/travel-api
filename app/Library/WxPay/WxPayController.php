@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Pay\WxPay;
+namespace App\Library\WxPay;
 
-require_once "./lib/WxPay.Api.php";
-require_once './lib/WxPay.Notify.php';
+require_once "lib/WxPay.Api.php";
+require_once 'lib/WxPay.Notify.php';
 
 class WxPay extends \WxPayNotify
 {
@@ -17,7 +17,7 @@ class WxPay extends \WxPayNotify
 		$input->SetOut_trade_no($data['out_trade_no']);
 		//         费用应该是由小程序端传给服务端的，在用户下单时告知服务端应付金额，demo中取值是1，即1分钱
 		$input->SetTotal_fee($data['total_fee']);
-		$input->SetNotify_url("https://...com/notify.php");//需要自己写的notify.php
+		$input->SetNotify_url("http://travel.times-vip.com/api//WxNotify");//需要自己写的notify.php
 		$input->SetTrade_type("JSAPI");
 		//         由小程序端传给后端或者后端自己获取，写自己获取到的，
 		$input->SetOpenid($data['openid']);

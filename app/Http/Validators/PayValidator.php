@@ -4,7 +4,6 @@ namespace App\Http\Validators;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Redis;
 
 class PayValidator
 {
@@ -47,7 +46,7 @@ class PayValidator
 	/**
 	 * 生成订单号
 	 * */
-	private function createNumber()
+	protected static function createNumber()
 	{
 		return date('ymds').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 7);
 	}

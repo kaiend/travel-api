@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Pay\WxPay\WxPay;
 use App\Http\Validators\PayValidator;
+use App\Library\WxPay\WxPay;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PayController extends Controller
 {
@@ -16,7 +17,7 @@ class PayController extends Controller
 	 * */
 	public function WxOrder( Request $request )
 	{
-		$res = (new WxPay)->createOrder(PayValidator::WxOrder($request));
+		$res = (new WxPay())->createOrder(PayValidator::WxOrder($request));
 		header("Content-Type: application/json");
 		echo $res;
 	}
@@ -39,6 +40,7 @@ class PayController extends Controller
 		$time = $attr['time_end'];
 
 
+		Log::info($open_id.'-----'.$out_trade_no);
 		//支付结果处理
 
 	}
