@@ -122,14 +122,13 @@ class UserValidator
 		$only = ['phone','code'];
 
 		$rules = [
-			'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/|unique:user,phone',
+			'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
 			'code' => 'required',
 		];
 
 		$messages = [
 			'phone.required' => '手机号不能为空',
 			'phone.regex' => '手机号错误',
-			'phone.unique'=> '用户已存在',
 
 			'code.required' => '验证码不能为空',
 		];
@@ -150,7 +149,7 @@ class UserValidator
 	private static function redisVerify($input)
 	{
 		if (!Redis::exists($input['phone']) || (Redis::get($input['phone']) != $input['code']))
-			exit(json_encode(['info'=>'验证码错误','code'=>'1002']));
+			exit(json_encode(['info'=>Redis::get($input['phone']),'code'=>'1002']));
 	}
 
 }
