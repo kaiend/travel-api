@@ -32,4 +32,15 @@ class User extends Model
 		return static::where( $where )->first();
 	}
 
+	/**
+	 * 根据条件修改
+	 * @param array $where
+	 * @param array $input
+	 * @return int
+	 * */
+	public static function modifyUser( array $where, array $input)
+	{
+		return static::where( $where )->update($input);
+	}
+
 }

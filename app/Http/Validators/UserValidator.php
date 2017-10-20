@@ -2,6 +2,7 @@
 
 namespace App\Http\Validators;
 
+use App\Helpers\Common;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redis;
@@ -72,7 +73,7 @@ class UserValidator
 		self::redisVerify($input);
 
 		unset($input['code']);
-		$input['user_pass'] = '###'.md5(md5($input['user_pass']));
+		$input['user_pass'] = Common::createPassword($input['user_pass']);;
 		$input['create_time'] = time();
 
 		return $input;
@@ -107,6 +108,7 @@ class UserValidator
 		if ($validator->fails())
 			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
 
+		$input['user_pass'] = Common::createPassword($input['user_pass']);;
 
 		return $input;
 	}
@@ -150,6 +152,43 @@ class UserValidator
 	{
 		if (!Redis::exists($input['phone']) || (Redis::get($input['phone']) != $input['code']))
 			exit(json_encode(['info'=>Redis::get($input['phone']),'code'=>'1002']));
+	}
+
+	/**
+	 * 修改密码数据验证
+	 *
+	 * @param Request $request
+	 * @return mixed
+	 * */
+	public static function modifyPassword( Request $request )
+	{
+		$only = ['phone','code','user_pass'];
+
+		$rules = [
+			'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/|exists:user,phone',
+			'code' => 'required',
+			'user_pass' => 'required',
+		];
+
+		$messages = [
+			'phone.required' => '手机号不能为空',
+			'phone.regex' => '手机号错误',
+			'phone.exists'=> '用户不存在',
+
+			'code.required' => '验证码不能为空',
+			'user_pass.required' => '密码不能为空',
+		];
+
+		$input = $request->only($only);
+
+		$validator = Validator::make($input, $rules, $messages);
+
+		if ($validator->fails())
+			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+
+		self::redisVerify($input);
+
+		return $input;
 	}
 
 }

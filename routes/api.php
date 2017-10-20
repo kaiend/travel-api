@@ -25,6 +25,8 @@ Route::post('/register', 'UserController@register');
 Route::post('/login', 'UserController@login');
 //验证码验证
 Route::post('/verifyCode', 'UserController@verifyCode');
+//修改密码
+Route::post('/modifyPassword', 'UserController@modifyPassword');
 //退出注销
 Route::post('/logout', 'UserController@logout');
 

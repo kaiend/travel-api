@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Common;
 use App\Helpers\Sms;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -100,7 +101,6 @@ class UserController extends Controller
 	{
 		$input = UserValidator::login($request);
 
-		$input['user_pass'] = '###'.md5(md5($input['user_pass']));
 		$info  = User::getUserFirst($input);
 
 		if (!empty($info)){
@@ -130,6 +130,30 @@ class UserController extends Controller
 	public function verifyCode( Request $request )
 	{
 		UserValidator::verifyCode($request);
+		return ReturnMessage::success();
+	}
+
+	/**
+	 * 修改秘密
+	 *
+	 * @author yxk
+	 * @param $request
+	 * @return mixed
+	 * */
+	public function modifyPassword( Request $request )
+	{
+		$input = UserValidator::modifyPassword($request);
+
+		$data['user_pass'] = Common::createPassword($input['user_pass']);
+
+		$where['phone'] = $input['phone'];
+
+		try {
+			User::modifyUser($where,$data);
+		} catch (\Exception $e) {
+			return ReturnMessage::success('修改密码失败',1002);
+		}
+
 		return ReturnMessage::success();
 	}
 
