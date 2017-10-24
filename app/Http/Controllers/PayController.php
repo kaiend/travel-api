@@ -27,7 +27,7 @@ class PayController extends Controller
 	 * */
 	public function WxNotify(  )
 	{
-		$postXml = $GLOBALS["HTTP_RAW_POST_DATA"]; //接收微信参数
+		$postXml = file_get_contents("php://input"); //接收微信参数
 		if (empty($postXml)) {
 			return false;
 		}
