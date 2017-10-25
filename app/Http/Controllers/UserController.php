@@ -28,16 +28,16 @@ class UserController extends Controller
 
 		$code = $this->createCode();
 
-		//$res = $this->sendSMS($input['phone'],$code);
+		$res = $this->sendSMS($input['phone'],$code);
 
-//		if (!empty($res)){
-//			$res = json_decode($res,true);
-//			if($res['error'] == 0)
-//				//添加缓存 以手机号为键 验证码为值 缓存2分钟
+		if (!empty($res)){
+			$res = json_decode($res,true);
+			if($res['error'] == 0)
+				//添加缓存 以手机号为键 验证码为值 缓存2分钟
 				Redis::setex($input['phone'],120,$code);
-//				return ReturnMessage::success();
-				return ReturnMessage::success($code);
-//		}
+				return ReturnMessage::success();
+//				return ReturnMessage::success($code);
+		}
 
 		return ReturnMessage::success('验证码发送失败',1002);
 	}
