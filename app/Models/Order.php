@@ -20,4 +20,28 @@ class Order extends Model
 	 * */
 	protected $hidden = ['created_at'];
 
+
+	/**
+	 * 获取订单信息
+	 *
+	 * @param $where
+	 * @return array
+	 * */
+	public static function getOrderFirst( array $where)
+	{
+		return static::where( $where )->first();
+	}
+
+	/**
+	 * 根据条件修改
+	 * @param array $where
+	 * @param array $input
+	 * @return int
+	 * */
+	public static function modifyOrder( array $where, array $input)
+	{
+		return static::where( $where )->update($input);
+	}
+
+
 }
