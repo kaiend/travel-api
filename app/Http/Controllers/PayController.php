@@ -49,6 +49,7 @@ class PayController extends Controller
 			$userId = (int)substr( $out_trade_no , 8 , 6 );
 			$date['user_id'] = $userId;
 			$data['price'] = $total_fee;
+			$data['number'] = $out_trade_no;
 			$data['created_at'] = $time;
 			self::topUpDate($data);
 		}
@@ -107,6 +108,7 @@ class PayController extends Controller
 			return true;
 		} catch (\Exception $e) {
 			DB::rollBack();
+			Log::info('充值入库失败', ['context' => $e->getMessage()]);
 			return false;
 		}
 	}
