@@ -42,6 +42,8 @@ Route::any('/WxNotify', 'PayController@WxNotify');
 //账户充值
 Route::any('/topUp', 'PayController@topUp');
 
+//创建订单
+Route::post('/createOrder', 'OrderController@createOrder');
 
 
 
