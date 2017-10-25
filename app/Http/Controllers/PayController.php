@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Validators\PayValidator;
 use App\Library\WxPay\WxPay;
+use App\Models\TopUp;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PayController extends Controller
@@ -39,10 +42,24 @@ class PayController extends Controller
 		$out_trade_no = $attr['out_trade_no'];
 		$time = $attr['time_end'];
 
-		//获取订单信息
-		//判断订单金额与实际金额是否相符
-		Log::info($open_id.'-----'.$out_trade_no);
-		//支付结果处理
+		//CZ 170509 0000129001
+		$type = substr( $out_trade_no , 0 , 2 );
+		//判断类型 充值
+		if ( $type == 'CZ' ) {
+			$userId = (int)substr( $out_trade_no , 8 , 6 );
+			$date['user_id'] = $userId;
+			$data['price'] = $total_fee;
+			$data['created_at'] = $time;
+			self::topUpDate($data);
+		}
+		else {
+			//
+
+			//获取订单信息
+			//判断订单金额与实际金额是否相符
+			Log::info($open_id.'-----'.$out_trade_no);
+			//支付结果处理
+		}
 
 	}
 
@@ -58,4 +75,41 @@ class PayController extends Controller
 
 		return $val;
 	}
+
+	/**
+	 * 账户充值
+	 *
+	 * @author yxk
+	 * @param $request
+	 *
+	 * */
+	public function topUp( Request $request )
+	{
+		$res = (new WxPay())->createOrder(PayValidator::topUp($request));
+		header("Content-Type: application/json");
+		echo $res;
+	}
+
+	/**
+	 * 充值成功数据操作
+	 *
+	 * @author yxk
+	 * @param $data
+	 * @return bool
+	 * */
+	private function topUpDate( $data )
+	{
+		DB::beginTransaction();
+		try {
+			TopUp::create($data);
+			User::where('id',$data['user_id'])->increment('balance',$data['price']);
+			DB::commit();
+			return true;
+		} catch (\Exception $e) {
+			DB::rollBack();
+			return false;
+		}
+	}
+
+
 }

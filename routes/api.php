@@ -39,6 +39,8 @@ Route::post('/updateTravelCard', 'UserController@updateTravelCard');
 Route::any('/WxOrder', 'PayController@WxOrder');
 //微信支付异步回调
 Route::any('/WxNotify', 'PayController@WxNotify');
+//账户充值
+Route::any('/topUp', 'PayController@topUp');
 
 
 
