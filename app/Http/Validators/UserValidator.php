@@ -191,4 +191,43 @@ class UserValidator
 		return $input;
 	}
 
+	/**
+	 * 出行卡填写
+	 *
+	 * @param Request $request
+	 * @return mixed
+	 * */
+	public static function travelCard( Request $request )
+	{
+		$only = ['id','travel_card','name','id_card','travel_card_number'];
+
+		$rules = [
+			'id' => 'required|exists:user,id',
+			'name' => 'required',
+			'id_card' => 'required',
+		];
+
+		$messages = [
+			'id.required' => '用户id不能为空',
+			'id.exists'=> '用户不存在',
+
+			'name.required' => '姓名不能为空',
+			'id_card.required' => '身份证号不能为空',
+		];
+
+		$input = $request->only($only);
+
+		$validator = Validator::make($input, $rules, $messages);
+
+		if ($validator->fails())
+			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+
+		if (empty($input['travel_card'])){
+			unset($input['travel_card']);
+		}else{
+			unset($input['travel_card_number']);
+		}
+
+		return $input;
+	}
 }

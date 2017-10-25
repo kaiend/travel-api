@@ -39,7 +39,8 @@ class PayController extends Controller
 		$out_trade_no = $attr['out_trade_no'];
 		$time = $attr['time_end'];
 
-
+		//获取订单信息
+		//判断订单金额与实际金额是否相符
 		Log::info($open_id.'-----'.$out_trade_no);
 		//支付结果处理
 

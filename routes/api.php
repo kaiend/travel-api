@@ -30,6 +30,11 @@ Route::post('/modifyPassword', 'UserController@modifyPassword');
 //退出注销
 Route::post('/logout', 'UserController@logout');
 
+//出行卡数据添加
+Route::post('/travelCard', 'UserController@travelCard');
+//上传出行卡
+Route::post('/updateTravelCard', 'UserController@updateTravelCard');
+
 //微信订单
 Route::any('/WxOrder', 'PayController@WxOrder');
 //微信支付异步回调
