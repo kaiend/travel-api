@@ -21,6 +21,7 @@ class PayValidator
 			'body' => 'required',
 			'total_fee' => 'required|numeric',
 			'openid' => 'required',
+			'out_trade_no' => 'required',
 		];
 
 		$messages = [
@@ -29,6 +30,7 @@ class PayValidator
 			'total_fee.numeric' => '商品价格错误',
 
 			'openid.required' => 'openid不能为空',
+			'out_trade_no.required' => '订单编号不能为空',
 		];
 
 		$input = $request->only($only);
@@ -39,7 +41,7 @@ class PayValidator
 			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
 
 
-		$input['out_trade_no'] = self::createNumber();
+//		$input['out_trade_no'] = self::createNumber();
 		return $input;
 	}
 
@@ -94,15 +96,6 @@ class PayValidator
 		$userId = sprintf("%06d", $userId);
 
 		return 'CZ'.$data.$userId.rand(1000,9999);
-	}
-
-
-	/**
-	 * 生成订单号
-	 * */
-	protected static function createNumber()
-	{
-		return date('ymds').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 7);
 	}
 
 }
