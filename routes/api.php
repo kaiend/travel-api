@@ -31,7 +31,7 @@ Route::post('/modifyPassword', 'UserController@modifyPassword');
 Route::post('/logout', 'UserController@logout');
 
 //出行卡数据添加
-Route::post('/travelCard', 'UserController@travelCard');
+Route::put('/travelCard', 'UserController@travelCard');
 //上传出行卡
 Route::post('/updateTravelCard', 'UserController@updateTravelCard');
 
