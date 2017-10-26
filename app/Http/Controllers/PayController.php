@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Validators\PayValidator;
 use App\Library\WxPay\WxPay;
+use App\Models\Order;
 use App\Models\TopUp;
+use App\Models\Trading;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +14,8 @@ use Illuminate\Support\Facades\Log;
 
 class PayController extends Controller
 {
+	private $order_pay = 'pay';
+
 
 	/**
 	 * 生成微信订单
@@ -54,12 +58,22 @@ class PayController extends Controller
 			self::topUpDate($data);
 		}
 		else {
-			//
 
-			//获取订单信息
-			//判断订单金额与实际金额是否相符
-			Log::info($open_id.'-----'.$out_trade_no);
-			//支付结果处理
+			$order = Order::getOrderFirst(['order_number' => $out_trade_no]);
+			if (!(empty($order) || $order['price'] == $total_fee)){
+
+				$trading['user_id'] = $order['user_id'];
+				$trading['order_number'] = $out_trade_no;
+				$trading['money'] = $total_fee;
+				$trading['pay_way'] = 'WX';
+				$trading['remake'] = '订单'.$out_trade_no.'消费';
+				$trading['created_at'] = $time();
+				self::orderSuccess($trading);
+			}else{
+				Log::info($open_id.'-----'.$out_trade_no.'-----'.$total_fee.'---价格不一致');
+			}
+
+
 		}
 
 	}
@@ -111,6 +125,29 @@ class PayController extends Controller
 			Log::info('充值入库失败', ['context' => $e->getMessage()]);
 			return false;
 		}
+	}
+
+	/**
+	 * 订单支付成功处理
+	 *
+	 * @author yxk
+	 * @param $data
+	 * @return bool
+	 * */
+	private function orderSuccess( $data )
+	{
+		DB::beginTransaction();
+		try {
+			Trading::create($data);
+			Order::modifyOrder(['order_number' => $data['order_number']],['status'=>$this->order_pay]);
+			DB::commit();
+			return true;
+		} catch (\Exception $e) {
+			DB::rollBack();
+			Log::info('订单微信支付回调失败', ['context' => $e->getMessage()]);
+			return false;
+		}
+
 	}
 
 
