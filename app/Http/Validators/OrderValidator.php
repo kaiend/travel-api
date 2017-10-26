@@ -16,13 +16,14 @@ class OrderValidator
 	 * */
 	public static function topUp( Request $request )
 	{
-		$only = ['user_id','type','price','origin','end','orders_name','orders_phone','appointment','passenger_name','passenger_phone','cip'];
+		$only = ['user_id','type','price','origin','end','car_series','orders_name','orders_phone','appointment','passenger_name','passenger_phone','cip'];
 
 		$rules = [
 			'type' => 'required',
 			'price' => 'required',
 			'origin' => 'required',
 			'end' => 'required',
+			'car_series' => 'required',
 			'orders_name' => 'required',
 			'orders_phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
 			'appointment' => 'required',
@@ -34,6 +35,8 @@ class OrderValidator
 			'user_id.exists' => '用户不存在',
 
 			'price.required' => '价格不能为空',
+
+			'car_series.required' => '车系不能为空',
 
 			'origin.required' => '起点地址不能为空',
 
