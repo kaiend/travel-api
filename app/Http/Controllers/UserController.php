@@ -88,7 +88,10 @@ class UserController extends Controller
 			return ReturnMessage::success('注册失败',1002);
 		}
 
-		return ReturnMessage::success();
+		$data['phone'] = $input['phone'];
+ 		$info  = User::getUserFirst($data);
+
+		return ReturnMessage::successData($info);
 	}
 
 	/**
