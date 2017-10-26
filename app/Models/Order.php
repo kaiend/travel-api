@@ -43,5 +43,14 @@ class Order extends Model
 		return static::where( $where )->update($input);
 	}
 
+	/**
+	 * 获取订单列表
+	 * @param array $where
+	 * @return array
+	 * */
+	public static function orderList( array $where )
+	{
+		return static::where( $where )->get()->toArray();
+	}
 
 }

@@ -44,6 +44,8 @@ Route::any('/topUp', 'PayController@topUp');
 
 //创建订单
 Route::post('/createOrder', 'OrderController@createOrder');
+//订单列表
+Route::get('/orderList', 'OrderController@orderList');
 //普通账户支付
 Route::post('/orderPay', 'OrderController@orderPay');
 

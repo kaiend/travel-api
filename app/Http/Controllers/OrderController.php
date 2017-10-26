@@ -94,6 +94,22 @@ class OrderController extends Controller
 
 	}
 	
+	/**
+	 * 订单列表
+	 *
+	 * @param $request
+	 * @return mixed
+	 * */
+	public function orderList( Request $request )
+	{
+		$input['user_id'] = $request->input('user_id');
 
+		if (!$input['user_id'])
+			return ReturnMessage::success('用户不能为空',1002);
+
+		return ReturnMessage::successData(Order::orderList($input));
+
+
+	}
 
 }
