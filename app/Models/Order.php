@@ -18,7 +18,7 @@ class Order extends Model
 	/**
 	 * 隐藏字段
 	 * */
-	protected $hidden = ['created_at'];
+	protected $hidden = [];
 
 
 	/**

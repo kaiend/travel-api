@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Common;
 use App\Helpers\ReturnMessage;
 use App\Http\Validators\OrderValidator;
 use App\Models\Order;
@@ -108,9 +109,8 @@ class OrderController extends Controller
 		if (!$input['user_id'])
 			return ReturnMessage::success('用户不能为空',1002);
 
-		return ReturnMessage::successData(Order::orderList($input));
+		return ReturnMessage::successData(Common::formatTime(Order::orderList($input)));
 
 
 	}
-
 }
