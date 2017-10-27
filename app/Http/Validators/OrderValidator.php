@@ -16,7 +16,7 @@ class OrderValidator
 	 * */
 	public static function topUp( Request $request )
 	{
-		$only = ['user_id','type','price','origin','end','car_series','orders_name','orders_phone','appointment','passenger_name','passenger_phone','cip'];
+		$only = ['user_id','type','price','vehicle','vehicle_number','origin','end','car_series','orders_name','orders_phone','appointment','passenger_name','passenger_phone','cip'];
 
 		$rules = [
 			'type' => 'required',
@@ -66,6 +66,7 @@ class OrderValidator
 
 		$input['appointment'] = strtotime($input['appointment']);
 		$input['order_number'] = Common::createNumber();
+		$input['created_at'] = time();
 		return $input;
 	}
 
