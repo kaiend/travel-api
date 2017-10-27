@@ -230,7 +230,7 @@ class UserController extends Controller
 	 * */
 	public function getUserInfo( Request $request )
 	{
-		$input['user_id'] = $request->input('user_id');
+		$input['id'] = $request->input('user_id');
 
 		$info  = User::getUserFirst($input);
 
