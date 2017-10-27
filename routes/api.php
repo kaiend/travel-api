@@ -29,6 +29,8 @@ Route::post('/verifyCode', 'UserController@verifyCode');
 Route::post('/modifyPassword', 'UserController@modifyPassword');
 //退出注销
 Route::post('/logout', 'UserController@logout');
+//获取用户信息
+Route::get('/getUserInfo', 'UserController@getUserInfo');
 
 //出行卡数据添加
 Route::put('/travelCard', 'UserController@travelCard');

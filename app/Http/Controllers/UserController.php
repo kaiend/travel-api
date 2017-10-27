@@ -221,4 +221,19 @@ class UserController extends Controller
 		return ReturnMessage::successData($data);
 
 	}
+
+
+	/**
+	 * 获取用户信息
+	 * @param $request
+	 * @return array
+	 * */
+	public function getUserInfo( Request $request )
+	{
+		$input['user_id'] = $request->input('user_id');
+
+		$info  = User::getUserFirst($input);
+
+		return ReturnMessage::successData($info);
+	}
 }

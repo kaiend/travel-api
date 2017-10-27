@@ -34,20 +34,20 @@ class Common
 
 		if(count($data) == count($data,1)){
 			if (isset($data['created_at']) && $data['created_at']) {
-				$data['created_at'] = date('Y-m-d H:i', (int)$data['created_at']);
+				$data['created_at'] = date('Y-m-d H:i', $data['created_at']);
 			}
 			if (isset($data['appointment']) && $data['appointment'])
 			{
-				$data['appointment'] = date('Y-m-d H:i', (int)$data['appointment']);
+				$data['appointment'] = date('Y-m-d H:i', $data['appointment']);
 			}
 		}else{
 			foreach ($data as &$value){
 				if (isset($value['created_at']) && $value['created_at']) {
-					$value['created_at'] = date('Y-m-d H:i', (int)$value['created_at']);
+					$value['created_at'] = date('Y-m-d H:i', $value['created_at']);
 				}
 				if (isset($value['appointment']) && $value['appointment'])
 				{
-					$value['appointment'] = date('Y-m-d H:i', (int)$value['appointment']);
+					$value['appointment'] = date('Y-m-d H:i', $value['appointment']);
 				}
 			}
 		}
