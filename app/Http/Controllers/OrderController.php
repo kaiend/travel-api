@@ -27,7 +27,8 @@ class OrderController extends Controller
 		} catch (\Exception $e) {
 			return ReturnMessage::success('添加订单失败',1002);
 		}
-		return ReturnMessage::success();
+		$order['order_number'] = $input['order_number'];
+		return ReturnMessage::successData($order);
 	}
 
 	/**
