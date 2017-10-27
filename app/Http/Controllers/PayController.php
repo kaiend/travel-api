@@ -54,7 +54,7 @@ class PayController extends Controller
 			$data['user_id'] = $userId;
 			$data['price'] = $total_fee;
 			$data['number'] = $out_trade_no;
-			$data['created_at'] = $time;
+			$data['created_at'] = time();
 			self::topUpDate($data);
 		}
 		else {
