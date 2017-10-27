@@ -60,6 +60,9 @@ class PayController extends Controller
 		else {
 
 			$order = Order::getOrderFirst(['order_number' => $out_trade_no]);
+
+			Log::info('充值入库失败', ['context' => $order]);
+
 			if (!(empty($order) || $order['price'] == $total_fee)){
 
 				$trading['user_id'] = $order['user_id'];
