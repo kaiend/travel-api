@@ -61,20 +61,23 @@ class PayController extends Controller
 
 			$order = Order::getOrderFirst(['order_number' => $out_trade_no]);
 
-			Log::info('充值入库失败', ['context' => $order]);
-
-			if (!(empty($order) || $order['price'] == $total_fee)){
-
-				$trading['user_id'] = $order['user_id'];
-				$trading['order_number'] = $out_trade_no;
-				$trading['money'] = $total_fee;
-				$trading['pay_way'] = 'WX';
-				$trading['remake'] = '订单'.$out_trade_no.'消费';
-				$trading['created_at'] = $time();
-				self::orderSuccess($trading);
+			if (!(empty($order))){
+				$order = $order->toArray();
+				if ($order['price'] == $total_fee){
+					$trading['user_id'] = $order['user_id'];
+					$trading['order_number'] = $out_trade_no;
+					$trading['money'] = $total_fee;
+					$trading['pay_way'] = 'WX';
+					$trading['remake'] = '订单'.$out_trade_no.'消费';
+					$trading['created_at'] = $time();
+					self::orderSuccess($trading);
+				}else{
+					Log::info($open_id.'-----'.$out_trade_no.'-----'.$total_fee.'---价格不一致');
+				}
 			}else{
 				Log::info($open_id.'-----'.$out_trade_no.'-----'.$total_fee.'---价格不一致');
 			}
+
 
 
 		}
