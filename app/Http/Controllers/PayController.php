@@ -34,9 +34,11 @@ class PayController extends Controller
 	 * */
 	public function WxNotify(  )
 	{
+		$res = false;
+
 		$postXml = file_get_contents("php://input"); //接收微信参数
 		if (empty($postXml)) {
-			return false;
+			return $res;
 		}
 
 		$attr = $this->xmlToArray($postXml);
@@ -55,7 +57,7 @@ class PayController extends Controller
 			$data['price'] = $total_fee;
 			$data['number'] = $out_trade_no;
 			$data['created_at'] = time();
-			self::topUpDate($data);
+			$res = self::topUpDate($data);
 		}
 		else {
 
@@ -70,7 +72,7 @@ class PayController extends Controller
 					$trading['pay_way'] = 'WX';
 					$trading['remake'] = '订单'.$out_trade_no.'消费';
 					$trading['created_at'] = $time();
-					self::orderSuccess($trading);
+					$res = self::orderSuccess($trading);
 				}else{
 					Log::info($open_id.'-----'.$out_trade_no.'-----'.$total_fee.'---价格不一致');
 				}
@@ -81,6 +83,9 @@ class PayController extends Controller
 
 
 		}
+
+		if ($res)
+			self::return_success();
 
 	}
 
@@ -157,4 +162,16 @@ class PayController extends Controller
 	}
 
 
+	/*
+     * 给微信发送确认订单金额和签名正确，SUCCESS信息 -xzz0521
+     */
+	private function return_success(){
+		$return['return_code'] = 'SUCCESS';
+		$return['return_msg'] = 'OK';
+		$xml_post = '<xml>
+                    <return_code>'.$return['return_code'].'</return_code>
+                    <return_msg>'.$return['return_msg'].'</return_msg>
+                    </xml>';
+		echo $xml_post;exit;
+	}
 }
