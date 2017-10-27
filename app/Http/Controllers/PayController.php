@@ -51,7 +51,7 @@ class PayController extends Controller
 		//判断类型 充值
 		if ( $type == 'CZ' ) {
 			$userId = (int)substr( $out_trade_no , 8 , 6 );
-			$date['user_id'] = $userId;
+			$data['user_id'] = $userId;
 			$data['price'] = $total_fee;
 			$data['number'] = $out_trade_no;
 			$data['created_at'] = $time;
