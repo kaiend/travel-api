@@ -50,7 +50,8 @@ Route::post('/createOrder', 'OrderController@createOrder');
 Route::get('/orderList', 'OrderController@orderList');
 //普通账户支付
 Route::post('/orderPay', 'OrderController@orderPay');
-
+//获取微信openid
+Route::post('/getOpenid','UserController@getOpenid');
 
 
 Route::get('/test', 'ServiceController@carSeriesList');

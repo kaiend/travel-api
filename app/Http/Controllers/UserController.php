@@ -236,4 +236,27 @@ class UserController extends Controller
 
 		return ReturnMessage::successData($info);
 	}
+	/*
+	 * 获取微信openid
+	 */
+	public function getOpenid( Request $request){
+	    $appid = 'wx7783b28b01846455'; //填写微信小程序appid
+        $secret = 'f33fe88072cd20ed817483c2';//小程序secret
+        $code = $request->input('code');
+        $url = 'https://api.weixin.qq.com/sns/jscode2session?appid='.$appid.'&secret='.$secret.'&js_code='.$code.'&grant_type=authorization_code';
+        $data = $this->curl($url);
+        return ReturnMessage::successData($data);
+    }
+    /*
+     * curl
+     */
+    public function curl($url){
+            $ch = curl_init();//初始化curl
+            curl_setopt($ch, CURLOPT_URL, $url);//设置url属性
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            $output = curl_exec($ch);//获取数据
+            curl_close($ch);//关闭curl
+            return $output;
+    }
 }
