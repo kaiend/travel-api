@@ -58,6 +58,8 @@ class OrderValidator
 
 		$validator = Validator::make($input, $rules, $messages);
 
+		$info = $input;
+
 		if ($validator->fails())
 			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
 
@@ -67,6 +69,9 @@ class OrderValidator
 		$input['appointment'] = strtotime($input['appointment']);
 		$input['order_number'] = Common::createNumber();
 		$input['created_at'] = time();
+
+		exit(json_encode(['info'=>$info,'code'=>$input]));
+
 		return $input;
 	}
 
