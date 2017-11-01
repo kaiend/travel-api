@@ -31,6 +31,8 @@ Route::post('/modifyPassword', 'UserController@modifyPassword');
 Route::post('/logout', 'UserController@logout');
 //获取用户信息
 Route::get('/getUserInfo', 'UserController@getUserInfo');
+//获取小程序openid
+Route::get('/getOpenId', 'UserController@getOpenId');
 
 //出行卡数据添加
 Route::put('/travelCard', 'UserController@travelCard');

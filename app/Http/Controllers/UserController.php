@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Common;
 use App\Helpers\SaveImage;
 use App\Helpers\Sms;
+use App\Library\WxPay\WxPay;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Validators\UserValidator;
@@ -235,5 +236,18 @@ class UserController extends Controller
 		$info  = User::getUserFirst($input);
 
 		return ReturnMessage::successData($info);
+	}
+
+
+	/**
+	 * 获取小程序openid
+	 * @param $request
+	 * @return array
+	 * */
+	public function getOpenId( Request $request )
+	{
+		$code = $request->input('code');
+
+		return ReturnMessage::successData(WxPay::getSession($code));
 	}
 }

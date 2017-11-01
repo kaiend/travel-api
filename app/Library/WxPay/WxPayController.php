@@ -51,11 +51,11 @@ class WxPay extends \WxPayNotify
 	}
 
 	//这里是服务器端获取openid的函数
-//    private function getSession($code) {
-//        $url = 'https://api.weixin.qq.com/sns/jscode2session?appid='.\WxPayConfig::APPID.'&secret='.\WxPayConfig::APPSECRET.'&js_code='.$code.'&grant_type=authorization_code';
-//        $response = json_decode(file_get_contents($url));
-//        return $response;
-//    }
+    public static function getSession($code) {
+        $url = 'https://api.weixin.qq.com/sns/jscode2session?appid='.\WxPayConfig::APPID.'&secret='.\WxPayConfig::APPSECRET.'&js_code='.$code.'&grant_type=authorization_code';
+        $response = json_decode(file_get_contents($url));
+        return $response;
+    }
 
 	//查询订单
 	public function Queryorder($transaction_id)
