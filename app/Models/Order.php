@@ -50,7 +50,7 @@ class Order extends Model
 	 * */
 	public static function orderList( array $where )
 	{
-		return static::where( $where )->get()->toArray();
+		return static::where( $where )->orderBy('created_at','asc')->get()->toArray();
 	}
 
 }
