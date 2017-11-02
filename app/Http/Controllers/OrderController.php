@@ -50,7 +50,8 @@ class OrderController extends Controller
 		$whereUser['id'] = $input['user_id'];
 		$whereOrder['order_number'] = $input['order_number'];
 		$user = User::getUserFirst($whereUser);
-		$order = Order::getOrderFirst($whereOrder);
+		$order = Order::getOrderFirst($whereOrder)->toArray();
+
 		if ($user['travel_card_money'] >= $order['price']){
 			$res['travel_card_money'] = $order['price'];
 		}else{
