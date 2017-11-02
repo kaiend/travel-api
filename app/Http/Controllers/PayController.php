@@ -61,16 +61,19 @@ class PayController extends Controller
 		}
 		else {
 
+			$orderNumber = substr( $out_trade_no , 0 , 15 );
+
 			$order = Order::getOrderFirst(['order_number' => $out_trade_no]);
 
 			if (!(empty($order))){
 				$order = $order->toArray();
 				if ($order['price'] == $total_fee){
 					$trading['user_id'] = $order['user_id'];
-					$trading['order_number'] = $out_trade_no;
+					$trading['order_number'] = $orderNumber;
+					$trading['pay_number'] = $out_trade_no;
 					$trading['money'] = $total_fee;
 					$trading['pay_way'] = 'WX';
-					$trading['remake'] = '订单'.$out_trade_no.'消费';
+					$trading['remake'] = '订单'.$orderNumber.'消费';
 					$trading['created_at'] = $time();
 					$res = self::orderSuccess($trading);
 				}else{
