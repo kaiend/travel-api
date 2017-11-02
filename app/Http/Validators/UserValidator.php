@@ -151,7 +151,7 @@ class UserValidator
 	private static function redisVerify($input)
 	{
 		if (!Redis::exists($input['phone']) || (Redis::get($input['phone']) != $input['code']))
-			exit(json_encode(['info'=>Redis::get($input['phone']),'code'=>'1002']));
+			exit(json_encode(['info'=>'验证码错误','code'=>'1002']));
 	}
 
 	/**
