@@ -96,6 +96,7 @@ class OrderController extends Controller
 			DB::commit();
 		} catch (\Exception $e) {
 			DB::rollBack();
+			return ReturnMessage::success('支付失败',1002);
 		}
 
 		return ReturnMessage::success();
