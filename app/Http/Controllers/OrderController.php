@@ -52,6 +52,9 @@ class OrderController extends Controller
 		$user = User::getUserFirst($whereUser);
 		$order = Order::getOrderFirst($whereOrder)->toArray();
 
+		if ($order['status'] == $this->order_pay)
+			return ReturnMessage::success('订单已支付，请勿重复支付',1002);
+
 		if ($user['travel_card_money'] >= $order['price']){
 			$res['travel_card_money'] = $order['price'];
 		}else{
