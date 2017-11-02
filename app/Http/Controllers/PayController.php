@@ -63,7 +63,7 @@ class PayController extends Controller
 
 			$orderNumber = substr( $out_trade_no , 0 , 15 );
 
-			$order = Order::getOrderFirst(['order_number' => $out_trade_no]);
+			$order = Order::getOrderFirst(['order_number' => $orderNumber]);
 
 			if (!(empty($order))){
 				$order = $order->toArray();
