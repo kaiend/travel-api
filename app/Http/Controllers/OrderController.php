@@ -13,7 +13,12 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+	//订单状态 已支付
 	private $order_pay = 'pay';
+
+	//订单状态  已取消
+	private $order_undo = 'undo';
+
 	/**
 	 * 下订单
 	 * @param $request
@@ -111,6 +116,26 @@ class OrderController extends Controller
 
 		return ReturnMessage::successData(Common::formatTime(Order::orderList($input)));
 
+	}
+
+	/**
+	 * 取消订单
+	 *
+	 * @param $request
+	 * @return mixed
+	 * */
+	public function undoOrder( Request $request )
+	{
+		$input = OrderValidator::orderPay($request);
+
+		$data['status'] = $this->order_undo;
+
+		try {
+			Order::modifyOrder($input,$data);
+		} catch (\Exception $e) {
+			return ReturnMessage::success('撤销订单失败',1002);
+		}
+		return ReturnMessage::success();
 
 	}
 }
