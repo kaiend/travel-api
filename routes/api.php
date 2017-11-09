@@ -31,20 +31,7 @@ Route::post('/modifyPassword', 'UserController@modifyPassword');
 Route::post('/logout', 'UserController@logout');
 //获取用户信息
 Route::get('/getUserInfo', 'UserController@getUserInfo');
-//获取小程序openid
-Route::get('/getOpenId', 'UserController@getOpenId');
 
-//出行卡数据添加
-Route::put('/travelCard', 'UserController@travelCard');
-//上传出行卡
-Route::post('/updateTravelCard', 'UserController@updateTravelCard');
-
-//微信订单
-Route::any('/WxOrder', 'PayController@WxOrder');
-//微信支付异步回调
-Route::any('/WxNotify', 'PayController@WxNotify');
-//账户充值
-Route::any('/topUp', 'PayController@topUp');
 
 //创建订单
 Route::post('/createOrder', 'OrderController@createOrder');

@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Common;
-use App\Helpers\SaveImage;
 use App\Helpers\Sms;
-use App\Library\WxPay\WxPay;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Validators\UserValidator;
@@ -174,55 +172,6 @@ class UserController extends Controller
 	}
 
 
-	/**
-	 * 出行卡数据填写
-	 *
-	 * @author yxk
-	 * @param $request
-	 * @return mixed
-	 * */
-	public function travelCard( Request $request )
-	{
-		$input = UserValidator::travelCard($request);
-
-		$where['id'] = $input['id'];
-		unset($input['id']);
-
-		try {
-			User::modifyUser($where,$input);
-		} catch (\Exception $e) {
-			return ReturnMessage::success('修改失败',1002);
-		}
-
-		return ReturnMessage::success();
-	}
-
-	/**
-	 * 上传出行卡
-	 * @param Request $request
-	 * @return mixed
-	 *
-	 * */
-	public function updateTravelCard(Request $request)
-	{
-		if(!$request->hasFile('travelCard')){
-			return ReturnMessage::success('上传文件为空！',1002);
-		}
-
-		$file = $request->file('travelCard');
-		//判断文件上传过程中是否出错
-		if(!$file->isValid()){
-			return ReturnMessage::success('文件上传出错！',1002);
-		}
-
-		$newFileName = md5(time().rand(0,10000));
-
-		$data['travel_card'] = SaveImage::travelCard($newFileName,$file);
-
-		return ReturnMessage::successData($data);
-
-	}
-
 
 	/**
 	 * 获取用户信息
@@ -236,18 +185,5 @@ class UserController extends Controller
 		$info  = User::getUserFirst($input);
 
 		return ReturnMessage::successData($info);
-	}
-
-
-	/**
-	 * 获取小程序openid
-	 * @param $request
-	 * @return array
-	 * */
-	public function getOpenId( Request $request )
-	{
-		$code = $request->input('code');
-
-		return ReturnMessage::successData(WxPay::getSession($code));
 	}
 }
