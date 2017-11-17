@@ -73,7 +73,6 @@ class HotelController extends Controller
     }
     public function test()
     {
-        Redis::setex('15531143712',120,'4651');
         return 1;
     }
 

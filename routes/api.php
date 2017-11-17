@@ -1,31 +1,37 @@
-<?php
 
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Aimy
+ * Date: 2017/11/17
+ * Time: 16:44
+ */
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| Application Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
+| Here is where you can register all of the routes for an application.
+| It is a breeze. Simply tell Lumen the URIs it should respond to
+| and give it the Closure to call when that URI is requested.
 |
-*/
-
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-
-/**
- * The new API
  */
-//APP登录
-Route::post('/V1/login','HotelController@login');
-//APP发送验证码
-Route::get('/V1/sendCode','UserController@sendCode');
-//APP验证密码
-Route::post('/V1/verifyCode', 'UserController@verifyCode');
-//APP修改密码
-Route::post('/V1/modifyPassword','HotelController@editPassword');
-Route::get('/V1/test','HotelController@test');
+$api = app('Dingo\Api\Routing\Router');
 
+$api->version('v1', [
+    'namespace' => 'App\Http\Controllers',
+    // each route have a limit of 100 of 1 minutes
+    //'limit' => 100, 'expires' => 1
+], function ($api) {
 
+    //APP登录
+    Route::post('/login','HotelController@login');
+    //APP发送验证码
+    Route::get('/sendCode','UserController@sendCode');
+    //APP验证密码
+    Route::post('/verifyCode', 'UserController@verifyCode');
+    //APP修改密码
+    Route::post('/modifyPassword','HotelController@editPassword');
+
+    $api->get('/test','HotelController@test');
+});
