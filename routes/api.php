@@ -15,23 +15,6 @@
 //    return $request->user();
 //});
 
-
-
-//创建订单
-Route::post('/createOrder', 'OrderController@createOrder');
-//订单列表
-Route::get('/orderList', 'OrderController@orderList');
-//撤销订单
-Route::post('/undoOrder', 'OrderController@undoOrder');
-//普通账户支付
-Route::post('/orderPay', 'OrderController@orderPay');
-//获取微信openid
-Route::post('/getOpenid','UserController@getOpenid');
-
-
-Route::get('/test', 'ServiceController@carSeriesList');
-
-
 /**
  * The new API
  */
