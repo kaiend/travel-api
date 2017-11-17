@@ -28,12 +28,12 @@ class UserController extends Controller
 		$code = $this->createCode();
 
 		$res = $this->sendSMS($input['phone'],$code);
-
+        print_r($res);
 		if (!empty($res)){
 			$res = json_decode($res,true);
 			if($res['error'] == 0)
-				//添加缓存 以手机号为键 验证码为值 缓存2分钟
-				Redis::setex($input['phone'],120,$code);
+				//添加缓存 以手机号为键 验证码为值 缓存30分钟
+				Redis::setex($input['phone'],1800,$code);
 				return ReturnMessage::success();
 //				return ReturnMessage::success($code);
 		}
@@ -180,6 +180,7 @@ class UserController extends Controller
 	 * */
 	public function getUserInfo( Request $request )
 	{
+
 		$input['id'] = $request->input('user_id');
 
 		$info  = User::getUserFirst($input);

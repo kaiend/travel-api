@@ -30,7 +30,9 @@ class UserValidator
 
 		$input = $request->only($only);
 
+
 		$validator = Validator::make($input, $rules, $messages);
+
 
 		if ($validator->fails())
 			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
@@ -151,45 +153,45 @@ class UserValidator
 	private static function redisVerify($input)
 	{
 		if (!Redis::exists($input['phone']) || (Redis::get($input['phone']) != $input['code']))
-			exit(json_encode(['info'=>'验证码错误','code'=>'1002']));
+			exit(json_encode(['info'=>'验证码错误','code'=>'1004']));
 	}
 
 	/**
-	 * 修改密码数据验证
-	 *
-	 * @param Request $request
-	 * @return mixed
-	 * */
-	public static function modifyPassword( Request $request )
-	{
-		$only = ['phone','code','user_pass'];
+ * 修改密码数据验证
+ *
+ * @param Request $request
+ * @return mixed
+ * */
+    public static function modifyPassword( Request $request )
+    {
+        $only = ['phone','code','user_pass'];
 
-		$rules = [
-			'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/|exists:user,phone',
-			'code' => 'required',
-			'user_pass' => 'required',
-		];
+        $rules = [
+            'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/|exists:user,phone',
+            'code' => 'required',
+            'user_pass' => 'required',
+        ];
 
-		$messages = [
-			'phone.required' => '手机号不能为空',
-			'phone.regex' => '手机号错误',
-			'phone.exists'=> '用户不存在',
+        $messages = [
+            'phone.required' => '手机号不能为空',
+            'phone.regex' => '手机号错误',
+            'phone.exists'=> '用户不存在',
 
-			'code.required' => '验证码不能为空',
-			'user_pass.required' => '密码不能为空',
-		];
+            'code.required' => '验证码不能为空',
+            'user_pass.required' => '密码不能为空',
+        ];
 
-		$input = $request->only($only);
+        $input = $request->only($only);
 
-		$validator = Validator::make($input, $rules, $messages);
+        $validator = Validator::make($input, $rules, $messages);
 
-		if ($validator->fails())
-			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+        if ($validator->fails())
+            exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
 
-		self::redisVerify($input);
+        self::redisVerify($input);
 
-		return $input;
-	}
+        return $input;
+    }
 
 	/**
 	 * 出行卡填写
@@ -230,4 +232,74 @@ class UserValidator
 
 		return $input;
 	}
+
+
+    /**
+     * APP端的酒店用户验证
+     * @param Request $request
+     * @return array
+     */
+    public static function hotelLogin( Request $request)
+    {
+        $only = ['phone','password'];
+
+        $rules = [
+            'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
+            'password' => 'required',
+        ];
+
+        $messages = [
+            'phone.required' => '手机号不能为空',
+            'phone.regex' => '手机号错误',
+
+            'password' => '密码不能为空',
+        ];
+
+        $input = $request->only($only);
+
+        $validator = Validator::make($input, $rules, $messages);
+
+        if ($validator->fails())
+            exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+
+        $input['password'] = Common::createPassword($input['password']);
+
+        return $input;
+    }
+    /**
+     * 修改密码数据验证
+     *
+     * @param Request $request
+     * @return mixed
+     * */
+    public static function editPassword( Request $request )
+    {
+        $only = ['phone','code','password'];
+
+        $rules = [
+            'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/|exists:hotel_user,mobile',
+            'code' => 'required',
+            'password' => 'required',
+        ];
+
+        $messages = [
+            'phone.required' => '手机号不能为空',
+            'phone.regex' => '手机号错误',
+            'phone.exists'=> '用户不存在',
+
+            'code.required' => '验证码不能为空',
+            'password.required' => '密码不能为空',
+        ];
+
+        $input = $request->only($only);
+
+        $validator = Validator::make($input, $rules, $messages);
+
+        if ($validator->fails())
+            exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+
+        self::redisVerify($input);
+
+        return $input;
+    }
 }

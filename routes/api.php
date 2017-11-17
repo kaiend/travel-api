@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,7 +14,9 @@ use Illuminate\Http\Request;
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
-
+/**
+ *Other person do this
+ */
 //发送验证码
 Route::get('/sendCode', 'UserController@sendCode');
 //注册用户
@@ -46,3 +46,19 @@ Route::post('/getOpenid','UserController@getOpenid');
 
 
 Route::get('/test', 'ServiceController@carSeriesList');
+
+
+/**
+ * The new API
+ */
+//APP登录
+Route::post('/V1/login','HotelController@login');
+//APP发送验证码
+Route::get('/V1/sendCode','UserController@sendCode');
+//APP验证密码
+Route::post('/V1/verifyCode', 'UserController@verifyCode');
+//APP修改密码
+Route::post('/V1/modifyPassword','HotelController@editPassword');
+Route::get('/V1/test','HotelController@test');
+
+
