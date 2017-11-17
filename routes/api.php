@@ -14,23 +14,7 @@
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
-/**
- *Other person do this
- */
-//发送验证码
-Route::get('/sendCode', 'UserController@sendCode');
-//注册用户
-Route::post('/register', 'UserController@register');
-//用户登录
-Route::post('/login', 'UserController@login');
-//验证码验证
-Route::post('/verifyCode', 'UserController@verifyCode');
-//修改密码
-Route::post('/modifyPassword', 'UserController@modifyPassword');
-//退出注销
-Route::post('/logout', 'UserController@logout');
-//获取用户信息
-Route::get('/getUserInfo', 'UserController@getUserInfo');
+
 
 
 //创建订单
