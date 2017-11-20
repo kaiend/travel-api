@@ -28,7 +28,7 @@ class UserController extends Controller
 		$code = $this->createCode();
 
 		$res = $this->sendSMS($input['phone'],$code);
-        print_r($res);
+
 		if (!empty($res)){
 			$res = json_decode($res,true);
 			if($res['error'] == 0)

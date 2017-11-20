@@ -27,11 +27,14 @@ $api->version('v1', [
     //APP登录
     Route::post('/login','HotelController@login');
     //APP发送验证码
-    Route::get('/sendCode','UserController@sendCode');
+    Route::get('/message','UserController@sendCode');
     //APP验证密码
-    Route::post('/verifyCode', 'UserController@verifyCode');
+    Route::post('/verification', 'UserController@verifyCode');
     //APP修改密码
-    Route::post('/modifyPassword','HotelController@editPassword');
-
+    Route::post('/password','HotelController@editPassword');
+    //APP测试接口
     $api->get('/test','HotelController@test');
+
+    //APP订单接口
+    $api->group(['prefix' => 'order']);
 });
