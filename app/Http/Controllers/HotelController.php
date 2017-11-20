@@ -22,9 +22,6 @@ class HotelController extends Controller
 
     private function token( $data )
     {
-        if(!is_array( $data )){
-           return '';
-        }
         $re=JWTFactory::sub(123)->aud('foo')->foo( $data )->make();
         $token = JWTAuth::encode($re)->get();
         return $token;
@@ -40,11 +37,11 @@ class HotelController extends Controller
         $input = UserValidator::hotelLogin($request);
         $input['mobile'] =$input['phone'];
         unset($input['phone']);
-        $info = DB::table('hotel_user')->select('mobile','password')->where($input) ->first();
+        $info = DB::table('hotel_user')->select('mobile','password','id')->where($input) ->first();
 
         if (!empty($info)){
             $info = json_decode(json_encode($info),true);
-            $info['token'] = $this->token( $info );
+            $info['token'] = $this->token( $info['id'] );
 
             return ReturnMessage::successData($info);
         }

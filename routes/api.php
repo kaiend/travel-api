@@ -25,16 +25,26 @@ $api->version('v1', [
 ], function ($api) {
 
     //APP登录
-    Route::post('/login','HotelController@login');
+    $api->post('/login','HotelController@login');
     //APP发送验证码
-    Route::get('/message','UserController@sendCode');
+    $api->get('/message','UserController@sendCode');
     //APP验证密码
-    Route::post('/verification', 'UserController@verifyCode');
+    $api->post('/verification', 'UserController@verifyCode');
     //APP修改密码
-    Route::post('/password','HotelController@editPassword');
+    $api->post('/password','HotelController@editPassword');
     //APP测试接口
     $api->get('/test','HotelController@test');
 
     //APP订单接口
-    $api->group(['prefix' => 'order']);
+    $api->group(['prefix' => 'order'] , function(){
+        \Dingo\Api\Facade\Route::get('/list' ,'OrderController@getList');
+        \Dingo\Api\Facade\Route::get('/cancel/{id}' ,'OrderController@cancelOrder');
+    });
+
+    //APP个人中心
+    $api->group(['prefix' => 'user'] , function(){
+        \Dingo\Api\Facade\Route::get('/account' ,'UserController@getAccount');
+        \Dingo\Api\Facade\Route::post('/child' ,'UserController@addChild');
+    });
+
 });
