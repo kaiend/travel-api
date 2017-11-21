@@ -17,7 +17,7 @@
 |
  */
 
-/*
+
 $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', [
@@ -50,7 +50,7 @@ $api->version('v1', [
     });
 
 });
-*/
+
 
 //APP登录
 Route::post('/login','HotelController@login');
