@@ -27,9 +27,14 @@ $api->version('v1', [
 ], function ($api) {
 
     //APP登录
-    $api->post('/login','HotelController@login');
+    $api->post('/login',[
+        'as'=>'login',
+        'uses'=>'HotelController@login',
+    ]);
     //APP发送验证码
-    $api->get('/message','UserController@sendCode');
+    $api->get('/message',[
+        'as'=>'message',
+        'uses'=>'UserController@sendCode']);
     //APP验证密码
     $api->post('/verification', 'UserController@verifyCode');
     //APP修改密码
@@ -52,15 +57,15 @@ $api->version('v1', [
 });
 
 
-//APP登录
-Route::post('/login','HotelController@login');
-//APP发送验证码
-Route::get('/message','UserController@sendCode');
-//APP验证密码
-Route::post('/verification', 'UserController@verifyCode');
-//APP修改密码
-Route::post('/password','HotelController@editPassword');
-Route::get('/order/list' ,'OrderController@getList');
-Route::get('/order/cancel/{id}' ,'OrderController@cancelOrder');
+////APP登录
+//Route::post('/login','HotelController@login');
+////APP发送验证码
+//Route::get('/message','UserController@sendCode');
+////APP验证密码
+//Route::post('/verification', 'UserController@verifyCode');
+////APP修改密码
+//Route::post('/password','HotelController@editPassword');
+//Route::get('/order/list' ,'OrderController@getList');
+//Route::get('/order/cancel/{id}' ,'OrderController@cancelOrder');
 
 
