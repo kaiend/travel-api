@@ -55,7 +55,7 @@ class ReturnMessage
 	 * @param array $data
 	 * @return array
 	 */
-	public static function toString(array $data)
+	protected static function toString(array $data)
 	{
 		foreach ($data as $key => $value) {
 			if (is_array($value))

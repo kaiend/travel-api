@@ -10,7 +10,7 @@ use App\Helpers\Common;
 use App\Helpers\ReturnMessage;
 use App\Http\Validators\UserValidator;
 use App\Models\Hotel;
-use Dingo\Api\Http\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -22,6 +22,9 @@ class HotelController extends Controller
 
     private function token( $data )
     {
+        if(!is_array( $data )){
+           return '';
+        }
         $re=JWTFactory::sub(123)->aud('foo')->foo( $data )->make();
         $token = JWTAuth::encode($re)->get();
         return $token;
@@ -37,11 +40,11 @@ class HotelController extends Controller
         $input = UserValidator::hotelLogin($request);
         $input['mobile'] =$input['phone'];
         unset($input['phone']);
-        $info = DB::table('hotel_user')->select('mobile','password','id')->where($input) ->first();
+        $info = DB::table('hotel_user')->select('mobile','password')->where($input) ->first();
 
         if (!empty($info)){
             $info = json_decode(json_encode($info),true);
-            $info['token'] = $this->token( $info['id'] );
+            $info['token'] = $this->token( $info );
 
             return ReturnMessage::successData($info);
         }
@@ -70,6 +73,8 @@ class HotelController extends Controller
     }
     public function test()
     {
+        return 1;die;
+        Redis::setex('15531143712',120,'4651');
         return 1;
     }
 
