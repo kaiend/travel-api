@@ -3,7 +3,7 @@
 namespace App\Http\Validators;
 
 use App\Helpers\Common;
-use Illuminate\Http\Request;
+use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Validation\Rule;

@@ -25,6 +25,9 @@ $app = new Illuminate\Foundation\Application(
 | incoming requests to this application from both the web and CLI.
 |
 */
+//config
+//jwt
+//$app->configure('jwt');
 
 $app->singleton(
     Illuminate\Contracts\Http\Kernel::class,
@@ -51,5 +54,7 @@ $app->singleton(
 | from the actual running of the application and sending responses.
 |
 */
+//$app->register(\Dingo\Api\Provider\LaravelServiceProvider::class);
+//$app->register(\Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class);
 
 return $app;

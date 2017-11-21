@@ -1,64 +1,71 @@
-<?php
 
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Aimy
+ * Date: 2017/11/17
+ * Time: 16:44
+ */
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| Application Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
+| Here is where you can register all of the routes for an application.
+| It is a breeze. Simply tell Lumen the URIs it should respond to
+| and give it the Closure to call when that URI is requested.
 |
-*/
-
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-/**
- *Other person do this
  */
-//发送验证码
-Route::get('/sendCode', 'UserController@sendCode');
-//注册用户
-Route::post('/register', 'UserController@register');
-//用户登录
-Route::post('/login', 'UserController@login');
-//验证码验证
-Route::post('/verifyCode', 'UserController@verifyCode');
-//修改密码
-Route::post('/modifyPassword', 'UserController@modifyPassword');
-//退出注销
-Route::post('/logout', 'UserController@logout');
-//获取用户信息
-Route::get('/getUserInfo', 'UserController@getUserInfo');
 
 
-//创建订单
-Route::post('/createOrder', 'OrderController@createOrder');
-//订单列表
-Route::get('/orderList', 'OrderController@orderList');
-//撤销订单
-Route::post('/undoOrder', 'OrderController@undoOrder');
-//普通账户支付
-Route::post('/orderPay', 'OrderController@orderPay');
-//获取微信openid
-Route::post('/getOpenid','UserController@getOpenid');
+$api = app('Dingo\Api\Routing\Router');
+
+$api->version('v1', [
+    'namespace' => 'App\Http\Controllers',
+    // each route have a limit of 100 of 1 minutes
+    //'limit' => 100, 'expires' => 1
+], function ($api) {
+
+    //APP登录
+    $api->post('/login',[
+        'as'=>'login',
+        'uses'=>'HotelController@login',
+    ]);
+    //APP发送验证码
+    $api->get('/message',[
+        'as'=>'message',
+        'uses'=>'UserController@sendCode']);
+    //APP验证密码
+    $api->post('/verification', 'UserController@verifyCode');
+    //APP修改密码
+    $api->post('/password','HotelController@editPassword');
+    //APP测试接口
+    $api->get('/test','HotelController@test');
+
+    //APP订单接口
+    $api->group(['prefix' => 'order'] , function(){
+        \Dingo\Api\Facade\Route::get('/list' ,'OrderController@getList');
+        \Dingo\Api\Facade\Route::get('/cancel/{id}' ,'OrderController@cancelOrder');
+    });
+
+    //APP个人中心
+    $api->group(['prefix' => 'user'] , function(){
+        \Dingo\Api\Facade\Route::get('/account' ,'UserController@getAccount');
+        \Dingo\Api\Facade\Route::post('/child' ,'UserController@addChild');
+    });
+
+});
 
 
-Route::get('/test', 'ServiceController@carSeriesList');
-
-
-/**
- * The new API
- */
-//APP登录
-Route::post('/V1/login','HotelController@login');
-//APP发送验证码
-Route::get('/V1/sendCode','UserController@sendCode');
-//APP验证密码
-Route::post('/V1/verifyCode', 'UserController@verifyCode');
-//APP修改密码
-Route::post('/V1/modifyPassword','HotelController@editPassword');
-Route::get('/V1/test','HotelController@test');
+////APP登录
+//Route::post('/login','HotelController@login');
+////APP发送验证码
+//Route::get('/message','UserController@sendCode');
+////APP验证密码
+//Route::post('/verification', 'UserController@verifyCode');
+////APP修改密码
+//Route::post('/password','HotelController@editPassword');
+//Route::get('/order/list' ,'OrderController@getList');
+//Route::get('/order/cancel/{id}' ,'OrderController@cancelOrder');
 
 
