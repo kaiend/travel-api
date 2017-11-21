@@ -31,20 +31,20 @@ class OrderController extends  Controller
             switch ($arr['type']){
                 case 'wait':
                     $data = DB::table('order')->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment')->where([
-                        ['status','1'],
-                        ['user_id',$id],
+                        ['status'=>'1'],
+                        ['user_id'=>$id],
                     ])->get();
 
                     break;
                 case 'doing':
                     $data = DB::table('order')->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment')
-                        ->where(['user_id',$id])
+                        ->where(['user_id'=>$id])
                         ->whereIn('status', [2,3,4,5,6,7,8])
                         ->get();
                     break;
                 case 'done' :
                     $data = DB::table('order')->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment')
-                        ->where(['user_id',$id])
+                        ->where(['user_id' =>$id ])
                         ->whereIn('status', [0,9])
                         ->get();
                     break;
