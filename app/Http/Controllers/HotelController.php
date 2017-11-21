@@ -34,7 +34,6 @@ class HotelController extends Controller
      */
     public function login(Request $request)
     {
-        echo 1;die;
         $input = UserValidator::hotelLogin($request);
         $input['mobile'] =$input['phone'];
         unset($input['phone']);
