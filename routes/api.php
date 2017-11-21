@@ -17,7 +17,7 @@
 |
  */
 
-
+/*
 $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', [
@@ -50,4 +50,17 @@ $api->version('v1', [
     });
 
 });
+*/
+
+//APP登录
+Route::post('/login','HotelController@login');
+//APP发送验证码
+Route::get('/message','UserController@sendCode');
+//APP验证密码
+Route::post('/verification', 'UserController@verifyCode');
+//APP修改密码
+Route::post('/password','HotelController@editPassword');
+Route::get('/order/list' ,'OrderController@getList');
+Route::get('/order/cancel/{id}' ,'OrderController@cancelOrder');
+
 
