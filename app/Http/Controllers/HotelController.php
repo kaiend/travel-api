@@ -10,7 +10,7 @@ use App\Helpers\Common;
 use App\Helpers\ReturnMessage;
 use App\Http\Validators\UserValidator;
 use App\Models\Hotel;
-use Illuminate\Http\Request;
+use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Tymon\JWTAuth\Facades\JWTAuth;

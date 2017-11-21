@@ -10,7 +10,7 @@ namespace App\Http\Controllers;
 
 
 use App\Helpers\ReturnMessage;
-use Illuminate\Http\Request;
+use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
