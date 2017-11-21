@@ -13,6 +13,7 @@ use App\Models\Hotel;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Facades\JWTFactory;
 
@@ -42,7 +43,7 @@ class HotelController extends Controller
         if (!empty($info)){
             $info = json_decode(json_encode($info),true);
             $info['token'] = $this->token( $info['id'] );
-
+            unset($info['id']);
             return ReturnMessage::successData($info);
         }
 
@@ -67,6 +68,86 @@ class HotelController extends Controller
         }
 
         return ReturnMessage::success();
+    }
+
+    //APP子账户列表
+    public function getList()
+    {
+        try{
+            $user=JWTAuth::parseToken()->getPayload();
+            $id = intval($user['foo']);
+
+            //查询当前用户的酒店ID和type
+            $user_data= Hotel::getUserFirst($id);
+
+            if( $user_data['type'] == 3 ){
+                return ReturnMessage::success('你是员工哦' ,'1010');
+            }else if( $user_data['type'] == 2 ){
+                //管理者查询 -----员工账号
+                $data = DB::table('hotel_user')
+                    ->select('id','name','mobile','position','type')
+                    ->where([
+                        ['type' , 3] ,
+                        ['hotel_id' , $user_data['hotel_id']]
+                    ])
+                    ->get();
+            }else{
+
+                $data = DB::table('hotel_user')
+                    ->select('id','name','mobile','position','type')
+                    ->where(['hotel_id' => $user_data['hotel_id']])
+                    ->whereIn('type', [2,3])
+                    ->get();
+            }
+            $bdata=json_decode(json_encode($data),true);
+            if(!empty($bdata)){
+
+                $final=ReturnMessage::toString($bdata);
+                return ReturnMessage::successData( $final);
+
+            }else{
+                return ReturnMessage::success('empty' ,'10011');
+            }
+
+
+        }catch(JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+
+    }
+    //APP 个人账户-添加子账户
+    public function addChild( Request $request)
+    {
+        $arr=$request->all();
+        try{
+            $user=JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+            //查询当前用户的酒店ID和type
+            $user_data= Hotel::getUserFirst($id);
+            if( $user_data['type'] == 3 ){
+                return ReturnMessage::success('你是员工哦' ,'1010');
+            }else if( $user_data['type'] == 2 ){
+                //管理者添加-----员工账号
+
+            }
+
+        }catch(JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+    }
+
+    public function authToken()
+    {
+        try{
+
+            JWTAuth::parseToken()->getPayload();
+
+            return ReturnMessage::success('success','1000');
+
+        }catch(JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+
     }
     public function test()
     {

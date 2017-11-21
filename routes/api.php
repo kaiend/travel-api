@@ -27,14 +27,9 @@ $api->version('v1', [
 ], function ($api) {
 
     //APP登录
-    $api->post('/login',[
-        'as'=>'login',
-        'uses'=>'HotelController@login',
-    ]);
+    $api->post('/login','HotelController@login');
     //APP发送验证码
-    $api->get('/message',[
-        'as'=>'message',
-        'uses'=>'UserController@sendCode']);
+    $api->get('/message','UserController@sendCode');
     //APP验证密码
     $api->post('/verification', 'UserController@verifyCode');
     //APP修改密码
@@ -50,22 +45,18 @@ $api->version('v1', [
 
     //APP个人中心
     $api->group(['prefix' => 'user'] , function(){
-        \Dingo\Api\Facade\Route::get('/account' ,'UserController@getAccount');
-        \Dingo\Api\Facade\Route::post('/child' ,'UserController@addChild');
+        \Dingo\Api\Facade\Route::get('/account' ,'HotelController@getAccount');
+        //子账户列表
+        \Dingo\Api\Facade\Route::get('/list' ,'HotelController@getList');
+        //添加子账户
+        \Dingo\Api\Facade\Route::post('/child' ,'HotelController@addChild');
     });
+    //认证token
+    $api->get('/authorization','HotelController@authToken');
 
 });
 
 
-////APP登录
-//Route::post('/login','HotelController@login');
-////APP发送验证码
-//Route::get('/message','UserController@sendCode');
-////APP验证密码
-//Route::post('/verification', 'UserController@verifyCode');
-////APP修改密码
-//Route::post('/password','HotelController@editPassword');
-//Route::get('/order/list' ,'OrderController@getList');
-//Route::get('/order/cancel/{id}' ,'OrderController@cancelOrder');
+
 
 

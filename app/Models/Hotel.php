@@ -28,4 +28,10 @@ class Hotel extends Model
      * */
     protected $hidden = [];
 
+    public static function  getUserFirst( $id )
+    {
+        $obj= static::where(['id'=> $id])->first();
+        return json_decode(json_encode($obj),true);
+    }
+
 }
