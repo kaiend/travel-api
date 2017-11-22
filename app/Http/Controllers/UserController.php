@@ -22,10 +22,13 @@ class UserController extends Controller
 	{
 		$input = UserValidator::sendCode($request);
 
-		if (Redis::exists($input['phone']))
-			return ReturnMessage::success('验证码不要重复发送',1002);
-
-		$code = $this->createCode();
+//		if (Redis::exists($input['phone']))
+//			return ReturnMessage::success('验证码不要重复发送',1002);
+        if (Redis::exists($input['phone'])){
+            $code = Redis::get($input['phone']);
+        }else{
+            $code = $this->createCode();
+        }
 
 		$res = $this->sendSMS($input['phone'],$code);
 
@@ -34,7 +37,11 @@ class UserController extends Controller
 			if($res['error'] == 0)
 				//添加缓存 以手机号为键 验证码为值 缓存30分钟
 				Redis::setex($input['phone'],1800,$code);
-				return ReturnMessage::success();
+			$data = [
+			    'mobile' =>$input['phone'],
+                'code'   =>$code
+            ];
+				return ReturnMessage::success('success',1000,$data);
 //				return ReturnMessage::success($code);
 		}
 

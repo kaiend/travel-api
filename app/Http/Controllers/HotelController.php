@@ -20,7 +20,11 @@ use Tymon\JWTAuth\Facades\JWTFactory;
 
 class HotelController extends Controller
 {
-
+    /**
+     *
+     * @param $data 用户id
+     * @return mixed
+     */
     private function token( $data )
     {
         $re=JWTFactory::sub(123)->aud('foo')->foo( $data )->make();
@@ -49,6 +53,11 @@ class HotelController extends Controller
         return ReturnMessage::success('用户不存在或密码错误',1002);
     }
 
+    /**
+     * 修改密码
+     * @param Request $request
+     * @return \App\Helpers\json|mixed
+     */
     public function editPassword( Request $request)
     {
 
@@ -61,15 +70,20 @@ class HotelController extends Controller
         try {
 
             DB::table('hotel_user')->where('mobile','=',$input['mobile'])->update(['password' => $data['password']]);
+            $data = DB::table('hotel_user')->where('mobile','=',$input['mobile'])->get();
+            $info = json_decode(json_encode($data),true);
+            $info['token'] = $this->token( $info['id'] );
 
         } catch (\Exception $e) {
-            return ReturnMessage::success('修改密码失败',1002);
+            return ReturnMessage::success('修改密码失败',1011);
         }
 
-        return ReturnMessage::success();
+        return ReturnMessage::successData($info);
     }
-
-    //APP子账户列表
+    /**
+     * APP子账户列表
+     * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
+     */
     public function getList()
     {
         try{
@@ -80,7 +94,7 @@ class HotelController extends Controller
             $user_data= Hotel::getUserFirst($id);
 
             if( $user_data['type'] == 3 ){
-                return ReturnMessage::success('你是员工哦' ,'1010');
+                return ReturnMessage::success('没有权限' ,'1010');
             }else if( $user_data['type'] == 2 ){
                 //管理者查询 -----员工账号
                 $data = DB::table('hotel_user')
@@ -118,7 +132,12 @@ class HotelController extends Controller
         }
 
     }
-    //APP 个人账户-添加子账户
+
+    /**
+     * APP 个人账户-添加子账户
+     * @param Request $request
+     * @return \App\Helpers\json
+     */
     public function addChild( Request $request)
     {
         $arr=$request->all();
@@ -127,27 +146,98 @@ class HotelController extends Controller
             $id = $user['foo'];
             //查询当前用户的酒店ID和type
             $user_data= Hotel::getUserFirst($id);
-            if( $user_data['type'] == 3 ){
-                return ReturnMessage::success('你是员工哦' ,'1010');
-            }else if( $user_data['type'] == 2 ){
-                //管理者添加-----员工账号
-                DB::table('hotel_user')->insert(
-                    [
-                        'name' => $arr['name'],
-                        'mobile'=> $arr['phone'],
-                        'department'=>$arr['department'],
-                        'position'=> $arr['position'],
-                        'type'=> $arr['type'],
-                        'hotel_id' =>$user_data['hotel_id']
-                    ]
-                );
+            //手机号来做唯一限制
+            $mobile = $arr['phone'];
+            $c_id=DB::table('hotel_user') -> where('mobile',$mobile) ->value( 'id' );
+            if( $c_id ){
+                return ReturnMessage::success('账户已被占用','1008');
+            }else{
+                if( $user_data['type'] == 3 ){
+                    return ReturnMessage::success('没有权限' ,'1010');
+                }else if( $user_data['type'] == 2 ){
+                    //管理者添加-----员工账号
+                    if(in_array(intval($arr['type']),[1,2]) ){
+                       return ReturnMessage::success('没有权限','1010');
+                    }else{
+                        DB::table('hotel_user')->insert(
+                            [
+                                'name' => $arr['name'],
+                                'mobile'=> $arr['phone'],
+                                'department'=>$arr['department'],
+                                'position'=> $arr['position'],
+                                'type'=> 3,
+                                'hotel_id' =>$user_data['hotel_id']
+                            ]
+                        );
+                        return ReturnMessage::success('success','1000');
+                    }
+
+                }else{
+                    if(in_array(intval($arr['type']),[1,2,3]) ){
+                        DB::table('hotel_user')->insert(
+                            [
+                                'name' => $arr['name'],
+                                'mobile'=> $arr['phone'],
+                                'department'=>$arr['department'],
+                                'position'=> $arr['position'],
+                                'type'=> intval($arr['type']),
+                                'hotel_id' =>$user_data['hotel_id']
+                            ]
+                        );
+                        return ReturnMessage::success('success','1000');
+                    }
+                }
             }
+//
 
         }catch(JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
         }
     }
 
+    /**
+     * APP 个人账户-禁用子账户
+     * @param $id
+     * @return \App\Helpers\json
+     */
+    public function stopChild( $id )
+    {
+        $id = intval($id);
+        try {
+            JWTAuth::parseToken()->getPayload();
+
+            $re = DB::table('hotel_user')->where('id', $id)->update(['status' => 0]);
+            if ($re) {
+                return ReturnMessage::success();
+            } else {
+                return ReturnMessage::success('失败', '1011');
+            }
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+    }
+
+
+    public function restPassword( $id, Request $request  )
+    {
+        $arr =$request->all();
+        try{
+            JWTAuth::parseToken()->getPayload();
+            $password=Common::createPassword($arr['password']);
+            $re = DB::table('hotel_user') ->where('id',intval($id))->update('password',$password);
+            if( $re ){
+                return ReturnMessage::success();
+            }else{
+
+            }
+        }catch(JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+    }
+    /**
+     * Token认证接口
+     * @return \App\Helpers\json
+     */
     public function authToken()
     {
         try{
