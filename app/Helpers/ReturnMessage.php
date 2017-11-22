@@ -27,6 +27,8 @@ class ReturnMessage
 		if ($data !== false && is_array($data))
 			$responseData['data'] = self::toString($data);
 
+        if ($data == false) $responseData['data']=[];
+
 		return json_encode($responseData);
 	}
 
