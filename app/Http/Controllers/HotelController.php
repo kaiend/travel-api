@@ -95,7 +95,7 @@ class HotelController extends Controller
 
                 $data = DB::table('hotel_user')
                     ->select('id','name','mobile','position','type')
-                    ->where(['hotel_id' => $user_data['hotel_id']])
+                    ->where('hotel_id' , $user_data['hotel_id'])
                     ->whereIn('type', [2,3])
                     ->get();
             }
