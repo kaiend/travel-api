@@ -100,15 +100,18 @@ class HotelController extends Controller
                     ->get();
             }
             $bdata=json_decode(json_encode($data),true);
-            if(!empty($bdata)){
-
+            if( count($bdata) != 0){
                 $final=ReturnMessage::toString($bdata);
-                return ReturnMessage::successData( $final);
+
+                return ReturnMessage::successData($final);
 
             }else{
-                return ReturnMessage::success('empty' ,'10011');
+                return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'data' => []
+                ]);
             }
-
 
         }catch(JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
