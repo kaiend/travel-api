@@ -51,7 +51,7 @@ class OrderController extends  Controller
                 default :
                     return ReturnMessage::success('订单类型未知' , '1006');
             }
-            if(!empty($data)){
+            if($data !== false && is_array($data)){
                 $bdata=json_decode(json_encode($data),true);
 
                 $final=ReturnMessage::toString($bdata);
