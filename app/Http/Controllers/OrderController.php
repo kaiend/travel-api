@@ -53,7 +53,7 @@ class OrderController extends  Controller
             }
             $bdata=json_decode(json_encode($data),true);
             var_dump($bdata);
-            if( count($arr) == 0){
+            if( count($bdata) != 0){
                 $final=ReturnMessage::toString($bdata);
 
                 return ReturnMessage::successData($final);
