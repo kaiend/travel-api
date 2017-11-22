@@ -38,12 +38,11 @@ class HotelController extends Controller
         $input = UserValidator::hotelLogin($request);
         $input['mobile'] =$input['phone'];
         unset($input['phone']);
-        $info = DB::table('hotel_user')->select('mobile','password','id')->where($input) ->first();
+        $info = DB::table('hotel_user')->where($input) ->first();
 
         if (!empty($info)){
             $info = json_decode(json_encode($info),true);
             $info['token'] = $this->token( $info['id'] );
-            unset($info['id']);
             return ReturnMessage::successData($info);
         }
 
@@ -88,6 +87,7 @@ class HotelController extends Controller
                     ->select('id','name','mobile','position','type')
                     ->where([
                         ['type' , 3] ,
+                        ['status'],
                         ['hotel_id' , $user_data['hotel_id']]
                     ])
                     ->get();
@@ -131,7 +131,16 @@ class HotelController extends Controller
                 return ReturnMessage::success('你是员工哦' ,'1010');
             }else if( $user_data['type'] == 2 ){
                 //管理者添加-----员工账号
-
+                DB::table('hotel_user')->insert(
+                    [
+                        'name' => $arr['name'],
+                        'mobile'=> $arr['phone'],
+                        'department'=>$arr['department'],
+                        'position'=> $arr['position'],
+                        'type'=> $arr['type'],
+                        'hotel_id' =>$user_data['hotel_id']
+                    ]
+                );
             }
 
         }catch(JWTException $e){
