@@ -51,14 +51,18 @@ class OrderController extends  Controller
                 default :
                     return ReturnMessage::success('订单类型未知' , '1006');
             }
-            var_dump($data);
+            $bdata=json_decode(json_encode($data),true);
             if(!empty($data)){
-                $bdata=json_decode(json_encode($data),true);
-
                 $final=ReturnMessage::toString($bdata);
 
                 return ReturnMessage::successData($final);
 
+            }else{
+                return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'data' => []
+                ]);
             }
         }catch (JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
