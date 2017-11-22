@@ -58,6 +58,11 @@ class OrderController extends  Controller
 
                 return ReturnMessage::successData($final);
             }else{
+                return response()->json([
+                    'code' => '1000',
+                    'info' => 'success',
+                    'data' => []
+                ]);
                 return ReturnMessage::success('没有订单' ,'1008');
             }
         }catch (JWTException $e){
