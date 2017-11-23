@@ -58,6 +58,11 @@ $api->version('v1', [
     //认证token
     $api->get('/authorization','HotelController@authToken');
 
+    //APP用车接口
+    $api->group(['prefix' => 'car'] , function(){
+        \Dingo\Api\Facade\Route::get('/list' ,'CarController@getSeries');
+        \Dingo\Api\Facade\Route::get('/detail/{pid}' ,'CarController@getCars');
+    });
 });
 
 
