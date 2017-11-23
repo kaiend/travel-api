@@ -133,6 +133,42 @@ class HotelController extends Controller
 
     }
 
+    public function uploadPhoto( Request $request )
+    {
+        $arr =$request->all();
+        try {
+            JWTAuth::parseToken()->getPayload();
+
+//            $image = $_FILES["photo"]["tmp_name"];
+//            $fp = fopen($image, "r");
+//            $xmlstr = fread($fp, $_FILES["photo"]["size"]); //二进制数据流
+            $xmlstr = $arr['photo'];
+            //保存地址
+            $img_dir ='./uploads/'. date("Ym")."/"; //新图片名称
+
+            if (! file_exists ( $img_dir )) {
+                mkdir ( "$img_dir", 0777, true );
+            }
+
+            //要生成的图片名字
+            $file_name = $img_dir.md5(time().mt_rand(10, 99)).".jpg";
+            $new_file = fopen($file_name,"w"); //打开文件准备写入
+            $re=fwrite($new_file,$xmlstr); //写入二进制流到文件
+            fclose($new_file); //关闭文件
+            if( $re ){
+                $data =[
+                    ['avatar' =>  $file_name]
+                ];
+                return ReturnMessage::successData($data);
+            }else{
+                return ReturnMessage::success('失败' ,'1011');
+            }
+        }catch(JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+
+
+    }
     /**
      * APP 个人账户-添加子账户
      * @param Request $request
@@ -166,7 +202,8 @@ class HotelController extends Controller
                                 'department'=>$arr['department'],
                                 'position'=> $arr['position'],
                                 'type'=> 3,
-                                'hotel_id' =>$user_data['hotel_id']
+                                'hotel_id' =>$user_data['hotel_id'],
+                                'avatar'   =>$arr['avatar']
                             ]
                         );
                         return ReturnMessage::success('success','1000');
@@ -181,7 +218,8 @@ class HotelController extends Controller
                                 'department'=>$arr['department'],
                                 'position'=> $arr['position'],
                                 'type'=> intval($arr['type']),
-                                'hotel_id' =>$user_data['hotel_id']
+                                'hotel_id' =>$user_data['hotel_id'],
+                                'avatar'   =>$arr['avatar']
                             ]
                         );
                         return ReturnMessage::success('success','1000');
@@ -217,7 +255,12 @@ class HotelController extends Controller
         }
     }
 
-
+    /**
+     * APP 个人账户-重置子账户密码
+     * @param $id
+     * @param Request $request
+     * @return \App\Helpers\json
+     */
     public function restPassword( $id, Request $request  )
     {
         $arr =$request->all();
@@ -234,6 +277,8 @@ class HotelController extends Controller
             return ReturnMessage::success('非法token' ,'1009');
         }
     }
+
+
     /**
      * Token认证接口
      * @return \App\Helpers\json

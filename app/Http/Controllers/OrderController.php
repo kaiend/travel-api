@@ -30,20 +30,24 @@ class OrderController extends  Controller
             }
             switch ($arr['type']){
                 case 'wait':
-                    $data = DB::table('order')->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')->where([
+                    $data = DB::table('order')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
+                        ->where([
                         ['status','=',1],
                         ['user_id','=',$id],
                     ])->get();
 
                     break;
                 case 'doing':
-                    $data = DB::table('order')->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
+                    $data = DB::table('order')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
                         ->where('user_id','=',$id)
                         ->whereIn('status', [2,3,4,5,6,7,8])
                         ->get();
                     break;
                 case 'done' :
-                    $data = DB::table('order')->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
+                    $data = DB::table('order')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
                         ->where('user_id','=',$id )
                         ->whereIn('status', [0,9])
                         ->get();
@@ -70,11 +74,14 @@ class OrderController extends  Controller
         }
 
     }
-
-    //APP 取消订单
+    /**
+     * APP 取消订单
+     * @param $id
+     * @return \App\Helpers\json
+     */
     public function cancelOrder( $id )
     {
-        intval($id);
+        $id=intval($id);
         $re = DB::table('order')->where('id',$id)->value('user_id');
         try{
             $user = JWTAuth::parseToken()->getPayload();
@@ -91,5 +98,39 @@ class OrderController extends  Controller
 
         return  ReturnMessage::success('订单取消成功', '1000');
     }
+
+    /**
+     * APP订单详情
+     * @param $id
+     * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
+     */
+
+    public function getDetail( $id )
+    {
+        $id = intval( $id ) ;
+        try {
+            JWTAuth::parseToken()->getPayload();
+            $data=DB::table('order')
+                ->where('id',$id)
+                ->get();
+            $bdata=json_decode(json_encode($data),true);
+
+            if( count($bdata) != 0){
+                $final=ReturnMessage::toString($bdata);
+
+                return ReturnMessage::successData($final);
+
+            }else{
+                return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'data' => []
+                ]);
+            }
+        }catch (JWTException $e){
+                return ReturnMessage::success('非法token' ,'1009');
+        }
+    }
+
 
 }

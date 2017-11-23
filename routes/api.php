@@ -39,8 +39,12 @@ $api->version('v1', [
 
     //APP订单接口
     $api->group(['prefix' => 'order'] , function(){
+        //APP订单列表
         \Dingo\Api\Facade\Route::get('/list' ,'OrderController@getList');
+        //APP取消订单
         \Dingo\Api\Facade\Route::get('/cancel/{id}' ,'OrderController@cancelOrder');
+        //APP订单详情
+        \Dingo\Api\Facade\Route::get('/detail/{id}' ,'OrderController@getDetail');
     });
 
     //APP个人中心
@@ -48,12 +52,15 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::get('/account' ,'HotelController@getAccount');
         //子账户列表
         \Dingo\Api\Facade\Route::get('/list' ,'HotelController@getList');
+        //子账户--上传照片的接口
+        \Dingo\Api\Facade\Route::post('/avatar' ,'HotelController@uploadPhoto');
         //添加子账户
         \Dingo\Api\Facade\Route::post('/child' ,'HotelController@addChild');
         //禁用子账户
         \Dingo\Api\Facade\Route::patch('/disable/{id}' ,'HotelController@stopChild');
         //修改子账户密码
         \Dingo\Api\Facade\Route::post('/reset/{id}' ,'HotelController@restPassword');
+
     });
     //认证token
     $api->get('/authorization','HotelController@authToken');
