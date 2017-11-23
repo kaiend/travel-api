@@ -47,7 +47,7 @@ class CarController extends Controller
 
         if( count($bdata) != 0){
             $bdata[0]['image'] ='http://travel.shidaichuxing.com/upload/'.$bdata[0]['image'];
-            $bdata[0]['fee']   = 220;
+            $bdata[0]['fee']   = 670;
             $final=ReturnMessage::toString($bdata);
 
             return ReturnMessage::successData($final);

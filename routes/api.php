@@ -60,7 +60,9 @@ $api->version('v1', [
 
     //APP用车接口
     $api->group(['prefix' => 'car'] , function(){
+        //APP选车型
         \Dingo\Api\Facade\Route::get('/list' ,'CarController@getSeries');
+        //App车系详情
         \Dingo\Api\Facade\Route::get('/detail/{pid}' ,'CarController@getCars');
     });
 });
