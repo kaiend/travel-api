@@ -45,6 +45,13 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::get('/cancel/{id}' ,'OrderController@cancelOrder');
         //APP订单详情
         \Dingo\Api\Facade\Route::get('/detail/{id}' ,'OrderController@getDetail');
+
+        //APP首页---特殊路线
+        \Dingo\Api\Facade\Route::get('/special/list' ,'OrderController@showList');
+        //APP首页---特殊路线详情
+        \Dingo\Api\Facade\Route::get('/special/{id}' ,'OrderController@getSpecial');
+        //APP首页---特殊路线下单
+        \Dingo\Api\Facade\Route::post('/special' ,'OrderController@sendSpecial');
     });
 
     //APP个人中心

@@ -9,7 +9,9 @@
 namespace App\Http\Controllers;
 
 
+use App\Helpers\Common;
 use App\Helpers\ReturnMessage;
+use App\Http\Validators\OrderValidator;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -132,5 +134,106 @@ class OrderController extends  Controller
         }
     }
 
+    /**
+     * App 用车--特殊路线列表
+     * @return \Illuminate\Http\JsonResponse|mixed
+     */
+    public  function  showList( )
+    {
+//        $arr = $request->all();
+        $id=30;
+//        try {
+//            JWTAuth::parseToken()->getPayload();
+            //查询该一级服务下的服务详情
+            $data = DB::table('server_item')
+                ->select('id','parent_id','name')
+                ->where( 'parent_id',$id)
+                ->get();
+
+            $bdata=json_decode(json_encode($data),true);
+
+            if( count($bdata) != 0){
+                $final=ReturnMessage::toString($bdata);
+
+                return ReturnMessage::successData($final);
+
+            }else{
+                return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'data' => []
+                ]);
+            }
+//        }catch (JWTException $e){
+//            return ReturnMessage::success('非法token' ,'1009');
+//        }
+    }
+
+    /**
+     * 特殊线路详情
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|mixed
+     */
+
+    public function getSpecial( $id )
+    {
+        $id=intval($id);
+        $data = DB::table('charges_rule')
+                ->select('id','price','place_go','place_end','cars_id')
+                ->where([
+                    ['service_id', $id],
+                    ['type', 4]
+                ])
+                ->get();
+        $bdata=json_decode(json_encode($data),true);
+
+        if( count($bdata) != 0){
+            $final=ReturnMessage::toString($bdata);
+
+            return ReturnMessage::successData($final);
+
+        }else{
+            return response()->json([
+                'code' =>'1000',
+                'info' => 'success',
+                'data' => []
+            ]);
+        };
+    }
+
+    public function sendSpecial( Request $request )
+    {
+        $arr = OrderValidator::sendSpecial($request);
+        return $arr;
+        try{
+//            $user=JWTAuth::parseToken()->getPayload();
+//        $id = $user['foo'];
+            //查询当前用户的酒店ID和type
+//        $user_data= Hotel::getUserFirst($id);
+            //查询
+            $re = DB::table('order')->insert(
+                [
+                    'appointment' => $arr['time'],
+                    'passenger_name' => $arr['name'],
+                    'passenger_phone' => $arr['phone'],
+                    'passenger_people' => $arr['people'],
+                    'room_number' => $arr['room_number'],
+                    'order_number' =>Common::createNumber(),
+                    'remarks' => $arr['remarks'],
+                    'car_id'  => $arr['car_id'],
+                    'created_at'  =>time(),
+//                'orders_name' => $user_data['orders_name']
+//                'orders_phone' => $user_data['orders_phone']
+//                'user_id' =>$user_data['user_id'],
+//                'hotel_id'  =>$user_data['hotel_id']
+
+                ]
+            );
+
+        }catch(JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+
+    }
 
 }
