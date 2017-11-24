@@ -142,8 +142,8 @@ class OrderController extends  Controller
     {
 //        $arr = $request->all();
         $id=30;
-//        try {
-//            JWTAuth::parseToken()->getPayload();
+        try {
+            JWTAuth::parseToken()->getPayload();
             //查询该一级服务下的服务详情
             $data = DB::table('server_item')
                 ->select('id','parent_id','name')
@@ -164,9 +164,9 @@ class OrderController extends  Controller
                     'data' => []
                 ]);
             }
-//        }catch (JWTException $e){
-//            return ReturnMessage::success('非法token' ,'1009');
-//        }
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
     }
 
     /**
