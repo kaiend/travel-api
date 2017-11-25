@@ -10,6 +10,8 @@ namespace App\Http\Controllers;
 
 
 use App\Helpers\ReturnMessage;
+use App\Http\Validators\CarValidator;
+use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CarController extends Controller
@@ -33,24 +35,23 @@ class CarController extends Controller
     }
 
 
-    public function getCars( $pid )
+    public function getCars( Request $request )
     {
 
-        $data = DB::table('car_series')
-            ->where([
-                ['parent_id' , intval( $pid ) ],
-                ['status',1]
-            ])
-            ->select("id","series_name","sort","image","status")
+        $arr = CarValidator::userCar($request);
+
+        $data = DB::table('charges_rule')
+            ->join('car_series','charges_rule.cars_id','=','car_series.id')
+            ->where('charges_rule.service_id',$arr['type'])
+            ->select('type','price','cars_id','service_id','series_name','image','status','parent_id')
             ->get();
-        $bdata = json_decode(json_encode($data),true);
+        $bdata=json_decode(json_encode($data),true);
 
         if( count($bdata) != 0){
             $bdata[0]['image'] ='http://travel.shidaichuxing.com/upload/'.$bdata[0]['image'];
-            $bdata[0]['fee']   = 670;
             $final=ReturnMessage::toString($bdata);
 
-            return ReturnMessage::successData($final);
+            return ReturnMessage::successData([$final]);
 
         }else{
             return response()->json([
@@ -61,5 +62,4 @@ class CarController extends Controller
         }
 
     }
-
 }

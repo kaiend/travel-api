@@ -54,9 +54,15 @@ class OrderValidator
         return $input;
     }
 
+    /**
+     * 按时包车--验证
+     * 终点可不填写
+     * @param Request $request
+     * @return array
+     */
     public static function sendPackage( Request $request )
     {
-        $only = ['time','name','phone','people','room_number','remarks','car_id','type','price'];
+        $only = ['time','name','phone','people','room_number','remarks','car_id','type','price','end','origin'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
@@ -64,9 +70,10 @@ class OrderValidator
             'name'=>'required',
             'people'=>'required',
             'room_number'=>'required',
-            'type' =>'required',
+            'origin' =>'required',
             'car_id' =>'required',
-            'price' =>'required'
+            'price' =>'required',
+            'type' =>'required',
         ];
 
         $messages = [
@@ -77,9 +84,9 @@ class OrderValidator
             'people.required'=>'乘车人数不能为空',
             'room_number.required'=>'房间号不能为空',
             'car_id.required' =>'车辆不能为空',
-            'end.required' =>'终点不能为空',
             'origin.required' =>'起点不能为空',
-            'price.required' =>'车费不能为空'
+            'price.required' =>'车费不能为空',
+            'type.required'  => '服务类型不能为空'
         ];
 
         $input = $request->only($only);

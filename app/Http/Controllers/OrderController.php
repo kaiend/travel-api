@@ -216,11 +216,11 @@ class OrderController extends  Controller
     {
         $arr = OrderValidator::sendSpecial($request);
 
-        try{
-            $user=JWTAuth::parseToken()->getPayload();
-            $id = $user['foo'];
+//        try{
+//            $user=JWTAuth::parseToken()->getPayload();
+//            $id = $user['foo'];
             //查询当前用户的酒店ID和type
-            $user_data= Hotel::getUserFirst($id);
+            $user_data= Hotel::getUserFirst(12);
             //查询
             $re = DB::table('order')->insert(
                 [
@@ -250,9 +250,9 @@ class OrderController extends  Controller
                 return ReturnMessage::success( '失败','1011');
             }
 
-        }catch(JWTException $e){
-            return ReturnMessage::success('非法token' ,'1009');
-        }
+//        }catch( JWTException $e){
+//            return ReturnMessage::success('非法token' ,'1009');
+//        }
 
     }
 
@@ -290,8 +290,53 @@ class OrderController extends  Controller
         }
     }
 
-    public function sendPackage( Request $request)
+    /**
+     * APP 按时包车---下单
+     * @param Request $request
+     * @return \App\Helpers\json
+     */
+    public function sendPackage( Request $request )
     {
+        $arr = OrderValidator::sendPackage( $request );
+
+        try{
+            $user=JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+            //查询当前用户的酒店ID和type
+            $user_data= Hotel::getUserFirst($id);
+            //查询
+            $re = DB::table('order')->insert(
+                [
+                    'appointment' => $arr['time'],
+                    'passenger_name' => $arr['name'],
+                    'passenger_phone' => $arr['phone'],
+                    'passenger_people' => $arr['people'],
+                    'room_number' => $arr['room_number'],
+                    'order_number' =>Common::createNumber(),
+                    'remarks' => $arr['remarks'],
+                    'car_id'  => $arr['car_id'],
+                    'created_at'  =>time(),
+                    'end' => '',
+                    'origin' => $arr['origin'],
+                    'price' => $arr['price'],
+                    'type' =>  $arr['type'],
+                    'orders_name' => $user_data['name'],
+                    'orders_phone' => $user_data['mobile'],
+                    'user_id' =>$user_data['id'],
+                    'hotel_id'  =>$user_data['hotel_id']
+
+                ]
+            );
+            if($re){
+                return ReturnMessage::success();
+            }else{
+                return ReturnMessage::success( '失败','1011');
+            }
+
+        }catch(JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
 
     }
+
 }
