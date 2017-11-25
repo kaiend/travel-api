@@ -236,7 +236,7 @@ class OrderController extends  Controller
                     'end' => $arr['end'],
                     'origin' => $arr['origin'],
                     'price' => $arr['price'],
-                    'type' => 3,
+                    'type' =>  $arr['type'],
                     'orders_name' => $user_data['name'],
                     'orders_phone' => $user_data['mobile'],
                     'user_id' =>$user_data['id'],
@@ -256,4 +256,42 @@ class OrderController extends  Controller
 
     }
 
+    /**
+     * APP 按时包车---套餐
+     * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
+     */
+    public function getPackage()
+    {
+        $id = 21;
+        try {
+            JWTAuth::parseToken()->getPayload();
+            //查询该一级服务下的服务详情
+            $data = DB::table('server_item')
+                ->select('id', 'parent_id', 'name')
+                ->where('parent_id', $id)
+                ->get();
+
+            $bdata = json_decode(json_encode($data), true);
+
+            if (count($bdata) != 0) {
+                $final = ReturnMessage::toString($bdata);
+
+                return ReturnMessage::successData($final);
+
+            } else {
+                return response()->json([
+                    'code' => '1000',
+                    'info' => 'success',
+                    'data' => []
+                ]);
+            }
+        } catch (JWTException $e) {
+            return ReturnMessage::success('非法token', '1009');
+        }
+    }
+
+    public function sendPackage( Request $request)
+    {
+
+    }
 }

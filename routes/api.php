@@ -52,6 +52,10 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::get('/special/{id}' ,'OrderController@getSpecial');
         //APP首页---特殊路线下单
         \Dingo\Api\Facade\Route::post('/special' ,'OrderController@sendSpecial');
+        //APP按时包车---套餐
+        \Dingo\Api\Facade\Route::get('/chartered' ,'OrderController@getPackage');
+        //APP按时包车---下单
+        \Dingo\Api\Facade\Route::post('/chartered' ,'OrderController@sendPackage');
     });
 
     //APP个人中心
