@@ -216,9 +216,9 @@ class OrderController extends  Controller
     {
         $arr = OrderValidator::sendSpecial($request);
 
-//        try{
-//            $user=JWTAuth::parseToken()->getPayload();
-//            $id = $user['foo'];
+        try{
+            $user=JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
             //查询当前用户的酒店ID和type
             $user_data= Hotel::getUserFirst(12);
             //查询
@@ -250,9 +250,9 @@ class OrderController extends  Controller
                 return ReturnMessage::success( '失败','1011');
             }
 
-//        }catch( JWTException $e){
-//            return ReturnMessage::success('非法token' ,'1009');
-//        }
+        }catch( JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
 
     }
 
