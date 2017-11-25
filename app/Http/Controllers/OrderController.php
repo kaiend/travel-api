@@ -12,6 +12,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Common;
 use App\Helpers\ReturnMessage;
 use App\Http\Validators\OrderValidator;
+use App\Models\Hotel;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -178,38 +179,48 @@ class OrderController extends  Controller
     public function getSpecial( $id )
     {
         $id=intval($id);
-        $data = DB::table('charges_rule')
-                ->select('id','price','place_go','place_end','cars_id')
-                ->where([
-                    ['service_id', $id],
-                    ['type', 4]
-                ])
-                ->get();
-        $bdata=json_decode(json_encode($data),true);
+        try {
+            JWTAuth::parseToken()->getPayload();
+            $data = DB::table('charges_rule')
+                    ->select('place_go','place_end')
+                    ->where([
+                        ['service_id', $id],
+                        ['type', 4]
+                    ])
+                    ->first();
+            $bdata=json_decode(json_encode($data),true);
 
-        if( count($bdata) != 0){
-            $final=ReturnMessage::toString($bdata);
+            if( count($bdata) != 0){
+                $final=ReturnMessage::toString($bdata);
 
-            return ReturnMessage::successData($final);
+                return ReturnMessage::successData([$final]);
 
-        }else{
-            return response()->json([
-                'code' =>'1000',
-                'info' => 'success',
-                'data' => []
-            ]);
-        };
+            }else{
+                return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'data' => []
+                ]);
+            }
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
     }
 
+    /**
+     * 特殊路线下单
+     * @param Request $request
+     * @return \App\Helpers\json
+     */
     public function sendSpecial( Request $request )
     {
         $arr = OrderValidator::sendSpecial($request);
-        return $arr;
+
         try{
-//            $user=JWTAuth::parseToken()->getPayload();
-//        $id = $user['foo'];
+            $user=JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
             //查询当前用户的酒店ID和type
-//        $user_data= Hotel::getUserFirst($id);
+            $user_data= Hotel::getUserFirst($id);
             //查询
             $re = DB::table('order')->insert(
                 [
@@ -222,13 +233,22 @@ class OrderController extends  Controller
                     'remarks' => $arr['remarks'],
                     'car_id'  => $arr['car_id'],
                     'created_at'  =>time(),
-//                'orders_name' => $user_data['orders_name']
-//                'orders_phone' => $user_data['orders_phone']
-//                'user_id' =>$user_data['user_id'],
-//                'hotel_id'  =>$user_data['hotel_id']
+                    'end' => $arr['end'],
+                    'origin' => $arr['origin'],
+                    'price' => $arr['price'],
+                    'type' => 3,
+                    'orders_name' => $user_data['name'],
+                    'orders_phone' => $user_data['mobile'],
+                    'user_id' =>$user_data['id'],
+                    'hotel_id'  =>$user_data['hotel_id']
 
                 ]
             );
+            if($re){
+                return ReturnMessage::success();
+            }else{
+                return ReturnMessage::success( '失败','1011');
+            }
 
         }catch(JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
