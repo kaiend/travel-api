@@ -189,7 +189,8 @@ class OrderController extends  Controller
                     ])
                     ->first();
             $bdata=json_decode(json_encode($data),true);
-
+            $bdata['position_s'] = '116.41671,39.915267' ;
+            $bdata['position_e'] = '116.016033,40.364233' ;
             if( count($bdata) != 0){
                 $final=ReturnMessage::toString($bdata);
 
@@ -217,9 +218,12 @@ class OrderController extends  Controller
         $arr = OrderValidator::sendSpecial($request);
         try{
             $user=JWTAuth::parseToken()->getPayload();
+
             $id = $user['foo'];
             //查询当前用户的酒店ID和type
             $user_data= Hotel::getUserFirst($id);
+
+
             //查询
             $re = DB::table('order')->insert(
                 [
@@ -303,6 +307,18 @@ class OrderController extends  Controller
             $id = $user['foo'];
             //查询当前用户的酒店ID和type
             $user_data= Hotel::getUserFirst($id);
+            switch (intval( $arr['pid'] )){
+                case  21:
+                    $type = $arr['type'];break;
+
+                case 31:
+                    $type = 31;break;
+                case 32 :
+                    $type = 32; break;
+                default:
+                    return ReturnMessage::success('失败','1011');
+
+            }
             //查询
             $re = DB::table('order')->insert(
                 [
@@ -317,8 +333,10 @@ class OrderController extends  Controller
                     'created_at'  =>time(),
                     'end' => '',
                     'origin' => $arr['origin'],
+                    'end_position' => $arr['end_position'],
+                    'origin_position' => $arr['origin_position'],
                     'price' => $arr['price'],
-                    'type' =>  $arr['type'],
+                    'type' =>  $type,
                     'orders_name' => $user_data['name'],
                     'orders_phone' => $user_data['mobile'],
                     'user_id' =>$user_data['id'],

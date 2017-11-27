@@ -137,32 +137,48 @@ class HotelController extends Controller
     {
         $arr =$request->all();
         try {
-            JWTAuth::parseToken()->getPayload();
-
+            $user=JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+            //查询当前用户的酒店ID和type
+            $user_data= Hotel::getUserFirst($id);
 //            $image = $_FILES["photo"]["tmp_name"];
 //            $fp = fopen($image, "r");
 //            $xmlstr = fread($fp, $_FILES["photo"]["size"]); //二进制数据流
             $xmlstr = $arr['photo'];
-            //保存地址
-            $img_dir ='./uploads/'. date("Ym")."/"; //新图片名称
 
-            if (! file_exists ( $img_dir )) {
-                mkdir ( "$img_dir", 0777, true );
-            }
+            //更新到用户的头像中
+            if(!empty($user_data['avatar'])){
 
-            //要生成的图片名字
-            $file_name = $img_dir.md5(time().mt_rand(10, 99)).".jpg";
-            $new_file = fopen($file_name,"w"); //打开文件准备写入
-            $re=fwrite($new_file,$xmlstr); //写入二进制流到文件
-            fclose($new_file); //关闭文件
-            if( $re ){
-                $data =[
-                    ['avatar' =>  $file_name]
-                ];
-                return ReturnMessage::successData($data);
+                $new_file = fopen($user_data['avatar'],"w"); //打开文件准备写入
+                fwrite($new_file,$xmlstr); //写入二进制流到文件
+                fclose($new_file); //关闭文件
+
             }else{
-                return ReturnMessage::success('失败' ,'1011');
+
+                //保存地址
+                $img_dir ='./uploads/'. date("Ym")."/"; //新图片名称
+
+                if (! file_exists ( $img_dir )) {
+
+                    mkdir ( "$img_dir", 0777, true );
+                }
+
+                //要生成的图片名字
+                $file_name = $img_dir.md5(time().mt_rand(10, 99)).".jpg";
+                $new_file = fopen($file_name,"w"); //打开文件准备写入
+                fwrite($new_file,$xmlstr); //写入二进制流到文件
+                fclose($new_file); //关闭文件
+
+                //插入用户的头像（无头像）
+                $re = DB::table('hotel_user')->where('id',$id)->update(['avatar' =>$file_name]);
+                if($re){
+                    return ReturnMessage::success();
+                }else{
+                    return ReturnMessage::success('失败','1011');
+                }
             }
+            return ReturnMessage::success();
+//
         }catch(JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
         }
@@ -185,6 +201,7 @@ class HotelController extends Controller
             //手机号来做唯一限制
             $mobile = $arr['phone'];
             $c_id=DB::table('hotel_user') -> where('mobile',$mobile) ->value( 'id' );
+            $avatar = self::makePhoto($arr['avatar']);
             if( $c_id ){
                 return ReturnMessage::success('账户已被占用','1008');
             }else{
@@ -203,7 +220,7 @@ class HotelController extends Controller
                                 'position'=> $arr['position'],
                                 'type'=> 3,
                                 'hotel_id' =>$user_data['hotel_id'],
-                                'avatar'   =>$arr['avatar']
+                                'avatar'   =>$avatar
                             ]
                         );
                         return ReturnMessage::success('success','1000');
@@ -219,7 +236,7 @@ class HotelController extends Controller
                                 'position'=> $arr['position'],
                                 'type'=> intval($arr['type']),
                                 'hotel_id' =>$user_data['hotel_id'],
-                                'avatar'   =>$arr['avatar']
+                                'avatar'   =>$avatar
                             ]
                         );
                         return ReturnMessage::success('success','1000');
@@ -231,6 +248,30 @@ class HotelController extends Controller
         }catch(JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
         }
+    }
+
+    private static  function makePhoto( $avatar )
+    {
+       //传入二进制数据流
+        //保存地址
+        $img_dir ='./uploads/'. date("Ym")."/"; //新图片名称
+
+        if (! file_exists ( $img_dir )) {
+
+            mkdir ( "$img_dir", 0777, true );
+        }
+
+        //要生成的图片名字
+        $file_name = $img_dir.md5(time().mt_rand(10, 99)).".jpg";
+        $new_file = fopen($file_name,"w"); //打开文件准备写入
+        $re = fwrite($new_file, $avatar ); //写入二进制流到文件
+        fclose($new_file); //关闭文件
+        if( $re ){
+            return $file_name;
+        }else{
+            return '';
+        }
+
     }
 
     /**
