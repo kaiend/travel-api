@@ -215,7 +215,7 @@ class OrderController extends  Controller
     public function sendSpecial( Request $request )
     {
         $arr = OrderValidator::sendSpecial($request);
-
+        return $_SERVER['REQUEST_URI'];
         try{
             $user=JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
