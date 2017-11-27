@@ -135,50 +135,29 @@ class HotelController extends Controller
 
     public function uploadPhoto( Request $request )
     {
-        $arr =$request->all();
+
         try {
             $user=JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
-            //查询当前用户的酒店ID和type
-            $user_data= Hotel::getUserFirst($id);
-//            $image = $_FILES["photo"]["tmp_name"];
-//            $fp = fopen($image, "r");
-//            $xmlstr = fread($fp, $_FILES["photo"]["size"]); //二进制数据流
-            $xmlstr = $arr['photo'];
+            $file = $request->file('avatar');
 
-            //更新到用户的头像中
-            if(!empty($user_data['avatar'])){
-
-                $new_file = fopen($user_data['avatar'],"w"); //打开文件准备写入
-                fwrite($new_file,$xmlstr); //写入二进制流到文件
-                fclose($new_file); //关闭文件
-
-            }else{
-
-                //保存地址
-                $img_dir ='./uploads/'. date("Ym")."/"; //新图片名称
-
-                if (! file_exists ( $img_dir )) {
-
-                    mkdir ( "$img_dir", 0777, true );
-                }
-
-                //要生成的图片名字
-                $file_name = $img_dir.md5(time().mt_rand(10, 99)).".jpg";
-                $new_file = fopen($file_name,"w"); //打开文件准备写入
-                fwrite($new_file,$xmlstr); //写入二进制流到文件
-                fclose($new_file); //关闭文件
-
-                //插入用户的头像（无头像）
-                $re = DB::table('hotel_user')->where('id',$id)->update(['avatar' =>$file_name]);
-                if($re){
-                    return ReturnMessage::success();
-                }else{
+            if( $file ){
+                $file_path ='./uploads/'. date("Ym")."/";
+                $extension = $file->getClientOriginalExtension();
+                $file_name =md5(time().mt_rand(10, 99)).'.'.$extension;
+                $info = $file->move($file_path ,$file_name);
+                if (!$info) {
+                    $error = $file->getError();
                     return ReturnMessage::success('失败','1011');
                 }
+                $data['avatar'] = $file_path.$file_name;
             }
-            return ReturnMessage::success();
-//
+            //写入数据库
+            return response()->json([
+                'code' => '1000',
+                'info' =>  'success',
+                'data' =>$data['avatar']
+            ]);
         }catch(JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
         }
