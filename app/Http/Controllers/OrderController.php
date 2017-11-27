@@ -215,12 +215,11 @@ class OrderController extends  Controller
     public function sendSpecial( Request $request )
     {
         $arr = OrderValidator::sendSpecial($request);
-        return $_SERVER['REQUEST_URI'];
         try{
             $user=JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
             //查询当前用户的酒店ID和type
-            $user_data= Hotel::getUserFirst(12);
+            $user_data= Hotel::getUserFirst($id);
             //查询
             $re = DB::table('order')->insert(
                 [
