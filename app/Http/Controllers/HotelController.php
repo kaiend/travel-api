@@ -292,7 +292,7 @@ class HotelController extends Controller
         try{
             JWTAuth::parseToken()->getPayload();
             $password=Common::createPassword($arr['password']);
-            $re = DB::table('hotel_user') ->where('id',intval($id))->update('password',$password);
+            $re = DB::table('hotel_user') ->where('id',intval($id))->update(['password'=>$password]);
             if( $re ){
                 return ReturnMessage::success();
             }else{
