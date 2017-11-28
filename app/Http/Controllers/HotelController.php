@@ -192,7 +192,7 @@ class HotelController extends Controller
             //手机号来做唯一限制
             $mobile = $arr['phone'];
             $c_id=DB::table('hotel_user') -> where('mobile',$mobile) ->value( 'id' );
-            $avatar = self::makePhoto($arr['avatar']);
+            $avatar = self::makePhoto($request);
             if( $c_id ){
                 return ReturnMessage::success('账户已被占用','1008');
             }else{
@@ -241,28 +241,21 @@ class HotelController extends Controller
         }
     }
 
-    private static  function makePhoto( $avatar )
+    private static  function makePhoto(Request $request )
     {
-       //传入二进制数据流
-        //保存地址
-        $img_dir ='./uploads/'. date("Ym")."/"; //新图片名称
+        $file = $request->file('avatar');
 
-        if (! file_exists ( $img_dir )) {
-
-            mkdir ( "$img_dir", 0777, true );
+        if ($file) {
+            $file_path = 'uploads/' . date("Ym") . "/";
+            $extension = $file->getClientOriginalExtension();
+            $file_name = md5(time() . mt_rand(10, 99)) . '.' . $extension;
+            $info = $file->move($file_path, $file_name);
+            if (!$info) {
+                //$error = $file->getError();
+                return ReturnMessage::success('失败', '1011');
+            }
+            return $data['avatar'] = $file_path . $file_name;
         }
-
-        //要生成的图片名字
-        $file_name = $img_dir.md5(time().mt_rand(10, 99)).".jpg";
-        $new_file = fopen($file_name,"w"); //打开文件准备写入
-        $re = fwrite($new_file, $avatar ); //写入二进制流到文件
-        fclose($new_file); //关闭文件
-        if( $re ){
-            return $file_name;
-        }else{
-            return '';
-        }
-
     }
 
     /**
