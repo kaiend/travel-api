@@ -113,9 +113,20 @@ class HotelController extends Controller
             }
             $bdata=json_decode(json_encode($data),true);
             if( count($bdata) != 0){
-                $final=ReturnMessage::toString($bdata);
+//                $final=ReturnMessage::toString($bdata);
+                $final=[];
+                foreach( $bdata as $k => $v){
+                    $final[$k]=$v;
+                    if(!empty($v['avatar'])){
 
-                return ReturnMessage::successData($final);
+                        $final[$k]['avatar'] ='http://travel-api.times-vip.com/'.$v['avatar'];
+                    }else{
+                        $final[$k]['avatar'] =$v['avatar'];
+                    }
+                }
+
+
+                return ReturnMessage::successData( $final);
 
             }else{
                 return response()->json([
