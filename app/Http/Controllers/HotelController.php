@@ -139,10 +139,13 @@ class HotelController extends Controller
         try {
             $user=JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
+
+            $user_data =Hotel::getUserFirst( $id );
+
             $file = $request->file('avatar');
 
             if( $file ){
-                $file_path ='./uploads/'. date("Ym")."/";
+                $file_path ='uploads/'. date("Ym")."/";
                 $extension = $file->getClientOriginalExtension();
                 $file_name =md5(time().mt_rand(10, 99)).'.'.$extension;
                 $info = $file->move($file_path ,$file_name);
@@ -151,13 +154,22 @@ class HotelController extends Controller
                     return ReturnMessage::success('失败','1011');
                 }
                 $data['avatar'] = $file_path.$file_name;
+                $re = DB::table('hotel_user') ->where('id',$id) -> update(['avatar'=>$data['avatar']]);
+
+                if( $re ){
+                    return response()->json([
+                        'code' => '1000',
+                        'info' =>  'success',
+                        'data' =>'http://travel-api.times-vip.com'.$data['avatar']
+                    ]);
+                }else{
+                    return ReturnMessage::success('失败','1011');
+                }
+
+            }else{
+                return ReturnMessage::success('失败','1011');
             }
-            //写入数据库
-            return response()->json([
-                'code' => '1000',
-                'info' =>  'success',
-                'data' =>$data['avatar']
-            ]);
+
         }catch(JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
         }
