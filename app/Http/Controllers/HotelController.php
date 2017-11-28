@@ -96,7 +96,7 @@ class HotelController extends Controller
             }else if( $user_data['type'] == 2 ){
                 //管理者查询 -----员工账号
                 $data = DB::table('hotel_user')
-                    ->select('id','name','mobile','position','type')
+                    ->select('id','name','mobile','position','type','avatar')
                     ->where([
                         ['status' ,1],
                         ['hotel_id' , $user_data['hotel_id']]
@@ -106,7 +106,7 @@ class HotelController extends Controller
             }else{
 
                 $data = DB::table('hotel_user')
-                    ->select('id','name','mobile','position','type')
+                    ->select('id','name','mobile','position','type','avatar')
                     ->where('hotel_id' , $user_data['hotel_id'])
                     ->whereIn('type', [2,3,4])
                     ->get();
@@ -332,8 +332,7 @@ class HotelController extends Controller
 
     public  function destroy()
     {
-       $re=  \Auth::logout();
-       print_r($re);
+
     }
     public function test()
     {
