@@ -63,17 +63,13 @@ class HotelController extends Controller
         $input['mobile'] = $input['phone'];
         unset($input['phone']);
         $data['password'] = '';
-        print_r('dd');
-        try {
 
-            $data = DB::table('hotel_user')->where('mobile','=',$input['mobile'])->get();
-            
-            $info = json_decode(json_encode($data),true);
-            $info['token'] = $this->token( $info['id'] );
-            return ReturnMessage::successData($info);
-        } catch (\Exception $e) {
-            return ReturnMessage::success('修改密码失败',1011);
-        }
+        $data = DB::table('hotel_user')->where('mobile','=',$input['mobile'])->get();
+        print_r( $data );
+        $info = json_decode(json_encode($data),true);
+        $info['token'] = $this->token( $info['id'] );
+        return ReturnMessage::successData($info);
+
 
 
     }
