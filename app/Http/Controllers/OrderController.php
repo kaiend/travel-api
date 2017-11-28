@@ -77,6 +77,69 @@ class OrderController extends  Controller
         }
 
     }
+
+
+
+    //APP订单列表
+    public function getHotelList( Request $request)
+    {
+        //获取订单的类型type
+        $arr =$request->all();
+        try{
+            $user = JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+            $user_data = Hotel::getUserFirst($id);
+            //酒店id
+            $hid =  $user_data['hotel_id'];
+            if( empty($arr['type']) ){
+                return ReturnMessage::success('缺少订单参数' , '1005');
+            }
+            switch ($arr['type']){
+                case 'wait':
+                    $data = DB::table('order')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
+                        ->where([
+                            ['status','=',1],
+                            ['hotel_id','=',$hid],
+                        ])->get();
+
+                    break;
+                case 'doing':
+                    $data = DB::table('order')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
+                        ->where('hotel_id','=',$hid)
+                        ->whereIn('status', [2,3,4,5,6,7,8])
+                        ->get();
+                    break;
+                case 'done' :
+                    $data = DB::table('order')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
+                        ->where('hotel_id','=',$hid )
+                        ->whereIn('status', [0,9])
+                        ->get();
+                    break;
+                default :
+                    return ReturnMessage::success('订单类型未知' , '1006');
+            }
+            $bdata=json_decode(json_encode($data),true);
+
+            if( count($bdata) != 0){
+                $final=ReturnMessage::toString($bdata);
+
+                return ReturnMessage::successData($final);
+
+            }else{
+                return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'data' => []
+                ]);
+            }
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+
+    }
     /**
      * APP 取消订单
      * @param $id

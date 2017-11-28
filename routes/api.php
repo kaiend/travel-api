@@ -39,8 +39,10 @@ $api->version('v1', [
 
     //APP订单接口
     $api->group(['prefix' => 'order'] , function(){
-        //APP订单列表
+        //APP订单列表(我的订单)
         \Dingo\Api\Facade\Route::get('/list' ,'OrderController@getList');
+        //APP订单列表(酒店订单)
+        \Dingo\Api\Facade\Route::get('/hotel/list' ,'OrderController@getHotelList');
         //APP取消订单
         \Dingo\Api\Facade\Route::get('/cancel/{id}' ,'OrderController@cancelOrder');
         //APP订单详情

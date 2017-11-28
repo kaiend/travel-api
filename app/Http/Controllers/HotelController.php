@@ -160,7 +160,7 @@ class HotelController extends Controller
                     return response()->json([
                         'code' => '1000',
                         'info' =>  'success',
-                        'data' =>'http://travel-api.times-vip.com'.$data['avatar']
+                        'data' =>'http://travel-api.times-vip.com/'.$data['avatar']
                     ]);
                 }else{
                     return ReturnMessage::success('失败','1011');
