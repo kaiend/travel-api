@@ -123,6 +123,7 @@ class HotelController extends Controller
                     }else{
                         $final[$k]['avatar'] =$v['avatar'];
                     }
+
                 }
 
 
