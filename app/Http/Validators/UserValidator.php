@@ -302,4 +302,74 @@ class UserValidator
 
         return $input;
     }
+
+    /**
+     * 添加子账户的验证
+     * @param Request $request
+     * @return array
+     */
+    public static function addChild( Request $request )
+    {
+
+        $only = ['name','phone','department','position','type','avatar'];
+
+        $rules = [
+            'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/|unique:hotel_user,mobile',
+            'name' => 'required',
+            'department' => 'required',
+            'type' => 'required',
+            'avatar' => 'required',
+            'position' => 'required'
+        ];
+
+        $messages = [
+            'phone.required' => '手机号不能为空',
+            'phone.regex' => '手机号错误',
+            'phone.unique'=> '用户已经存在',
+            'name.required' => '姓名不能为空',
+            'department.required' => '部门名称不能为空',
+            'type.required' => '角色不能为空',
+            'avatar.required' => '头像不能为空',
+            'position.required' => '职位不能为空'
+
+        ];
+
+        $input = $request->only($only);
+
+        $validator = Validator::make($input, $rules, $messages);
+
+        if ($validator->fails())
+            exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+
+        return $input;
+    }
+
+    /**
+     * 子账户禁用开启
+     * @param Request $request
+     * @return array
+     */
+    public static function childDisable( Request $request)
+    {
+        $only = ['status'];
+
+        $rules = [
+            'status' => 'required'
+        ];
+
+        $messages = [
+            'status.required' => '是否禁用标示不能为空'
+
+        ];
+
+        $input = $request->only($only);
+
+        $validator = Validator::make($input, $rules, $messages);
+
+        if ($validator->fails())
+            exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+
+        return $input;
+
+    }
 }

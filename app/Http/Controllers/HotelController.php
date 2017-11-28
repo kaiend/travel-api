@@ -282,13 +282,24 @@ class HotelController extends Controller
      * @param $id
      * @return \App\Helpers\json
      */
-    public function stopChild( $id )
+    public function stopChild( $id ,Request $request )
     {
+        $arr = UserValidator::childDisable($request);
         $id = intval($id);
         try {
             JWTAuth::parseToken()->getPayload();
+            switch (intval( $arr['type'] )){
+                //启用
+                case  1:
+                    $re = DB::table('hotel_user')->where('id', $id)->update(['status' => 1]);break;
+                //禁用
+                case 0:
+                    $re = DB::table('hotel_user')->where('id', $id)->update(['status' => 0]);break;
+                default:
+                    return ReturnMessage::success('失败','1011');
 
-            $re = DB::table('hotel_user')->where('id', $id)->update(['status' => 0]);
+            }
+
             if ($re) {
                 return ReturnMessage::success();
             } else {
@@ -332,7 +343,6 @@ class HotelController extends Controller
         try{
 
             $re =JWTAuth::parseToken()->getPayload();
-            print_r($re);die;
             return ReturnMessage::success('success','1000');
 
         }catch(JWTException $e){
