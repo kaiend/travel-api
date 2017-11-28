@@ -288,7 +288,7 @@ class HotelController extends Controller
         $id = intval($id);
         try {
             JWTAuth::parseToken()->getPayload();
-            switch (intval( $arr['type'] )){
+            switch (intval( $arr['status'] )){
                 //启用
                 case  1:
                     $re = DB::table('hotel_user')->where('id', $id)->update(['status' => 1]);break;
