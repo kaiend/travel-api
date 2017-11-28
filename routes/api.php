@@ -72,7 +72,7 @@ $api->version('v1', [
         //添加子账户
         \Dingo\Api\Facade\Route::post('/child' ,'HotelController@addChild');
         //禁用子账户
-        \Dingo\Api\Facade\Route::patch('/disable/{id}' ,'HotelController@stopChild');
+        \Dingo\Api\Facade\Route::post('/disable/{id}' ,'HotelController@stopChild');
         //修改子账户密码
         \Dingo\Api\Facade\Route::post('/reset/{id}' ,'HotelController@restPassword');
 
