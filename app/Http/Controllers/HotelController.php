@@ -63,10 +63,11 @@ class HotelController extends Controller
         $input['mobile'] = $input['phone'];
         unset($input['phone']);
         $data['password'] = '';
-
+        print_r('dd');
         try {
-
+            print_r(000);
             $data = DB::table('hotel_user')->where('mobile','=',$input['mobile'])->get();
+            print_r(111);
             $info = json_decode(json_encode($data),true);
             $info['token'] = $this->token( $info['id'] );
 
