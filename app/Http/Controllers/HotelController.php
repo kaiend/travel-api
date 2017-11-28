@@ -68,7 +68,7 @@ class HotelController extends Controller
         print_r( $data );
         $info = json_decode(json_encode($data),true);
         $info['token'] = $this->token( $info[0]['id'] );
-        return ReturnMessage::successData($info);
+        return ReturnMessage::successData($info[0]);
 
 
 
