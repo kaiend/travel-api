@@ -67,7 +67,7 @@ class HotelController extends Controller
         $data = DB::table('hotel_user')->where('mobile','=',$input['mobile'])->get();
         print_r( $data );
         $info = json_decode(json_encode($data),true);
-        $info['token'] = $this->token( $info['id'] );
+        //$info['token'] = $this->token( $info['id'] );
         return ReturnMessage::successData($info);
 
 
