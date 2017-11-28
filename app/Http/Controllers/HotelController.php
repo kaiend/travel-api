@@ -66,7 +66,6 @@ class HotelController extends Controller
 
         try {
 
-            DB::table('hotel_user')->where('mobile','=',$input['mobile'])->update(['password' => $data['password']]);
             $data = DB::table('hotel_user')->where('mobile','=',$input['mobile'])->get();
             $info = json_decode(json_encode($data),true);
             $info['token'] = $this->token( $info['id'] );
