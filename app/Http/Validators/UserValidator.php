@@ -115,6 +115,37 @@ class UserValidator
 		return $input;
 	}
 
+	public static function sign( Request $request)
+    {
+        $only = ['phone','code'];
+
+        $rules = [
+            'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/|exists:hotel_user,mobile',
+            'code' => 'required',
+        ];
+
+        $messages = [
+            'phone.required' => '手机号不能为空',
+            'phone.regex' => '手机号错误',
+            'phone.exists'=> '用户不存在',
+            'code.required' => '验证码不能为空',
+
+        ];
+
+        $input = $request->only($only);
+
+        $validator = Validator::make($input, $rules, $messages);
+
+        if ($validator->fails())
+            exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+
+        self::redisVerify($input);
+
+        return $input;
+    }
+
+
+
 	/**
 	 * 验证码验证verifyCode
 	 *

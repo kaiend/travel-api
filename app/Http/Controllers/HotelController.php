@@ -53,6 +53,32 @@ class HotelController extends Controller
     }
 
     /**
+     * APP用户快捷登录
+     * @param Request $request
+     * @return \App\Helpers\json|mixed
+     */
+    public function sign( Request $request )
+    {
+        $input = UserValidator::sign($request);
+        $input['mobile'] = $input['phone'];
+        unset($input['phone']);
+        $data['password'] = '';
+
+        try {
+
+            DB::table('hotel_user')->where('mobile','=',$input['mobile'])->update(['password' => $data['password']]);
+            $data = DB::table('hotel_user')->where('mobile','=',$input['mobile'])->get();
+            $info = json_decode(json_encode($data),true);
+            $info['token'] = $this->token( $info['id'] );
+
+        } catch (\Exception $e) {
+            return ReturnMessage::success('修改密码失败',1011);
+        }
+
+        return ReturnMessage::successData($info);
+    }
+
+    /**
      * 修改密码
      * @param Request $request
      * @return \App\Helpers\json|mixed

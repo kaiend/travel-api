@@ -28,6 +28,8 @@ $api->version('v1', [
 
     //APP登录
     $api->post('/login','HotelController@login');
+    //APP快捷登录
+    $api ->post('/sign','HotelController@sign');
     //APP发送验证码
     $api->get('/message','UserController@sendCode');
     //APP验证密码
