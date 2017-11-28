@@ -62,8 +62,6 @@ class HotelController extends Controller
         $input = UserValidator::sign($request);
         $input['mobile'] = $input['phone'];
         unset($input['phone']);
-        $data['password'] = '';
-
         $data = DB::table('hotel_user')->where('mobile','=',$input['mobile'])->get();
 
         $info = json_decode(json_encode($data),true);
