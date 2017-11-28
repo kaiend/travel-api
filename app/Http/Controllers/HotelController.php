@@ -98,7 +98,6 @@ class HotelController extends Controller
                 $data = DB::table('hotel_user')
                     ->select('id','name','mobile','position','type','avatar','status')
                     ->where([
-                        ['status' ,1],
                         ['hotel_id' , $user_data['hotel_id']]
                     ])
                     ->whereIn('type', [3,4])
