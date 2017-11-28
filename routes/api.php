@@ -36,6 +36,8 @@ $api->version('v1', [
     $api->post('/password','HotelController@editPassword');
     //APP测试接口
     $api->get('/test','HotelController@test');
+    //APP退出登录接口
+    $api->delete('/logout','HotelController@destroy');
 
     //APP订单接口
     $api->group(['prefix' => 'order'] , function(){

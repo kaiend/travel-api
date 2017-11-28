@@ -12,7 +12,6 @@ use App\Http\Validators\UserValidator;
 use App\Models\Hotel;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Facades\JWTFactory;
@@ -92,7 +91,6 @@ class HotelController extends Controller
 
             //查询当前用户的酒店ID和type
             $user_data= Hotel::getUserFirst($id);
-
             if( $user_data['type'] == 3 ){
                 return ReturnMessage::success('没有权限' ,'1010');
             }else if( $user_data['type'] == 2 ){
@@ -100,17 +98,17 @@ class HotelController extends Controller
                 $data = DB::table('hotel_user')
                     ->select('id','name','mobile','position','type')
                     ->where([
-                        ['type' , 3] ,
-                        ['status'],
+                        ['status' ,1],
                         ['hotel_id' , $user_data['hotel_id']]
                     ])
+                    ->whereIn('type', [3,4])
                     ->get();
             }else{
 
                 $data = DB::table('hotel_user')
                     ->select('id','name','mobile','position','type')
                     ->where('hotel_id' , $user_data['hotel_id'])
-                    ->whereIn('type', [2,3])
+                    ->whereIn('type', [2,3,4])
                     ->get();
             }
             $bdata=json_decode(json_encode($data),true);
@@ -133,6 +131,11 @@ class HotelController extends Controller
 
     }
 
+    /**
+     * 个人中心--上传头像
+     * @param Request $request
+     * @return \App\Helpers\json|\Illuminate\Http\JsonResponse
+     */
     public function uploadPhoto( Request $request )
     {
 
@@ -196,7 +199,7 @@ class HotelController extends Controller
             if( $c_id ){
                 return ReturnMessage::success('账户已被占用','1008');
             }else{
-                if( $user_data['type'] == 3 ){
+                if( $user_data['type'] == 3 || $user_data['type'] == 4){
                     return ReturnMessage::success('没有权限' ,'1010');
                 }else if( $user_data['type'] == 2 ){
                     //管理者添加-----员工账号
@@ -209,7 +212,7 @@ class HotelController extends Controller
                                 'mobile'=> $arr['phone'],
                                 'department'=>$arr['department'],
                                 'position'=> $arr['position'],
-                                'type'=> 3,
+                                'type'=>$arr['type'],
                                 'hotel_id' =>$user_data['hotel_id'],
                                 'avatar'   =>$avatar
                             ]
@@ -218,7 +221,7 @@ class HotelController extends Controller
                     }
 
                 }else{
-                    if(in_array(intval($arr['type']),[1,2,3]) ){
+                    if(in_array(intval($arr['type']),[1,2,3,4]) ){
                         DB::table('hotel_user')->insert(
                             [
                                 'name' => $arr['name'],
@@ -241,6 +244,11 @@ class HotelController extends Controller
         }
     }
 
+    /**
+     * 子账户上传头像静态方法
+     * @param Request $request
+     * @return \App\Helpers\json|string
+     */
     private static  function makePhoto(Request $request )
     {
         $file = $request->file('avatar');
@@ -312,14 +320,20 @@ class HotelController extends Controller
     {
         try{
 
-            JWTAuth::parseToken()->getPayload();
-
+            $re =JWTAuth::parseToken()->getPayload();
+            print_r($re);die;
             return ReturnMessage::success('success','1000');
 
         }catch(JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
         }
 
+    }
+
+    public  function destroy()
+    {
+       $re=  \Auth::logout();
+       print_r($re);
     }
     public function test()
     {
