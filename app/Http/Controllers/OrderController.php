@@ -99,12 +99,15 @@ class OrderController extends  Controller
             if( empty($arr['type']) ){
                 return ReturnMessage::success('缺少订单参数' , '1005');
             }
+            $t = time();
+            $start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
+            $end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
             switch ($arr['type']){
                 case 'wait':
                     $data = DB::table('order')
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
                         ->where([
-                            ['status','=',1],
+                            ['status','=',10],
                             ['hotel_id','=',$hid],
                         ])->get();
 
@@ -113,7 +116,7 @@ class OrderController extends  Controller
                     $data = DB::table('order')
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
                         ->where('hotel_id','=',$hid)
-                        ->whereIn('status', [2,3,4,5,6,7,8])
+                        ->whereBetween('create_at', [$start,$end])
                         ->get();
                     break;
                 case 'done' :
@@ -468,13 +471,14 @@ class OrderController extends  Controller
         }
 
     }
-
-    public function getFight( Request $request)
+    /**
+     * 接机
+     * @param Request $request
+     * @return \App\Helpers\json|\Illuminate\Http\JsonResponse
+     */
+    public function getFlight( Request $request)
     {
-        $arr =$request->all();
-
         $arr = OrderValidator::sendFlight($request);
-        $arr =$request->all();
         try{
             $user=JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
@@ -531,6 +535,11 @@ class OrderController extends  Controller
         } catch (JWTException $e) {
             return ReturnMessage::success('非法token', '1009');
         }
+
+    }
+
+    public function sendFlight()
+    {
 
     }
 }
