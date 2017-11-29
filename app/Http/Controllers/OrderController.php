@@ -217,7 +217,6 @@ class OrderController extends  Controller
               if( $v ){
                   $where[$k] = $v;
               }
-
            }
            unset($where['start']);
            unset($where['end']);
@@ -233,7 +232,7 @@ class OrderController extends  Controller
 
                $data =$handle
                    ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
-                   ->where($where) 
+                   ->where($where)
                    ->get();
            }
             $bdata=json_decode(json_encode($data),true);
@@ -456,7 +455,6 @@ class OrderController extends  Controller
                     'orders_phone' => $user_data['mobile'],
                     'user_id' =>$user_data['id'],
                     'hotel_id'  =>$user_data['hotel_id']
-
                 ]
             );
             if($re){
@@ -473,6 +471,65 @@ class OrderController extends  Controller
 
     public function getFight( Request $request)
     {
+        $arr =$request->all();
+
+        $arr = OrderValidator::sendFlight($request);
+        $arr =$request->all();
+        try{
+            $user=JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+    //        //查询当前用户的酒店ID和type
+            $user_data= Hotel::getUserFirst($id);
+
+            DB::beginTransaction();
+            try{
+                //插入基础数据
+                $id= DB::table('order')->insertGetId(
+                    [
+                        'appointment' => $arr['time'],
+                        'passenger_name' => $arr['name'],
+                        'passenger_phone' => $arr['phone'],
+                        'passenger_people' => $arr['people'],
+                        'room_number' => $arr['room_number'],
+                        'order_number' =>Common::createNumber(),
+                        'remarks' => $arr['remarks'],
+                        'car_id'  => $arr['car_id'],
+                        'created_at'  =>time(),
+                        'end' => $arr['end'],
+                        'origin' => $arr['origin'],
+                        'end_position' => $arr['end_position'],
+                        'origin_position' => $arr['origin_position'],
+                        'price' => $arr['price'],
+                        'type' =>  2,
+                        'orders_name' => $user_data['name'],
+                        'orders_phone' => $user_data['mobile'],
+                        'user_id' =>$user_data['id'],
+                        'hotel_id'  =>$user_data['hotel_id']
+                    ]
+                );
+                //插入展字段
+                $field =DB::table('server_item')->where('id',26) ->value('field_name');
+                $field =rtrim(ltrim($field,'['),']');
+                $last= explode(',',$field);
+                foreach( $last as $k =>$v){
+                    $v =rtrim(ltrim($v,'"'),'"');
+                    DB::table('way_to') ->insert([
+                        'order_id' =>23,
+                        'name' =>$v,
+                        'content' =>$arr[$v]
+                    ]);
+                }
+//              DB::commit();
+            }catch (\Exception $e){
+                DB::rollback();
+                return response()->json([
+                    'code' => $e->getCode(),
+                    'info' => $e->getMessage(),
+                ]);
+            }
+        } catch (JWTException $e) {
+            return ReturnMessage::success('非法token', '1009');
+        }
 
     }
 }

@@ -105,7 +105,7 @@ class OrderValidator
 
     public static function sendFlight( Request $request )
     {
-        $only = ['flight_number','terminal','time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position'];
+        $only = ['flight_number','terminal','time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','cip'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
@@ -119,7 +119,8 @@ class OrderValidator
             'type' =>'required',
             'origin_position'=>'required',
             'flight_number' =>'required',
-            'terminal' => 'required'
+            'terminal' => 'required',
+            'cip' =>'required'
         ];
 
         $messages = [
@@ -135,7 +136,8 @@ class OrderValidator
             'price.required' =>'车费不能为空',
             'type.required'  => '服务类型不能为空',
             'flight_number.required' =>'航班号不能为空',
-            'terminal.required' => '航站楼不能为空'
+            'terminal.required' => '航站楼不能为空',
+            'cip.required' =>'cip服务不能为空'
         ];
 
         $input = $request->only($only);
