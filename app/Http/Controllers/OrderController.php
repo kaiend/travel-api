@@ -225,10 +225,16 @@ class OrderController extends  Controller
            $start =intval( $arr['start'] );
            $end =  intval( $arr['end'] );
            if( !empty( $start ) && !empty( $end )){
-               $data =$handle->where($where) ->whereBetween('appointment', [$start, $end])->get();
+               $data =$handle
+                   ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
+                   ->where($where)
+                   ->whereBetween('appointment', [$start, $end])->get();
            }else{
 
-               $data =$handle ->where($where) ->get();
+               $data =$handle
+                   ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
+                   ->where($where) 
+                   ->get();
            }
             $bdata=json_decode(json_encode($data),true);
 
