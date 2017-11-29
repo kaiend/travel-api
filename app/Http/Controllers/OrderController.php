@@ -203,12 +203,37 @@ class OrderController extends  Controller
     public function searchOrder( Request $request )
     {
         $arr =$request ->only('type','start','end','orders_name','order_number','room_number');
-        print_r(json_encode(json_decode($arr),true));die;
+
         try {
             JWTAuth::parseToken()->getPayload();
+            $handle = DB::table('order');
+            $where = [];
+           foreach( $arr as $k =>$v){
+              if( $v ){
+                  $where[$k] = $v;
+              }
+           }
+           $start =intval( $arr['start'] );
+           $end =  intval( $arr['end'] );
+           if( !empty( $start ) && !empty( $end )){
+               $data =$handle->where($where) ->whereBetween('appointment', [$start, $end])->get();
+           }else{
+               $data =$handle ->where($where) ->get();
+           }
+            $bdata=json_decode(json_encode($data),true);
 
+            if( count($bdata) != 0){
+                $final=ReturnMessage::toString($bdata);
 
+                return ReturnMessage::successData($final);
 
+            }else{
+                return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'data' => []
+                ]);
+            }
         }catch (JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
         }
