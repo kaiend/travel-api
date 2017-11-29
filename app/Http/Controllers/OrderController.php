@@ -20,7 +20,11 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class OrderController extends  Controller
 {
-    //APP订单列表
+    /**
+     * APP订单列表
+     * @param Request $request
+     * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
+     */
     public function getList( Request $request)
     {
        //获取订单的类型type
@@ -77,10 +81,11 @@ class OrderController extends  Controller
         }
 
     }
-
-
-
-    //APP订单列表
+    /**
+     * APP酒店订单列表
+     * @param Request $request
+     * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
+     */
     public function getHotelList( Request $request)
     {
         //获取订单的类型type
@@ -164,13 +169,11 @@ class OrderController extends  Controller
 
         return  ReturnMessage::success('订单取消成功', '1000');
     }
-
     /**
      * APP订单详情
      * @param $id
      * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
      */
-
     public function getDetail( $id )
     {
         $id = intval( $id ) ;
@@ -196,6 +199,21 @@ class OrderController extends  Controller
         }catch (JWTException $e){
                 return ReturnMessage::success('非法token' ,'1009');
         }
+    }
+    public function searchOrder( Request $request )
+    {
+        $arr =$request ->only('type','start','end','name','order','room');
+        try {
+            JWTAuth::parseToken()->getPayload();
+            DB::table('order') ->where([
+                ['type' , $arr['type']],
+                ['name' , $arr['name']],
+//                ['appointment']
+            ])->get();
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+        
     }
 
     /**
@@ -232,13 +250,11 @@ class OrderController extends  Controller
             return ReturnMessage::success('非法token' ,'1009');
         }
     }
-
     /**
      * 特殊线路详情
      * @param $id
      * @return \Illuminate\Http\JsonResponse|mixed
      */
-
     public function getSpecial( $id )
     {
         $id=intval($id);
@@ -270,7 +286,6 @@ class OrderController extends  Controller
             return ReturnMessage::success('非法token' ,'1009');
         }
     }
-
     /**
      * 特殊路线下单
      * @param Request $request
@@ -321,7 +336,6 @@ class OrderController extends  Controller
         }
 
     }
-
     /**
      * APP 按时包车---套餐
      * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
@@ -355,7 +369,6 @@ class OrderController extends  Controller
             return ReturnMessage::success('非法token', '1009');
         }
     }
-
     /**
      * APP 按时包车---下单
      * @param Request $request
