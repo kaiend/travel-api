@@ -65,9 +65,9 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::post('/chartered' ,'OrderController@sendPackage');
 
         //App接机--下单接口
-        \Dingo\Api\Facade\Route::post('/fight/come' ,'OrderController@getFight');
+        \Dingo\Api\Facade\Route::post('/flight/come' ,'OrderController@getFight');
         //App送机--下单接口
-        \Dingo\Api\Facade\Route::get('/fight/go' ,'OrderController@sendFight');
+        \Dingo\Api\Facade\Route::get('/flight/go' ,'OrderController@sendFight');
 
     });
 
