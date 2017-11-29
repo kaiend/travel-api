@@ -507,7 +507,6 @@ class OrderController extends  Controller
                         'hotel_id'  =>$user_data['hotel_id']
                     ]
                 );
-                print_r($id);
                 //插入展字段
                 $field =DB::table('server_item')->where('id',26) ->value('field_name');
                 $field =rtrim(ltrim($field,'['),']');
