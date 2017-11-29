@@ -63,6 +63,12 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::get('/chartered' ,'OrderController@getPackage');
         //APP按时包车---下单
         \Dingo\Api\Facade\Route::post('/chartered' ,'OrderController@sendPackage');
+
+        //App接机--下单接口
+        \Dingo\Api\Facade\Route::get('/fight/come' ,'OrderController@getFight');
+        //App送机--下单接口
+        \Dingo\Api\Facade\Route::get('/fight/go' ,'OrderController@sendFight');
+
     });
 
     //APP个人中心

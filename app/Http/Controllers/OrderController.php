@@ -200,6 +200,11 @@ class OrderController extends  Controller
                 return ReturnMessage::success('非法token' ,'1009');
         }
     }
+    /**
+     * App订单搜索
+     * @param Request $request
+     * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
+     */
     public function searchOrder( Request $request )
     {
         $arr =$request ->only('type','start','end','orders_name','order_number','room_number');
@@ -212,12 +217,17 @@ class OrderController extends  Controller
               if( $v ){
                   $where[$k] = $v;
               }
+
            }
+           unset($where['start']);
+           unset($where['end']);
+
            $start =intval( $arr['start'] );
            $end =  intval( $arr['end'] );
            if( !empty( $start ) && !empty( $end )){
                $data =$handle->where($where) ->whereBetween('appointment', [$start, $end])->get();
            }else{
+
                $data =$handle ->where($where) ->get();
            }
             $bdata=json_decode(json_encode($data),true);
@@ -239,7 +249,6 @@ class OrderController extends  Controller
         }
         
     }
-
     /**
      * App 用车--特殊路线列表
      * @return \Illuminate\Http\JsonResponse|mixed
@@ -456,4 +465,8 @@ class OrderController extends  Controller
 
     }
 
+    public function getFight( Request $request)
+    {
+
+    }
 }
