@@ -207,7 +207,7 @@ class OrderController extends  Controller
             JWTAuth::parseToken()->getPayload();
             DB::table('order') ->where([
                 ['type' , $arr['type']],
-                ['name' , $arr['name']],
+//                ['name' , $arr['name']],
 //                ['appointment']
             ])->get();
         }catch (JWTException $e){
