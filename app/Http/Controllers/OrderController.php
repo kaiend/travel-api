@@ -205,11 +205,12 @@ class OrderController extends  Controller
         $arr =$request ->only('type','start','end','name','order','room');
         try {
             JWTAuth::parseToken()->getPayload();
-            DB::table('order') ->where([
+            $data = DB::table('order') ->where([
                 ['type' , $arr['type']],
 //                ['name' , $arr['name']],
 //                ['appointment']
             ])->get();
+            print_r($data);
         }catch (JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
         }
