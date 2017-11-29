@@ -507,6 +507,7 @@ class OrderController extends  Controller
                         'hotel_id'  =>$user_data['hotel_id']
                     ]
                 );
+                print_r($id);
                 //插入展字段
                 $field =DB::table('server_item')->where('id',26) ->value('field_name');
                 $field =rtrim(ltrim($field,'['),']');
@@ -514,12 +515,13 @@ class OrderController extends  Controller
                 foreach( $last as $k =>$v){
                     $v =rtrim(ltrim($v,'"'),'"');
                     DB::table('way_to') ->insert([
-                        'order_id' =>23,
+                        'order_id' =>$id,
                         'name' =>$v,
                         'content' =>$arr[$v]
                     ]);
                 }
-//              DB::commit();
+              DB::commit();
+                return ReturnMessage::success();
             }catch (\Exception $e){
                 DB::rollback();
                 return response()->json([
