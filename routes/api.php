@@ -16,7 +16,7 @@
 | and give it the Closure to call when that URI is requested.
 |
  */
-header('Access-Control-Allow-Origin:*');
+
 
 $api = app('Dingo\Api\Routing\Router');
 
