@@ -14,6 +14,7 @@ use App\Helpers\ReturnMessage;
 use App\Http\Validators\OrderValidator;
 use App\Models\Hotel;
 use Dingo\Api\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -183,11 +184,19 @@ class OrderController extends  Controller
         try {
             JWTAuth::parseToken()->getPayload();
             $data=DB::table('order')
-                ->where('id',$id)
+                ->where([
+                    ['id',$id],
+                    ['judgment',1]
+                ])
                 ->get();
             $bdata=json_decode(json_encode($data),true);
 
             if( count($bdata) != 0){
+                $b = $bdata[0]['car_id'];
+                $tid =$bdata[0]['type'];
+                $bdata[0]['car_id'] = Config::get('order.car_series.'.$b);
+                $bdata[0]['type'] = Config::get('order.type.'.$tid);
+                print_r($bdata);die;
                 $final=ReturnMessage::toString($bdata);
 
                 return ReturnMessage::successData($final);
@@ -215,7 +224,9 @@ class OrderController extends  Controller
         try {
             JWTAuth::parseToken()->getPayload();
             $handle = DB::table('order');
-            $where = [];
+            $where = [
+                ['judgment',1]
+            ];
            foreach( $arr as $k =>$v){
               if( $v ){
                   $where[$k] = $v;
@@ -362,7 +373,8 @@ class OrderController extends  Controller
                     'orders_name' => $user_data['name'],
                     'orders_phone' => $user_data['mobile'],
                     'user_id' =>$user_data['id'],
-                    'hotel_id'  =>$user_data['hotel_id']
+                    'hotel_id'  =>$user_data['hotel_id'],
+                    'judgment' => 1
 
                 ]
             );
@@ -457,7 +469,8 @@ class OrderController extends  Controller
                     'orders_name' => $user_data['name'],
                     'orders_phone' => $user_data['mobile'],
                     'user_id' =>$user_data['id'],
-                    'hotel_id'  =>$user_data['hotel_id']
+                    'hotel_id'  =>$user_data['hotel_id'],
+                    'judgment' => 1
                 ]
             );
             if($re){
@@ -508,7 +521,8 @@ class OrderController extends  Controller
                         'orders_name' => $user_data['name'],
                         'orders_phone' => $user_data['mobile'],
                         'user_id' =>$user_data['id'],
-                        'hotel_id'  =>$user_data['hotel_id']
+                        'hotel_id'  =>$user_data['hotel_id'],
+                        'judgment' => 1
                     ]
                 );
                 //插入展字段
@@ -570,7 +584,8 @@ class OrderController extends  Controller
                         'orders_name' => $user_data['name'],
                         'orders_phone' => $user_data['mobile'],
                         'user_id' =>$user_data['id'],
-                        'hotel_id'  =>$user_data['hotel_id']
+                        'hotel_id'  =>$user_data['hotel_id'],
+                        'judgment' => 1
                     ]
                 );
                 //插入展字段
