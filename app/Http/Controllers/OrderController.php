@@ -196,7 +196,7 @@ class OrderController extends  Controller
                 $tid =$bdata[0]['type'];
                 $bdata[0]['car_id'] = Config::get('order.car_series.'.$b);
                 $bdata[0]['type'] = Config::get('order.type.'.$tid);
-                
+
                 $final=ReturnMessage::toString($bdata);
 
                 return ReturnMessage::successData($final);
