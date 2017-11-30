@@ -20,7 +20,7 @@ use Tymon\JWTAuth\Facades\JWTFactory;
 class HotelController extends Controller
 {
     /**
-     *
+     *生成token
      * @param $data 用户id
      * @return mixed
      */
@@ -30,7 +30,6 @@ class HotelController extends Controller
         $token = JWTAuth::encode($re)->get();
         return $token;
     }
-
     /**
      * 酒店用户的登录方法
      * @param Request $request
@@ -51,7 +50,6 @@ class HotelController extends Controller
 
         return ReturnMessage::success('用户不存在或密码错误',1002);
     }
-
     /**
      * APP用户快捷登录
      * @param Request $request
@@ -71,7 +69,6 @@ class HotelController extends Controller
 
 
     }
-
     /**
      * 修改密码
      * @param Request $request
@@ -161,7 +158,6 @@ class HotelController extends Controller
         }
 
     }
-
     /**
      * 个人中心--上传头像
      * @param Request $request
@@ -274,7 +270,6 @@ class HotelController extends Controller
             return ReturnMessage::success('非法token' ,'1009');
         }
     }
-
     /**
      * 子账户上传头像静态方法
      * @param Request $request
@@ -296,7 +291,6 @@ class HotelController extends Controller
             return $data['avatar'] = $file_path . $file_name;
         }
     }
-
     /**
      * APP 个人账户-禁用子账户
      * @param $id
@@ -329,7 +323,6 @@ class HotelController extends Controller
             return ReturnMessage::success('非法token' ,'1009');
         }
     }
-
     /**
      * APP 个人账户-重置子账户密码
      * @param $id

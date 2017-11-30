@@ -16,12 +16,13 @@
 | and give it the Closure to call when that URI is requested.
 |
  */
-
+header('Access-Control-Allow-Origin:*');
 
 $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', [
     'namespace' => 'App\Http\Controllers',
+
     // each route have a limit of 100 of 1 minutes
     //'limit' => 100, 'expires' => 1
 ], function ($api) {
