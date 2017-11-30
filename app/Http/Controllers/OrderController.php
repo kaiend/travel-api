@@ -196,7 +196,7 @@ class OrderController extends  Controller
                 $tid =$bdata[0]['type'];
                 $bdata[0]['car_id'] = Config::get('order.car_series.'.$b);
                 $bdata[0]['type'] = Config::get('order.type.'.$tid);
-                print_r($bdata);die;
+                
                 $final=ReturnMessage::toString($bdata);
 
                 return ReturnMessage::successData($final);
@@ -280,12 +280,11 @@ class OrderController extends  Controller
             JWTAuth::parseToken()->getPayload();
             //查询该一级服务下的服务详情
             $data = DB::table('server_item')
-                ->select('id','parent_id','name')
+                ->select('id','parent_id','name','picture')
                 ->where( 'parent_id',$id)
                 ->get();
 
             $bdata=json_decode(json_encode($data),true);
-
             if( count($bdata) != 0){
                 $final=ReturnMessage::toString($bdata);
 
