@@ -66,12 +66,12 @@ $api->version('v1', [
         //APP按时包车---下单
         \Dingo\Api\Facade\Route::post('/chartered' ,'OrderController@sendPackage');
         //App接送机--下单接口
-        \Dingo\Api\Facade\Route::get('/flight' ,'OrderController@getFlight');
+        \Dingo\Api\Facade\Route::post('/flight' ,'OrderController@getFlight');
         //App接站--下单接口
         \Dingo\Api\Facade\Route::post('/train' ,'OrderController@getTrain');
 
         //APP追加订单
-        \Dingo\Api\Facade\Route::get('/extra' ,'OrderController@makeExtra');
+        \Dingo\Api\Facade\Route::post('/extra' ,'OrderController@makeExtra');
 
     });
 
