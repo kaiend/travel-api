@@ -62,4 +62,46 @@ class CarController extends Controller
         }
 
     }
+
+    public function getSerie( Request $request )
+    {
+        $arr = $request ->all();
+        $type = $arr['type'];
+
+        $item_data = DB::table('car_series')
+            ->select('id','parent_id','series_name','image','status')
+            ->where([
+                ['status',1]
+            ])
+            ->get();
+
+        $bdata=json_decode(json_encode($item_data ),true);
+        $items = array();
+        foreach( $bdata as $k=>$v){
+            $items[$v['id']] = $v;
+        }
+        foreach($items as $item){
+
+            if(isset($items[$item['parent_id']])){
+                $items[$item['parent_id']]['son'][] = &$items[$item['id']];
+            }else{
+                $tree[] = &$items[$item['id']];
+
+            }
+        }
+        $data = DB::table('server_car') ->where('item_id',$type) ->pluck('series_id');
+        $ids=json_decode(json_encode($data ),true);
+        $final_data=[];
+        foreach($tree as $k1=>$v1){
+            foreach( $v1['son'] as $k2 =>$v2){
+                if(in_array( $v2['id'], $ids)){
+                    $final_data[]=$v1;
+                }
+            }
+        }
+        return ReturnMessage::successData($final_data);
+
+    }
+
+
 }

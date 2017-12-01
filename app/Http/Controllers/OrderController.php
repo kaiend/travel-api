@@ -272,10 +272,10 @@ class OrderController extends  Controller
      * App 用车--特殊路线列表
      * @return \Illuminate\Http\JsonResponse|mixed
      */
-    public  function  showList( )
+    public  function  showList( Request $request)
     {
-//        $arr = $request->all();
-        $id=30;
+        $arr = $request->only('id');
+        $id =$arr['id'];
         try {
             JWTAuth::parseToken()->getPayload();
             //查询该一级服务下的服务详情
@@ -311,21 +311,35 @@ class OrderController extends  Controller
         $id=intval($id);
         try {
             JWTAuth::parseToken()->getPayload();
-            $data = DB::table('charges_rule')
-                    ->select('place_go','place_end')
-                    ->where([
-                        ['service_id', $id],
-                        ['type', 4]
-                    ])
-                    ->first();
+
+            $data = DB::table('server_item')
+                ->where('id',$id)
+                ->select('id','parent_id','name','picture','field_name','content')
+                ->first();
             $bdata=json_decode(json_encode($data),true);
-            $bdata['position_s'] = '116.41671,39.915267' ;
-            $bdata['position_e'] = '116.016033,40.364233' ;
+            $a=$bdata['field_name'];
+            $b=$bdata['content'];
+            $a_last =rtrim(ltrim($a,'['),']');
+            $arr1= explode(',',$a_last);
+            $last= [];
+            foreach( $arr1 as $k=>$v){
+                $v =rtrim(ltrim($v,'"'),'"');
+                $last[]=$v;
+            }
+            $b_last =rtrim(ltrim($b,'['),']');
+            $arr2= explode(',',$b_last);
+            $lastb= [];
+            foreach( $arr2 as $kk=>$vv){
+                $vv =rtrim(ltrim($vv,'"'),'"');
+                $lastb[]=$vv;
+            }
+            $arr3 = array_combine($last, $lastb);
+            $res = array_merge($arr3,$bdata);
+            unset($res['field_name']);
+            unset($res['content']);
             if( count($bdata) != 0){
-                $final=ReturnMessage::toString($bdata);
 
-                return ReturnMessage::successData([$final]);
-
+                return ReturnMessage::successData([$res]);
             }else{
                 return response()->json([
                     'code' =>'1000',
@@ -351,7 +365,6 @@ class OrderController extends  Controller
             $id = $user['foo'];
             //查询当前用户的酒店ID和type
             $user_data= Hotel::getUserFirst($id);
-
 
             //查询
             $re = DB::table('order')->insert(
@@ -392,9 +405,10 @@ class OrderController extends  Controller
      * APP 按时包车---套餐
      * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
      */
-    public function getPackage()
+    public function getPackage( Request $request )
     {
-        $id = 21;
+        $arr = $request->only('id');
+        $id =$arr['id'];
         try {
             JWTAuth::parseToken()->getPayload();
             //查询该一级服务下的服务详情
@@ -435,19 +449,19 @@ class OrderController extends  Controller
             $id = $user['foo'];
             //查询当前用户的酒店ID和type
             $user_data= Hotel::getUserFirst($id);
-            switch (intval( $arr['pid'] )){
-                case  21:
-                    $type = $arr['type'];break;
-
-                case 31:
-                    $type = 31;break;
-                case 32 :
-                    $type = 32; break;
-                default:
-                    return ReturnMessage::success('失败','1011');
-
-            }
-            //查询
+//            switch (intval( $arr['pid'] )){
+//                case  21:
+//                    $type = $arr['type'];break;
+//
+//                case 31:
+//                    $type = 31;break;
+//                case 32 :
+//                    $type = 32; break;
+//                default:
+//                    return ReturnMessage::success('失败','1011');
+//
+//            }
+            //插入数据
             $re = DB::table('order')->insert(
                 [
                     'appointment' => $arr['time'],
@@ -464,7 +478,7 @@ class OrderController extends  Controller
                     'end_position' => $arr['end_position'],
                     'origin_position' => $arr['origin_position'],
                     'price' => $arr['price'],
-                    'type' =>  $type,
+                    'type' =>  $arr['type'],
                     'orders_name' => $user_data['name'],
                     'orders_phone' => $user_data['mobile'],
                     'user_id' =>$user_data['id'],
@@ -490,7 +504,16 @@ class OrderController extends  Controller
      */
     public function getFlight( Request $request)
     {
-        $arr = OrderValidator::getFlight($request);
+        $t = $request->all();
+        $type = intval($t['type']);
+        switch ($type ){
+            case 26:
+                $arr = OrderValidator::getFlight($request);break;
+            case 27:
+                $arr = OrderValidator::sendFlight($request);break;
+            default:
+                return ReturnMessage::success('失败','1011');
+        }
         try{
             $user=JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
@@ -516,7 +539,7 @@ class OrderController extends  Controller
                         'end_position' => $arr['end_position'],
                         'origin_position' => $arr['origin_position'],
                         'price' => $arr['price'],
-                        'type' =>  $arr['type'],
+                        'type' =>  $type,
                         'orders_name' => $user_data['name'],
                         'orders_phone' => $user_data['mobile'],
                         'user_id' =>$user_data['id'],
@@ -525,7 +548,7 @@ class OrderController extends  Controller
                     ]
                 );
                 //插入展字段
-                $field =DB::table('server_item')->where('id',26) ->value('field_name');
+                $field =DB::table('server_item')->where('id',$type) ->value('field_name');
                 $field =rtrim(ltrim($field,'['),']');
                 $last= explode(',',$field);
                 foreach( $last as $k =>$v){
@@ -550,10 +573,14 @@ class OrderController extends  Controller
         }
 
     }
-
-    public function sendFlight( Request $request)
+    /**
+     * 接送站
+     * @param Request $request
+     * @return \App\Helpers\json|\Illuminate\Http\JsonResponse
+     */
+    public function getTrain( Request $request)
     {
-        $arr = OrderValidator::sendFlight($request);
+        $arr = OrderValidator::takeTrain($request);
         try{
             $user=JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
@@ -588,7 +615,7 @@ class OrderController extends  Controller
                     ]
                 );
                 //插入展字段
-                $field =DB::table('server_item')->where('id',27) ->value('field_name');
+                $field =DB::table('server_item')->where('id',intval($arr['type'])) ->value('field_name');
                 $field =rtrim(ltrim($field,'['),']');
                 $last= explode(',',$field);
                 foreach( $last as $k =>$v){
@@ -612,4 +639,43 @@ class OrderController extends  Controller
             return ReturnMessage::success('非法token', '1009');
         }
     }
+    /**
+     * 追加订单
+     * @param Request $request
+     * @return \App\Helpers\json
+     */
+    public function makeExtra( Request $request)
+    {
+        $arr = OrderValidator::makeExtra($request);
+
+        try{
+            $user=JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+             //查询当前用户的酒店ID和type
+            $user_data= Hotel::getUserFirst($id);
+            $re = DB::table('extra_order')->insert([
+                'order_number' =>$arr['order_number'],
+                'remarks' => $arr['remarks'],
+                'car_id'  => $arr['car_id'],
+                'created_at'  =>time(),
+                'end' => $arr['end'],
+                'origin' => $arr['origin'],
+                'end_position' => $arr['end_position'],
+                'origin_position' => $arr['origin_position'],
+                'user_id' =>$user_data['id'],
+                'hotel_id'  =>$user_data['hotel_id'],
+                'judgment' => 1
+            ]);
+            if( $re ){
+                return ReturnMessage::success();
+            }else{
+                return ReturnMessage::success('失败','1011');
+            }
+
+        } catch (JWTException $e) {
+            return ReturnMessage::success('非法token', '1009');
+        }
+
+    }
+
 }

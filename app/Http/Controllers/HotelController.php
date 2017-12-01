@@ -10,6 +10,7 @@ use App\Helpers\Common;
 use App\Helpers\ReturnMessage;
 use App\Http\Validators\UserValidator;
 use App\Models\Hotel;
+use App\Models\ServerItem;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -165,12 +166,11 @@ class HotelController extends Controller
      */
     public function uploadPhoto( Request $request )
     {
-
         try {
             $user=JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
 
-            $user_data =Hotel::getUserFirst( $id );
+            //$user_data =Hotel::getUserFirst( $id );
 
             $file = $request->file('avatar');
 
@@ -339,14 +339,12 @@ class HotelController extends Controller
             if( $re ){
                 return ReturnMessage::success();
             }else{
-
+                return ReturnMessage::success('失败' ,'1011');
             }
         }catch(JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
         }
     }
-
-
     /**
      * Token认证接口
      * @return \App\Helpers\json
@@ -363,14 +361,57 @@ class HotelController extends Controller
         }
 
     }
-
+    /**
+     * 退出登录接口（暂留）
+     */
     public  function destroy()
     {
 
     }
+    /**
+     * 获得服务类目
+     * @return \App\Helpers\json|mixed
+     */
+    public function getServer()
+    {
+        try {
+            $user = JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+            //查询当前用户的酒店ID和type
+            $user_data = Hotel::getUserFirst($id);
+            $hid = $user_data['hotel_id'];
+            $item_data = DB::table('server_item')
+                ->select('id','parent_id','name','picture','company_id')
+                ->where([
+                    ['company_id',$hid],
+                ])
+                ->get();
+            $bdata=json_decode(json_encode($item_data ),true);
+            $items = array();
+            foreach( $bdata as $k=>$v){
+                $items[$v['id']] = $v;
+            }
+            foreach($items as $item){
+
+                if(isset($items[$item['parent_id']])){
+                    $items[$item['parent_id']]['son'][] = &$items[$item['id']];
+                }else{
+                    $tree[] = &$items[$item['id']];
+
+                }
+            }
+
+            return ReturnMessage::successData($tree);
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token', '1009');
+        }
+    }
+    /**
+     * 测试api
+     * @return int
+     */
     public function test()
     {
         return 1;
     }
-
 }

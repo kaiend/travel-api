@@ -41,7 +41,8 @@ $api->version('v1', [
     $api->get('/test','HotelController@test');
     //APP退出登录接口
     $api->delete('/logout','HotelController@destroy');
-
+    //App首页服务类型接口
+    $api->get('/index','HotelController@getServer');
     //APP订单接口
     $api->group(['prefix' => 'order'] , function(){
         //APP订单列表(我的订单)
@@ -64,11 +65,13 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::get('/chartered' ,'OrderController@getPackage');
         //APP按时包车---下单
         \Dingo\Api\Facade\Route::post('/chartered' ,'OrderController@sendPackage');
+        //App接送机--下单接口
+        \Dingo\Api\Facade\Route::get('/flight' ,'OrderController@getFlight');
+        //App接站--下单接口
+        \Dingo\Api\Facade\Route::post('/train' ,'OrderController@getTrain');
 
-        //App接机--下单接口
-        \Dingo\Api\Facade\Route::post('/flight/come' ,'OrderController@getFlight');
-        //App送机--下单接口
-        \Dingo\Api\Facade\Route::get('/flight/go' ,'OrderController@sendFlight');
+        //APP追加订单
+        \Dingo\Api\Facade\Route::get('/extra' ,'OrderController@makeExtra');
 
     });
 
@@ -96,6 +99,9 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::get('/list' ,'CarController@getSeries');
         //App车系详情
         \Dingo\Api\Facade\Route::get('/detail/{pid}' ,'CarController@getCars');
+        //APP选车型(new)
+        \Dingo\Api\Facade\Route::get('/lists' ,'CarController@getSerie');
+
     });
 });
 
