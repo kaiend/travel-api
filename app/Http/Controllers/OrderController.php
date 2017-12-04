@@ -39,7 +39,7 @@ class OrderController extends  Controller
             switch ($arr['type']){
                 case 'wait':
                     $data = DB::table('order')
-                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where([
                         ['status','=',1],
                         ['user_id','=',$id],
@@ -48,14 +48,14 @@ class OrderController extends  Controller
                     break;
                 case 'doing':
                     $data = DB::table('order')
-                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where('user_id','=',$id)
                         ->whereIn('status', [2,3,4,5,6,7,8])
                         ->get();
                     break;
                 case 'done' :
                     $data = DB::table('order')
-                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where('user_id','=',$id )
                         ->whereIn('status', [0,9])
                         ->get();
@@ -106,7 +106,7 @@ class OrderController extends  Controller
             switch ($arr['type']){
                 case 'wait':
                     $data = DB::table('order')
-                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where([
                             ['status','=',10],
                             ['hotel_id','=',$hid],
@@ -115,14 +115,14 @@ class OrderController extends  Controller
                     break;
                 case 'doing':
                     $data = DB::table('order')
-                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where('hotel_id','=',$hid)
                         ->whereBetween('create_at', [$start,$end])
                         ->get();
                     break;
                 case 'done' :
                     $data = DB::table('order')
-                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where('hotel_id','=',$hid )
                         ->whereIn('status', [0,9])
                         ->get();
@@ -265,13 +265,13 @@ class OrderController extends  Controller
            $end =  intval( $arr['end'] );
            if( !empty( $start ) && !empty( $end )){
                $data =$handle
-                   ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
+                   ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                    ->where($where)
                    ->whereBetween('appointment', [$start, $end])->get();
            }else{
 
                $data =$handle
-                   ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status')
+                   ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                    ->where($where)
                    ->get();
            }
@@ -413,7 +413,8 @@ class OrderController extends  Controller
                     'orders_phone' => $user_data['mobile'],
                     'user_id' =>$user_data['id'],
                     'hotel_id'  =>$user_data['hotel_id'],
-                    'judgment' => 1
+                    'judgment' => 1,
+                    'bottom_number' =>$arr['hotel_number']
 
                 ]
             );
@@ -432,10 +433,9 @@ class OrderController extends  Controller
      * APP 按时包车---套餐
      * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
      */
-    public function getPackage( Request $request )
+    public function getPackage(  )
     {
-        $arr = $request->only('id');
-        $id =$arr['id'];
+       $id = 21;
         try {
             JWTAuth::parseToken()->getPayload();
             //查询该一级服务下的服务详情
@@ -476,18 +476,7 @@ class OrderController extends  Controller
             $id = $user['foo'];
             //查询当前用户的酒店ID和type
             $user_data= Hotel::getUserFirst($id);
-//            switch (intval( $arr['pid'] )){
-//                case  21:
-//                    $type = $arr['type'];break;
-//
-//                case 31:
-//                    $type = 31;break;
-//                case 32 :
-//                    $type = 32; break;
-//                default:
-//                    return ReturnMessage::success('失败','1011');
-//
-//            }
+
             //插入数据
             $re = DB::table('order')->insert(
                 [
@@ -510,7 +499,8 @@ class OrderController extends  Controller
                     'orders_phone' => $user_data['mobile'],
                     'user_id' =>$user_data['id'],
                     'hotel_id'  =>$user_data['hotel_id'],
-                    'judgment' => 1
+                    'judgment' => 1,
+                    'bottom_number' =>$arr['hotel_number']
                 ]
             );
             if($re){
@@ -571,7 +561,8 @@ class OrderController extends  Controller
                         'orders_phone' => $user_data['mobile'],
                         'user_id' =>$user_data['id'],
                         'hotel_id'  =>$user_data['hotel_id'],
-                        'judgment' => 1
+                        'judgment' => 1,
+                        'bottom_number' =>$arr['hotel_number']
                     ]
                 );
                 //插入展字段
@@ -606,6 +597,7 @@ class OrderController extends  Controller
     public function getTrain( Request $request)
     {
         $arr = OrderValidator::takeTrain($request);
+        $type = intval($arr['type']);
         try{
             $user=JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
@@ -636,7 +628,8 @@ class OrderController extends  Controller
                         'orders_phone' => $user_data['mobile'],
                         'user_id' =>$user_data['id'],
                         'hotel_id'  =>$user_data['hotel_id'],
-                        'judgment' => 1
+                        'judgment' => 1,
+                        'bottom_number' =>$arr['hotel_number']
                     ]
                 );
                 //插入展字段

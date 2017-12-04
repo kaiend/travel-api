@@ -15,7 +15,7 @@ class OrderValidator
      */
 	public static function sendSpecial( Request $request)
     {
-        $only = ['time','name','phone','people','room_number','remarks','car_id','end','origin','price','type','end_position','origin_position'];
+        $only = ['time','name','phone','people','room_number','remarks','car_id','end','origin','price','type','end_position','origin_position','hotel_number'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
@@ -28,7 +28,8 @@ class OrderValidator
             'origin' =>'required',
             'price' =>'required',
             'type'  => 'required',
-            'origin_position'=>'required'
+            'origin_position'=>'required',
+            'hotel_number' =>'required'
         ];
 
         $messages = [
@@ -44,7 +45,7 @@ class OrderValidator
             'price.required' =>'车费不能为空',
             'type.required'  => '服务类型不能为空',
             'origin_position.required' =>'起点经纬度不能为空',
-
+            'hotel_number.required' =>'酒店订单号不能为空'
         ];
 
         $input = $request->only($only);
@@ -65,7 +66,7 @@ class OrderValidator
      */
     public static function sendPackage( Request $request )
     {
-        $only = ['time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','pid','end_position','origin_position'];
+        $only = ['time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','pid','end_position','origin_position','hotel_number'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
@@ -78,7 +79,8 @@ class OrderValidator
             'price' =>'required',
             'type' =>'required',
             'pid' => 'required',
-            'origin_position'=>'required'
+            'origin_position'=>'required',
+            'hotel_number' =>'required'
         ];
 
         $messages = [
@@ -93,7 +95,8 @@ class OrderValidator
             'origin_position.required' =>'起点经纬度不能为空',
             'price.required' =>'车费不能为空',
             'type.required'  => '服务类型不能为空',
-            'pid.required' => '出行类目不能为空'
+            'pid.required' => '出行类目不能为空',
+            'hotel_number.required' =>'酒店订单号不能为空'
         ];
 
         $input = $request->only($only);
@@ -113,7 +116,7 @@ class OrderValidator
      */
     public static function getFlight( Request $request )
     {
-        $only = ['flight_number','terminal','time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','cip'];
+        $only = ['flight_number','terminal','time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','cip','hotel_number'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
@@ -130,7 +133,8 @@ class OrderValidator
             'end_position'=>'required',
             'flight_number' =>'required',
             'terminal' => 'required',
-            'cip' =>'required'
+            'cip' =>'required',
+            'hotel_number' =>'required'
         ];
 
         $messages = [
@@ -149,7 +153,8 @@ class OrderValidator
             'type.required'  => '服务类型不能为空',
             'flight_number.required' =>'航班号不能为空',
             'terminal.required' => '航站楼不能为空',
-            'cip.required' =>'cip服务不能为空'
+            'cip.required' =>'cip服务不能为空',
+            'hotel_number.required' =>'酒店订单号不能为空'
         ];
 
         $input = $request->only($only);
@@ -169,7 +174,7 @@ class OrderValidator
      */
     public static function sendFlight( Request $request)
     {
-        $only = ['time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','cip'];
+        $only = ['time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','cip','hotel_number'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
@@ -184,7 +189,8 @@ class OrderValidator
             'type' =>'required',
             'origin_position'=>'required',
             'end_position'=>'required',
-            'cip' =>'required'
+            'cip' =>'required',
+            'hotel_number'=>'required'
         ];
 
         $messages = [
@@ -201,7 +207,8 @@ class OrderValidator
             'origin_position.required' =>'起点经纬度不能为空',
             'price.required' =>'车费不能为空',
             'type.required'  => '服务类型不能为空',
-            'cip.required' =>'cip服务不能为空'
+            'cip.required' =>'cip服务不能为空',
+            'hotel_number.required' =>'酒店订单不能为空'
         ];
 
         $input = $request->only($only);
@@ -221,7 +228,7 @@ class OrderValidator
      */
     public static function takeTrain( Request $request )
     {
-        $only = ['trips','train_station','time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position'];
+        $only = ['trips','train_station','time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','hotel_number'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
@@ -238,6 +245,7 @@ class OrderValidator
             'end_position'=>'required',
             'trips' =>'required',
             'train_station' => 'required',
+            'hotel_number' => 'required',
         ];
 
         $messages = [
@@ -256,6 +264,7 @@ class OrderValidator
             'type.required'  => '服务类型不能为空',
             'trips.required' =>'车次不能为空',
             'train_station.required' => '火车站不能为空',
+            'hotel_number.required' =>'酒店订单不能为空'
         ];
 
         $input = $request->only($only);
