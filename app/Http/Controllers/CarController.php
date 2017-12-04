@@ -50,8 +50,7 @@ class CarController extends Controller
         if( count($bdata) != 0){
             $bdata[0]['image'] ='http://travel.shidaichuxing.com/upload/'.$bdata[0]['image'];
             $final=ReturnMessage::toString($bdata);
-
-            return ReturnMessage::successData([$final]);
+            return ReturnMessage::successData($final);
 
         }else{
             return response()->json([
