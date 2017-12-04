@@ -298,10 +298,10 @@ class OrderController extends  Controller
      * App 用车--特殊路线列表
      * @return \Illuminate\Http\JsonResponse|mixed
      */
-    public  function  showList( Request $request)
+    public  function  showList()
     {
         //$arr = $request->only('id');
-        $id =33;
+        $id =30;
         try {
             JWTAuth::parseToken()->getPayload();
             //查询该一级服务下的服务详情
