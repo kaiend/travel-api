@@ -380,6 +380,7 @@ class OrderController extends  Controller
                     'created_at'  =>time(),
                     'end' => $arr['end'],
                     'origin' => $arr['origin'],
+                    'origin_position' => $arr['origin_position'],
                     'price' => $arr['price'],
                     'type' =>  $arr['type'],
                     'orders_name' => $user_data['name'],
