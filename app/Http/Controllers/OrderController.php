@@ -188,18 +188,44 @@ class OrderController extends  Controller
                     ['id',$id],
                     ['judgment',1]
                 ])
-                ->get();
+                ->first();
+
             $bdata=json_decode(json_encode($data),true);
-
             if( count($bdata) != 0){
-                $b = $bdata[0]['car_id'];
-                $tid =$bdata[0]['type'];
-                $bdata[0]['car_id'] = Config::get('order.car_series.'.$b);
-                $bdata[0]['type'] = Config::get('order.type.'.$tid);
 
-                $final=ReturnMessage::toString($bdata);
+                $bdata['appointment'] = date('Y-m-d H:i',$bdata['appointment']);
+                $bdata['created_at'] = date('Y-m-d H:i',$bdata['created_at']);
+                //获取所属服务
+                $data_to = DB::table('server_item')->where('id',$bdata['type'])->first();
+                $bdata_to=json_decode(json_encode($data_to),true);
+                $bdata['server_title'] = $bdata_to['name'];
+                //判断是否有扩展字段
+               if($bdata_to['type'] !== 'null' && !empty($bdata_to)) {
 
-                return ReturnMessage::successData($final);
+                    $type_name = json_decode($bdata_to['type_name']);
+                    $field_name = json_decode($bdata_to['field_name']);
+
+                    $data_way= [];
+                    foreach (  $field_name as $k => $v) {
+
+                        $data_way[$k]['title']= $type_name[$k];
+                        $data_way[$k]['content'] = DB::table('way_to')->where('order_id',$bdata['id'])->where('name',$v)->value('content');
+                        $data_way[$k]['content'] = json_decode($data_way[$k]['content'])[0];
+                    }
+
+                }
+
+                $b = $bdata['car_id'];
+                $bdata['car_series'] = Config::get('order.car_series.'.$b);
+
+               return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'data' => [
+                        'formal'=> [$bdata],
+                        'extra' => $data_way
+                    ]
+               ]);
 
             }else{
                 return response()->json([
@@ -550,14 +576,12 @@ class OrderController extends  Controller
                 );
                 //插入展字段
                 $field =DB::table('server_item')->where('id',$type) ->value('field_name');
-                $field =rtrim(ltrim($field,'['),']');
-                $last= explode(',',$field);
-                foreach( $last as $k =>$v){
-                    $v =rtrim(ltrim($v,'"'),'"');
+                $field_mame = json_decode($field);
+                foreach(  $field_mame as $k =>$v){
                     DB::table('way_to') ->insert([
                         'order_id' =>$id,
                         'name' =>$v,
-                        'content' =>$arr[$v]
+                        'content' =>json_encode([$arr[$v]])
                     ]);
                 }
               DB::commit();
@@ -616,15 +640,13 @@ class OrderController extends  Controller
                     ]
                 );
                 //插入展字段
-                $field =DB::table('server_item')->where('id',intval($arr['type'])) ->value('field_name');
-                $field =rtrim(ltrim($field,'['),']');
-                $last= explode(',',$field);
-                foreach( $last as $k =>$v){
-                    $v =rtrim(ltrim($v,'"'),'"');
+                $field =DB::table('server_item')->where('id',$type) ->value('field_name');
+                $field_mame = json_decode($field);
+                foreach(  $field_mame as $k =>$v){
                     DB::table('way_to') ->insert([
                         'order_id' =>$id,
                         'name' =>$v,
-                        'content' =>$arr[$v]
+                        'content' =>json_encode([$arr[$v]])
                     ]);
                 }
                 DB::commit();
