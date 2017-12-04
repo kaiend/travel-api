@@ -15,7 +15,7 @@ class OrderValidator
      */
 	public static function sendSpecial( Request $request)
     {
-        $only = ['time','name','phone','people','room_number','remarks','car_id','end','origin','price','type'];
+        $only = ['time','name','phone','people','room_number','remarks','car_id','end','origin','price','type','end_position','origin_position'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
@@ -27,7 +27,8 @@ class OrderValidator
             'end' =>'required',
             'origin' =>'required',
             'price' =>'required',
-            'type'  => 'required'
+            'type'  => 'required',
+            'origin_position'=>'required'
         ];
 
         $messages = [
@@ -41,7 +42,9 @@ class OrderValidator
             'end.required' =>'终点不能为空',
             'origin.required' =>'起点不能为空',
             'price.required' =>'车费不能为空',
-            'type.required'  => '服务类型不能为空'
+            'type.required'  => '服务类型不能为空',
+            'origin_position.required' =>'起点经纬度不能为空',
+
         ];
 
         $input = $request->only($only);
