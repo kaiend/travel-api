@@ -300,8 +300,8 @@ class OrderController extends  Controller
      */
     public  function  showList( Request $request)
     {
-        $arr = $request->only('id');
-        $id =$arr['id'];
+        //$arr = $request->only('id');
+        $id =33;
         try {
             JWTAuth::parseToken()->getPayload();
             //查询该一级服务下的服务详情
