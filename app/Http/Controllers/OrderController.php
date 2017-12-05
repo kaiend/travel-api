@@ -199,20 +199,19 @@ class OrderController extends  Controller
                 $data_to = DB::table('server_item')->where('id',$bdata['type'])->first();
                 $bdata_to=json_decode(json_encode($data_to),true);
                 $bdata['server_title'] = $bdata_to['name'];
+                $data_way= [];
                 //判断是否有扩展字段
                if($bdata_to['type'] !== 'null' && !empty($bdata_to)) {
 
                     $type_name = json_decode($bdata_to['type_name']);
                     $field_name = json_decode($bdata_to['field_name']);
 
-                    $data_way= [];
                     foreach (  $field_name as $k => $v) {
 
                         $data_way[$k]['title']= $type_name[$k];
                         $data_way[$k]['content'] = DB::table('way_to')->where('order_id',$bdata['id'])->where('name',$v)->value('content');
                         $data_way[$k]['content'] = json_decode($data_way[$k]['content'])[0];
                     }
-
                 }
 
                 $b = $bdata['car_id'];
@@ -350,34 +349,54 @@ class OrderController extends  Controller
             $id = $user['foo'];
             //查询当前用户的酒店ID和type
             $user_data= Hotel::getUserFirst($id);
+            $type = intval($arr['type']);
+            DB::beginTransaction();
+            try{
+                //查询
+                $re = DB::table('order')->insert(
+                    [
+                        'appointment' => $arr['time'],
+                        'passenger_name' => $arr['name'],
+                        'passenger_phone' => $arr['phone'],
+                        'passenger_people' => $arr['people'],
+                        'room_number' => $arr['room_number'],
+                        'order_number' =>Common::createNumber(),
+                        'remarks' => $arr['remarks'],
+                        'car_id'  => $arr['car_id'],
+                        'created_at'  =>time(),
+                        'end' => $arr['end'],
+                        'origin' => $arr['origin'],
+                        'end_position' => $arr['end_position'],
+                        'origin_position' => $arr['origin_position'],
+                        'price' => $arr['price'],
+                        'type' =>  $type ,
+                        'orders_name' => $user_data['name'],
+                        'orders_phone' => $user_data['mobile'],
+                        'user_id' =>$user_data['id'],
+                        'hotel_id'  =>$user_data['hotel_id'],
+                        'judgment' => 1,
+                        'bottom_number' =>$arr['hotel_number']
 
-            //查询
-            $re = DB::table('order')->insert(
-                [
-                    'appointment' => $arr['time'],
-                    'passenger_name' => $arr['name'],
-                    'passenger_phone' => $arr['phone'],
-                    'passenger_people' => $arr['people'],
-                    'room_number' => $arr['room_number'],
-                    'order_number' =>Common::createNumber(),
-                    'remarks' => $arr['remarks'],
-                    'car_id'  => $arr['car_id'],
-                    'created_at'  =>time(),
-                    'end' => $arr['end'],
-                    'origin' => $arr['origin'],
-                    'end_position' => $arr['end_position'],
-                    'origin_position' => $arr['origin_position'],
-                    'price' => $arr['price'],
-                    'type' =>  $arr['type'],
-                    'orders_name' => $user_data['name'],
-                    'orders_phone' => $user_data['mobile'],
-                    'user_id' =>$user_data['id'],
-                    'hotel_id'  =>$user_data['hotel_id'],
-                    'judgment' => 1,
-                    'bottom_number' =>$arr['hotel_number']
-
-                ]
-            );
+                    ]
+                );
+                //插入展字段
+                $field =DB::table('server_item')->where('id',$type) ->value('field_name');
+                $field_mame = json_decode($field);
+                foreach(  $field_mame as $k =>$v){
+                    DB::table('way_to') ->insert([
+                        'order_id' =>$id,
+                        'name' =>$v,
+                        'content' =>json_encode([$arr[$v]])
+                    ]);
+                }
+                DB::commit();
+            }catch (\Exception $e){
+                DB::rollback();
+                return response()->json([
+                    'code' => $e->getCode(),
+                    'info' => $e->getMessage(),
+                ]);
+            }
             if($re){
                 return ReturnMessage::success();
             }else{
