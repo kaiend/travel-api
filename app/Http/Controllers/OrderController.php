@@ -318,7 +318,9 @@ class OrderController extends  Controller
                     $bdata[$k]['extra']=array_combine($bdata[$k]['field_name'],$bdata[$k]['content']);
                     unset($bdata[$k]['field_name']);
                     unset($bdata[$k]['content']);
+                    $bdata[$k]['picture'] ='http://travel.shidaichuxing.com/upload/'.$bdata[$k]['picture'];
                 }
+
                 $final=ReturnMessage::toString($bdata);
 
                 return ReturnMessage::successData($final);
