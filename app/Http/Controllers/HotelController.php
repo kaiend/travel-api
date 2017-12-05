@@ -412,6 +412,6 @@ class HotelController extends Controller
      */
     public function test()
     {
-        return 1;
+        return Common::createNumber();
     }
 }
