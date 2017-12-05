@@ -19,8 +19,8 @@ class Common
 	 * */
 	public static function createNumber()
 	{
-		//return date('ymds').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 7);
-        return md5('chuxing'.time());
+		return date('ymds').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 7);
+        //return md5('chuxing'.time());
 	}
 
 	/**
