@@ -25,10 +25,11 @@ class OrderValidator
             'room_number'=>'required',
             'car_id' =>'required',
             'end' =>'required',
+            'end_position' =>'required',
             'origin' =>'required',
+            'origin_position'=>'required',
             'price' =>'required',
             'type'  => 'required',
-            'origin_position'=>'required',
             'hotel_number' =>'required'
         ];
 
@@ -45,6 +46,7 @@ class OrderValidator
             'price.required' =>'车费不能为空',
             'type.required'  => '服务类型不能为空',
             'origin_position.required' =>'起点经纬度不能为空',
+            'end_position.required' =>'终点经纬度不能为空',
             'hotel_number.required' =>'酒店订单号不能为空'
         ];
 

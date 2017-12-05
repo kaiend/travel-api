@@ -337,56 +337,6 @@ class OrderController extends  Controller
         }
     }
     /**
-     * 特殊线路详情
-     * @param $id
-     * @return \Illuminate\Http\JsonResponse|mixed
-     */
-    public function getSpecial( $id )
-    {
-        $id=intval($id);
-        try {
-            JWTAuth::parseToken()->getPayload();
-
-            $data = DB::table('server_item')
-                ->where('id',$id)
-                ->select('id','parent_id','name','picture','field_name','content')
-                ->first();
-            $bdata=json_decode(json_encode($data),true);
-            $a=$bdata['field_name'];
-            $b=$bdata['content'];
-            $a_last =rtrim(ltrim($a,'['),']');
-            $arr1= explode(',',$a_last);
-            $last= [];
-            foreach( $arr1 as $k=>$v){
-                $v =rtrim(ltrim($v,'"'),'"');
-                $last[]=$v;
-            }
-            $b_last =rtrim(ltrim($b,'['),']');
-            $arr2= explode(',',$b_last);
-            $lastb= [];
-            foreach( $arr2 as $kk=>$vv){
-                $vv =rtrim(ltrim($vv,'"'),'"');
-                $lastb[]=$vv;
-            }
-            $arr3 = array_combine($last, $lastb);
-            $res = array_merge($arr3,$bdata);
-            unset($res['field_name']);
-            unset($res['content']);
-            if( count($bdata) != 0){
-
-                return ReturnMessage::successData([$res]);
-            }else{
-                return response()->json([
-                    'code' =>'1000',
-                    'info' => 'success',
-                    'data' => []
-                ]);
-            }
-        }catch (JWTException $e){
-            return ReturnMessage::success('非法token' ,'1009');
-        }
-    }
-    /**
      * 特殊路线下单
      * @param Request $request
      * @return \App\Helpers\json
@@ -415,6 +365,7 @@ class OrderController extends  Controller
                     'created_at'  =>time(),
                     'end' => $arr['end'],
                     'origin' => $arr['origin'],
+                    'end_position' => $arr['end_position'],
                     'origin_position' => $arr['origin_position'],
                     'price' => $arr['price'],
                     'type' =>  $arr['type'],
