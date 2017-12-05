@@ -306,12 +306,19 @@ class OrderController extends  Controller
             JWTAuth::parseToken()->getPayload();
             //查询该一级服务下的服务详情
             $data = DB::table('server_item')
-                ->select('id','parent_id','name','picture')
+                ->select('id','parent_id','name','picture','field_name','content')
                 ->where( 'parent_id',$id)
                 ->get();
-
             $bdata=json_decode(json_encode($data),true);
+
             if( count($bdata) != 0){
+                foreach( $bdata as $k=>$v) {
+                    $bdata[$k]['field_name'] = json_decode($v['field_name']);
+                    $bdata[$k]['content'] = json_decode($v['content']);
+                    $bdata[$k]['extra']=array_combine($bdata[$k]['field_name'],$bdata[$k]['content']);
+                    unset($bdata[$k]['field_name']);
+                    unset($bdata[$k]['content']);
+                }
                 $final=ReturnMessage::toString($bdata);
 
                 return ReturnMessage::successData($final);
@@ -669,19 +676,41 @@ class OrderController extends  Controller
             $id = $user['foo'];
              //查询当前用户的酒店ID和type
             $user_data= Hotel::getUserFirst($id);
-            $re = DB::table('extra_order')->insert([
-                'order_number' =>$arr['order_number'],
-                'remarks' => $arr['remarks'],
-                'car_id'  => $arr['car_id'],
-                'created_at'  =>time(),
-                'end' => $arr['end'],
-                'origin' => $arr['origin'],
-                'end_position' => $arr['end_position'],
-                'origin_position' => $arr['origin_position'],
-                'user_id' =>$user_data['id'],
-                'hotel_id'  =>$user_data['hotel_id'],
-                'judgment' => 1
-            ]);
+            $type = intval($arr['type']);
+            if( $type == 21){
+                $re = DB::table('extra_order')->insert([
+                    'order_number' =>$arr['order_number'],
+                    'remarks' => $arr['remarks'],
+                    'car_id'  => $arr['car_id'],
+                    'created_at'  =>time(),
+                    'end' => $arr['end'],
+                    'hours' => $arr ['hours'],
+                    'origin' => $arr['origin'],
+                    'bottom_number' => $arr['bottom_number'],
+                    'end_position' => $arr['end_position'],
+                    'origin_position' => $arr['origin_position'],
+                    'user_id' =>$user_data['id'],
+                    'hotel_id'  =>$user_data['hotel_id'],
+                    'judgment' => 1
+                ]);
+
+            }else{
+                $re = DB::table('extra_order')->insert([
+                    'order_number' =>$arr['order_number'],
+                    'remarks' => $arr['remarks'],
+                    'car_id'  => $arr['car_id'],
+                    'created_at'  =>time(),
+                    'end' => $arr['end'],
+                    'origin' => $arr['origin'],
+                    'end_position' => $arr['end_position'],
+                    'origin_position' => $arr['origin_position'],
+                    'user_id' =>$user_data['id'],
+                    'hotel_id'  =>$user_data['hotel_id'],
+                    'judgment' => 1,
+                    'bottom_number' => $arr['bottom_number'],
+                ]);
+            }
+
             if( $re ){
                 return ReturnMessage::success();
             }else{

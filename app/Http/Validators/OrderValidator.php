@@ -284,7 +284,7 @@ class OrderValidator
      */
     public static function makeExtra( Request $request )
     {
-        $only = ['order_number','remarks','car_id','type','end','origin','end_position','origin_position'];
+        $only = ['order_number','remarks','car_id','type','end','origin','end_position','origin_position','hotel_number','hours'];
 
         $rules = [
             'order_number' =>'required',
