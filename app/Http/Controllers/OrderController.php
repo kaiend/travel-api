@@ -221,8 +221,8 @@ class OrderController extends  Controller
                     'code' =>'1000',
                     'info' => 'success',
                     'data' => [
-                        'formal'=> [$bdata],
-                        'extra' => $data_way
+                        'formal'=> ReturnMessage::toString([$bdata]),
+                        'extra' => ReturnMessage::toString($data_way)
                     ]
                ]);
 
@@ -353,7 +353,7 @@ class OrderController extends  Controller
             DB::beginTransaction();
             try{
                 //查询
-                $re = DB::table('order')->insert(
+                $id = DB::table('order')->insertGetId(
                     [
                         'appointment' => $arr['time'],
                         'passenger_name' => $arr['name'],
@@ -379,10 +379,13 @@ class OrderController extends  Controller
 
                     ]
                 );
-                //插入展字段
-                $field =DB::table('server_item')->where('id',$type) ->value('field_name');
-                $field_mame = json_decode($field);
-                foreach(  $field_mame as $k =>$v){
+                $field =DB::table('server_item')->where('id',$type) ->first();
+                $bdata = json_decode(json_encode($field), true);
+                $field_mame =json_decode($bdata['field_name']);
+                $content = json_decode($bdata['content']);
+                $res = array_combine($field_mame,$content);
+                $res['coordinate'] =$arr['end_position'];
+                foreach(  $res as $k =>$v){
                     DB::table('way_to') ->insert([
                         'order_id' =>$id,
                         'name' =>$v,
@@ -396,11 +399,6 @@ class OrderController extends  Controller
                     'code' => $e->getCode(),
                     'info' => $e->getMessage(),
                 ]);
-            }
-            if($re){
-                return ReturnMessage::success();
-            }else{
-                return ReturnMessage::success( '失败','1011');
             }
 
         }catch( JWTException $e){
