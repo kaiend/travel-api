@@ -67,9 +67,11 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::post('/flight' ,'OrderController@getFlight');
         //App接站--下单接口
         \Dingo\Api\Facade\Route::post('/train' ,'OrderController@getTrain');
-
         //APP追加订单
         \Dingo\Api\Facade\Route::post('/extra' ,'OrderController@makeExtra');
+        //APP订单审核
+        \Dingo\Api\Facade\Route::post('/check' ,'OrderController@makeCheck');
+
 
     });
 

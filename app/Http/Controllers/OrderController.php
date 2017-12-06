@@ -693,4 +693,37 @@ class OrderController extends  Controller
 
     }
 
+    public function makeCheck( Request $request)
+    {
+        $arr = $request->only('order_id','type');
+        //$arr = OrderValidator::makeCheck($request);
+        try {
+            $user = JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+            //查询当前用户的酒店ID和type
+            $user_data = Hotel::getUserFirst($id);
+            switch ($arr['type']){
+                case 'agree':$status = 1 ;break;
+                case 'reject':$status = 0; break;
+                default:ReturnMessage::success('失败','1011');
+            }
+            if( intval($user_data['type']) == 2){
+                //更新订单状态
+                $re = DB::table('order')
+                    ->where('id',intval($arr['order_id']))
+                    ->update(['status'=>$status]);
+                if( $re ){
+                    return ReturnMessage::success();
+                }else{
+                    return ReturnMessage::success('Update failed','1011');
+                }
+            }else{
+                return ReturnMessage::success('No Power','1011');
+            }
+
+        } catch (JWTException $e) {
+            return ReturnMessage::success('非法token', '1009');
+        }
+    }
+
 }
