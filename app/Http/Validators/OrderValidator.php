@@ -290,10 +290,10 @@ class OrderValidator
 
         $rules = [
             'order_number' =>'required',
-            'origin' =>'required',
-            'origin_position'=>'required',
-            'end' =>'required',
-            'end_position'=>'required',
+            //'origin' =>'required',
+            //'origin_position'=>'required',
+            //'end' =>'required',
+            //'end_position'=>'required',
             'car_id' =>'required',
             'type' =>'required',
         ];
@@ -301,10 +301,10 @@ class OrderValidator
         $messages = [
             'order_number.required' =>'原订单编号不能为空',
             'car_id.required' =>'车辆不能为空',
-            'origin.required' =>'起点不能为空',
-            'end.required' =>'终点不能为空',
-            'end_position.required' =>'终点经纬度不能为空',
-            'origin_position.required' =>'起点经纬度不能为空',
+            //'origin.required' =>'起点不能为空',
+            //'end.required' =>'终点不能为空',
+            //'end_position.required' =>'终点经纬度不能为空',
+            //'origin_position.required' =>'起点经纬度不能为空',
             'type.required'  => '服务类型不能为空'
         ];
 

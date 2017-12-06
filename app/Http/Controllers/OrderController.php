@@ -692,7 +692,62 @@ class OrderController extends  Controller
         }
 
     }
+    public function getExtraDetail( $id )
+    {
+        //订单编号 查 追加订单
+        try {
+            JWTAuth::parseToken()->getPayload();
+            $data=DB::table('extra_order')
+                ->where('order_id',$id)->get();
+            dd( $data );die;
+            $bdata=json_decode(json_encode($data),true);
+            if( count($bdata) != 0){
 
+                $bdata['appointment'] = date('Y-m-d H:i',$bdata['appointment']);
+                $bdata['created_at'] = date('Y-m-d H:i',$bdata['created_at']);
+                //获取所属服务
+                $data_to = DB::table('server_item')->where('id',$bdata['type'])->first();
+                $bdata_to=json_decode(json_encode($data_to),true);
+                $bdata['server_title'] = $bdata_to['name'];
+                $data_way= [];
+                //判断是否有扩展字段
+                if($bdata_to['type'] !== 'null' && !empty($bdata_to)) {
+
+                    $type_name = json_decode($bdata_to['type_name']);
+                    $field_name = json_decode($bdata_to['field_name']);
+
+                    foreach (  $field_name as $k => $v) {
+
+                        $data_way[$k]['title']= $type_name[$k];
+                        $data_way[$k]['content'] = DB::table('way_to')->where('order_id',$bdata['id'])->where('name',$v)->value('content');
+                        $data_way[$k]['content'] = json_decode($data_way[$k]['content'])[0];
+                    }
+                }
+
+                $b = $bdata['car_id'];
+                $bdata['car_series'] = Config::get('order.car_series.'.$b);
+
+                return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'data' => [
+                        'formal'=> ReturnMessage::toString([$bdata]),
+                        'extra' => ReturnMessage::toString($data_way)
+                    ]
+                ]);
+
+            }else{
+                return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'data' => []
+                ]);
+            }
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+
+    }
     /**
      * 订单审核、驳回
      * @param Request $request
@@ -700,8 +755,8 @@ class OrderController extends  Controller
      */
     public function makeCheck( Request $request)
     {
-        //$arr = $request->only('order_id','type');
-        $arr = OrderValidator::makeCheck($request);
+        $arr = $request->only('order_id','type');
+        //$arr = OrderValidator::makeCheck($request);
         try {
             $user = JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
