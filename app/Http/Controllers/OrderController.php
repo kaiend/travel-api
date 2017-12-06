@@ -656,7 +656,7 @@ class OrderController extends  Controller
                     'end' => $arr['end'],
                     'hours' => $arr ['hours'],
                     'origin' => $arr['origin'],
-                    'bottom_number' => $arr['bottom_number'],
+                    'bottom_number' => $arr['hotel_number'],
                     'end_position' => $arr['end_position'],
                     'origin_position' => $arr['origin_position'],
                     'user_id' =>$user_data['id'],
@@ -677,7 +677,7 @@ class OrderController extends  Controller
                     'user_id' =>$user_data['id'],
                     'hotel_id'  =>$user_data['hotel_id'],
                     'judgment' => 1,
-                    'bottom_number' => $arr['bottom_number'],
+                    'bottom_number' => $arr['hotel_number'],
                 ]);
             }
 

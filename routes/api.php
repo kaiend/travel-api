@@ -105,6 +105,13 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::get('/lists' ,'CarController@getSerie');
 
     });
+
+    //APP推送接口
+    $api->group(['prefix' => 'push'] , function(){
+        //状态变化推送接口
+        \Dingo\Api\Facade\Route::get('/order/status' ,'PushController@pushStatus');
+
+    });
 });
 
 
