@@ -28,7 +28,7 @@ $api->version('v1', [
 ], function ($api) {
 
     //APP登录
-    $api->get('/login','HotelController@login');
+    $api->post('/login','HotelController@login');
     //APP快捷登录
     $api ->post('/sign','HotelController@sign');
     //APP发送验证码
