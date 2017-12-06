@@ -117,7 +117,7 @@ class UserValidator
 
 	public static function sign( Request $request)
     {
-        $only = ['phone','code'];
+        $only = ['phone','password','model_status', 'jpush_code', 'model_code'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/|exists:hotel_user,mobile',
@@ -272,7 +272,7 @@ class UserValidator
      */
     public static function hotelLogin( Request $request)
     {
-        $only = ['phone','password'];
+        $only = ['phone','password','model_status', 'jpush_code', 'model_code'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
