@@ -389,7 +389,7 @@ class OrderController extends  Controller
                     DB::table('way_to') ->insert([
                         'order_id' =>$id,
                         'name' =>$k,
-                        'content' =>json_encode([$arr[$k]])
+                        'content' =>json_encode([$res[$k]])
                     ]);
                 }
                 DB::commit();
