@@ -26,6 +26,7 @@ class PushController extends Controller
     public function pushStatus( Request $request )
     {
         $arr =$request->only('order_id');
+        //查询
         $jpush =$this->newClient();
 
 
