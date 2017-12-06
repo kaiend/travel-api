@@ -68,7 +68,7 @@ class OrderValidator
      */
     public static function sendPackage( Request $request )
     {
-        $only = ['time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','pid','end_position','origin_position','hotel_number'];
+        $only = ['time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','hotel_number'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
@@ -80,7 +80,6 @@ class OrderValidator
             'car_id' =>'required',
             'price' =>'required',
             'type' =>'required',
-            'pid' => 'required',
             'origin_position'=>'required',
             'hotel_number' =>'required'
         ];
@@ -97,7 +96,6 @@ class OrderValidator
             'origin_position.required' =>'起点经纬度不能为空',
             'price.required' =>'车费不能为空',
             'type.required'  => '服务类型不能为空',
-            'pid.required' => '出行类目不能为空',
             'hotel_number.required' =>'酒店订单号不能为空'
         ];
 
