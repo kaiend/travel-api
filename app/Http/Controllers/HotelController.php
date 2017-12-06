@@ -39,14 +39,34 @@ class HotelController extends Controller
     public function login(Request $request)
     {
         $input = UserValidator::hotelLogin($request);
+
         $input['mobile'] =$input['phone'];
         unset($input['phone']);
-        $info = DB::table('hotel_user')->where($input) ->first();
-
+        $info = DB::table('hotel_user')
+            ->where([
+                ['mobile',$input['mobile']],
+                ['password',$input['password']]
+            ])->first();
         if (!empty($info)){
             $info = json_decode(json_encode($info),true);
-            $info['token'] = $this->token( $info['id'] );
-            return ReturnMessage::successData($info);
+            $new =[
+                "model_status" => $input['model_status'],
+                "jpush_code" =>$input['jpush_code'],
+                "model_code" =>$input['model_code']
+
+            ];
+            //用户存在，更新某些字段
+            DB::table('hotel_user')
+                ->where('id',$info['id'])
+                ->update($new);
+            $new_Data= DB::table('hotel_user')
+                        ->where('id',$info['id'])
+                        ->first();
+            $new_Datas = json_decode(json_encode($new_Data),true);
+
+            $new_Datas['token'] = $this->token( $new_Datas['id'] );
+            return ReturnMessage::successData($new_Datas);
+
         }
 
         return ReturnMessage::success('用户不存在或密码错误',1002);

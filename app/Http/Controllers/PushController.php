@@ -27,12 +27,11 @@ class PushController extends Controller
     {
         $arr =$request->only('order_id','status');
         $jpush =$this->newClient();
-        dd( $jpush);die;
-//        $response = $jpush->push()
-//            ->setPlatform('all')
-//            ->addAllAudience()
-//            ->setNotificationAlert('hello tp3.2')
-//            ->send();
-//        print_r($response);
+        $response = $jpush->push()
+            ->setPlatform('all')
+            ->addAllAudience()
+            ->setNotificationAlert('hello tp3.2')
+            ->send();
+        dd($response);
     }
 }
