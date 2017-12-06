@@ -388,8 +388,8 @@ class OrderController extends  Controller
                 foreach(  $res as $k =>$v){
                     DB::table('way_to') ->insert([
                         'order_id' =>$id,
-                        'name' =>$v,
-                        'content' =>json_encode([$arr[$v]])
+                        'name' =>$k,
+                        'content' =>json_encode([$arr[$k]])
                     ]);
                 }
                 DB::commit();

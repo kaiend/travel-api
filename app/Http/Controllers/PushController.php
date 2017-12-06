@@ -25,12 +25,16 @@ class PushController extends Controller
 
     public function pushStatus( Request $request )
     {
-        $arr =$request->only('order_id','status');
+        $arr =$request->only('order_id');
         $jpush =$this->newClient();
+
+
         $response = $jpush->push()
             ->setPlatform('all')
-            ->addAllAudience()
-            ->setNotificationAlert('hello tp3.2')
+            ->options(['apns_production'=>true])
+            ->addRegistrationId($regid)
+            ->iosNotification($alert, $message)
+            ->androidNotification($alert, $message)
             ->send();
         dd($response);
     }
