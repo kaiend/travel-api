@@ -81,11 +81,25 @@ class HotelController extends Controller
         $input = UserValidator::sign($request);
         $input['mobile'] = $input['phone'];
         unset($input['phone']);
-        $data = DB::table('hotel_user')->where('mobile','=',$input['mobile'])->get();
+        $new =[
+            "model_status" => $input['model_status'],
+            "jpush_code" =>$input['jpush_code'],
+            "model_code" =>$input['model_code']
 
+        ];
+        $data = DB::table('hotel_user')->where('mobile','=',$input['mobile'])->get();
         $info = json_decode(json_encode($data),true);
-        $info['token'] = $this->token( $info[0]['id'] );
-        return ReturnMessage::successData([$info[0]]);
+        //用户存在，更新某些字段
+        DB::table('hotel_user')
+            ->where('id',$info[0]['id'])
+            ->update($new);
+        $new_Data= DB::table('hotel_user')
+            ->where('id',$info['id'])
+            ->first();
+        $new_Datas = json_decode(json_encode($new_Data),true);
+
+        $new_Datas['token'] = $this->token( $new_Datas['id'] );
+        return ReturnMessage::successData($new_Datas);
 
 
 
