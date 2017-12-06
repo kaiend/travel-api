@@ -693,10 +693,15 @@ class OrderController extends  Controller
 
     }
 
+    /**
+     * 订单审核、驳回
+     * @param Request $request
+     * @return \App\Helpers\json
+     */
     public function makeCheck( Request $request)
     {
-        $arr = $request->only('order_id','type');
-        //$arr = OrderValidator::makeCheck($request);
+        //$arr = $request->only('order_id','type');
+        $arr = OrderValidator::makeCheck($request);
         try {
             $user = JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
@@ -707,6 +712,7 @@ class OrderController extends  Controller
                 case 'reject':$status = 0; break;
                 default:ReturnMessage::success('失败','1011');
             }
+
             if( intval($user_data['type']) == 2){
                 //更新订单状态
                 $re = DB::table('order')
