@@ -647,6 +647,7 @@ class OrderController extends  Controller
              //查询当前用户的酒店ID和type
             $user_data= Hotel::getUserFirst($id);
             $type = intval($arr['type']);
+
             if( $type == 21){
                 $re = DB::table('extra_order')->insert([
                     'order_number' =>$arr['order_number'],
@@ -682,7 +683,6 @@ class OrderController extends  Controller
                     'bottom_number' => $arr['hotel_number'],
                 ]);
             }
-
             if( $re ){
                 return ReturnMessage::success();
             }else{
