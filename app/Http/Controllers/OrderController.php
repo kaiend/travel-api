@@ -209,7 +209,7 @@ class OrderController extends  Controller
                 $bdata['server_title'] = $bdata_to['name'];
                 $data_way= [];
                 //判断是否有扩展字段
-               if($bdata_to['type'] !== 'null' && !empty($bdata_to)) {
+                if($bdata_to['type'] !== 'null' && !empty($bdata_to)) {
 
                    $type_name = json_decode($bdata_to['type_name']);
                    $field_name = json_decode($bdata_to['field_name']);
@@ -231,35 +231,39 @@ class OrderController extends  Controller
                         $data_way[$k]['content'] = json_decode($data_way[$k]['content'])[0];
                     }
                 }
-                //车系文字化
-               $b = $bdata['car_id'];
-               $detail['car_id'] = Config::get('order.car_series.'.$b);
                 //文字化某些字段
-               $detail['server_title']=$bdata['server_title'];
-               $detail['remarks']=$bdata['remarks'];
-               $detail['bottom_number']=$bdata['bottom_number'];
-               $detail['passenger_people']=$bdata['passenger_people'];
-               $detail['passenger_name']=$bdata['passenger_name'];
-               $detail['appointment']=$bdata['appointment'];
-               $detail['orders_name']=$bdata['orders_name'];
-               $detail['price']=$bdata['price'];
-               $detail['order_number']=$bdata['order_number'];
-               $config = Config::get('order.detail');
-               $last_data =[];
+                $detail['order_number']=$bdata['order_number'];
+                $detail['orders_name']=$bdata['orders_name'];
+                $detail['server_title']=$bdata['server_title'];
+                $detail['appointment']=$bdata['appointment'];
+                $detail['passenger_name']=$bdata['passenger_name'];
+                $detail['passenger_people']=$bdata['passenger_people'];
+                $detail['passenger_phone']=$bdata['passenger_phone'];
+                //车系文字化
+                $b = $bdata['car_id'];
+                $detail['car_id'] = Config::get('order.car_series.'.$b);
+                $detail['price']=$bdata['price'];
+
+                $detail['bottom_number']=$bdata['bottom_number'];
+                $detail['remarks']=$bdata['remarks'];
+
+
+                $config = Config::get('order.detail');
+                $last_data =[];
                 $x=0;
-               foreach( $detail as $k =>$v){
+                foreach( $detail as $k =>$v){
 
                    $last_data[$x]['title'] =$config[$k];
                    $last_data[$x]['content'] =$v;
                    $x ++;
-               }
+                }
                 $ff=array_merge($last_data,$data_way);
-               $bdata['word'] =$ff;
-               return response()->json([
+                $bdata['word'] =$ff;
+                return response()->json([
                     'code' =>'1000',
                     'info' => 'success',
                     'data' => ReturnMessage::toString($bdata)
-               ]);
+                ]);
 
             }else{
                 return response()->json([
