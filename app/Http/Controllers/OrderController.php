@@ -211,10 +211,20 @@ class OrderController extends  Controller
                 //判断是否有扩展字段
                if($bdata_to['type'] !== 'null' && !empty($bdata_to)) {
 
-                    $type_name = json_decode($bdata_to['type_name']);
-                    $field_name = json_decode($bdata_to['field_name']);
-
-                    foreach (  $field_name as $k => $v) {
+                   $type_name = json_decode($bdata_to['type_name']);
+                   $field_name = json_decode($bdata_to['field_name']);
+                   $field_names =array_flip( $field_name );
+                   if($bdata_to['parent_id'] == 30 || $bdata['type'] == 27){
+                       $field_names =[];
+                   }else if( $bdata['type'] == 26){
+                       unset($field_names['cip']);
+                       unset($field_names['end']);
+                   }else if( $bdata['type'] == 28 ){
+                       unset($field_names['end']);
+                   }else if( $bdata['type'] == 29){
+                       unset($field_names['origin']);
+                   }
+                    foreach (  array_flip($field_names) as $k => $v) {
 
                         $data_way[$k]['title']= $type_name[$k];
                         $data_way[$k]['content'] = DB::table('way_to')->where('order_id',$bdata['id'])->where('name',$v)->value('content');
@@ -243,21 +253,7 @@ class OrderController extends  Controller
                    $last_data[$x]['content'] =$v;
                    $x ++;
                }
-                $data_ways =[];
-               if($bdata_to['parent_id'] == 30 || $bdata['type'] == 27){
-                   $data_ways =[];
-               }else if( $bdata['type'] == 26){
-                   unset($data_way['cip']);
-                   unset($data_way['end']);
-                   $data_ways =$data_way;
-               }else if( $bdata['type'] == 28 ){
-                   unset($data_way['end']);
-                   $data_ways =$data_way;
-               }else if( $bdata['type'] == 29){
-                   unset($data_way['origin']);
-                   $data_ways =$data_way;
-               }
-                $ff=array_merge($last_data,$data_ways);
+                $ff=array_merge($last_data,$data_way);
                $bdata['word'] =$ff;
                return response()->json([
                     'code' =>'1000',
