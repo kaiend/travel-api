@@ -12,6 +12,7 @@ use App\Http\Validators\UserValidator;
 use App\Models\Hotel;
 use App\Models\ServerItem;
 use Dingo\Api\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -66,7 +67,7 @@ class HotelController extends Controller
                     $dat['jpush_code'] = $input['jpush_code'];
                 }
             }
-            $result = Db::table('hotel_user')->where('id',$info['user_id'])->update($dat);
+            $result = Db::table('hotel_user')->where('id',$info['id'])->update($dat);
             if( $result ){
                 $new_Data= DB::table('hotel_user')
                     ->where('id',$info['id'])
@@ -421,13 +422,17 @@ class HotelController extends Controller
      */
     public  function destroy()
     {
-//        $user = JWTAuth::parseToken()->getPayload();
-//        $id = $user['foo'];
-        $id=12;
+        $user = JWTAuth::parseToken()->getPayload();
+        $id = $user['foo'];
         $user_data= Hotel::getUserFirst($id);
-        dd($user_data);
-
-
+        if( $user_data['status_login'] ){
+            $re = DB::table('hotel_user')->where('id',$id)->update(['status_login'=> 0]);
+            if( $re ){
+                return ReturnMessage::success();
+            }else{
+                ReturnMessage::success('失败','1011');
+            }
+        }
     }
     /**
      * 获得服务类目
@@ -440,12 +445,16 @@ class HotelController extends Controller
             ->where('hotel_id',1)
             ->get();
         $bdata = Common::json_array( $data );
-        dd($bdata);die;
-        foreach($bdata as $k=>$v){
-            if($v['parent_id'] != 0){
+        $server_data = Config::get('order.app_server');
+        $re = [];
 
+        foreach($bdata as $k=>$v){
+            $pid = $v['parent_id'];
+            if(isset($server_data[$pid])){
+                $re[] = $v;
             }
         }
+        dd($re);die;
 //        try {
 //            $user = JWTAuth::parseToken()->getPayload();
 //            $id = $user['foo'];
