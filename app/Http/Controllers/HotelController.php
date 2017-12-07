@@ -49,16 +49,25 @@ class HotelController extends Controller
             ])->first();
         if (!empty($info)){
             $info = json_decode(json_encode($info),true);
-            $new =[
-                "model_status" => $input['model_status'],
-                "jpush_code" =>$input['jpush_code'],
-                "model_code" =>$input['model_code']
+            $dat['status_login'] =1;
+            $dat['last_login_time'] =time();
+            if( $info['model_code'] != $input['model_code']){
+                $dat['model_code'] = $input['model_code'];
+                //向原设备发送提醒
+                $alert = "您的账号已经在另一地登录";
+                $msg = array(
+                    "extras" => array(
+                        "status" => "104",
+                    )
+                );
+                $push =new PushController();
+                $result = $push->sendNotifySpecial($info['jpush_code'],$alert,$msg);
+                if( $result['http_code']){
+                    $dat['jpush_code'] = $input['jpush_code'];
+                }
+            }
+            $result = Db::name('hotel_user')->where('user_id',$info['user_id'])->update($dat);
 
-            ];
-            //用户存在，更新某些字段
-            DB::table('hotel_user')
-                ->where('id',$info['id'])
-                ->update($new);
             $new_Data= DB::table('hotel_user')
                         ->where('id',$info['id'])
                         ->first();
@@ -408,37 +417,48 @@ class HotelController extends Controller
      */
     public function getServer()
     {
-        try {
-            $user = JWTAuth::parseToken()->getPayload();
-            $id = $user['foo'];
-            //查询当前用户的酒店ID和type
-            $user_data = Hotel::getUserFirst($id);
-            $hid = $user_data['hotel_id'];
-            $item_data = DB::table('server_item')
-                ->select('id','parent_id','name','picture','company_id')
-                ->where([
-                    ['company_id',$hid],
-                ])
-                ->get();
-            $bdata=json_decode(json_encode($item_data ),true);
-            $items = array();
-            foreach( $bdata as $k=>$v){
-                $items[$v['id']] = $v;
+        $data =DB::table('hotel_server')
+            ->join('server_item','hotel_server.server_id','server_item.id')
+            ->where('hotel_id',1)
+            ->get();
+        $bdata = Common::json_array( $data );
+        dd($bdata);die;
+        foreach($bdata as $k=>$v){
+            if($v['parent_id'] != 0){
+
             }
-            foreach($items as $item){
-
-                if(isset($items[$item['parent_id']])){
-                    $items[$item['parent_id']]['son'][] = &$items[$item['id']];
-                }else{
-                    $tree[] = &$items[$item['id']];
-
-                }
-            }
-
-            return ReturnMessage::successData($tree);
-        }catch (JWTException $e){
-            return ReturnMessage::success('非法token', '1009');
         }
+//        try {
+//            $user = JWTAuth::parseToken()->getPayload();
+//            $id = $user['foo'];
+//            //查询当前用户的酒店ID和type
+//            $user_data = Hotel::getUserFirst($id);
+//            $hid = $user_data['hotel_id'];
+//            $item_data = DB::table('server_item')
+//                ->select('id','parent_id','name','picture','company_id')
+//                ->where([
+//                    ['company_id',$hid],
+//                ])
+//                ->get();
+//            $bdata=json_decode(json_encode($item_data ),true);
+//            $items = array();
+//            foreach( $bdata as $k=>$v){
+//                $items[$v['id']] = $v;
+//            }
+//            foreach($items as $item){
+//
+//                if(isset($items[$item['parent_id']])){
+//                    $items[$item['parent_id']]['son'][] = &$items[$item['id']];
+//                }else{
+//                    $tree[] = &$items[$item['id']];
+//
+//                }
+//            }
+//
+//            return ReturnMessage::successData($tree);
+//        }catch (JWTException $e){
+//            return ReturnMessage::success('非法token', '1009');
+//        }
     }
     /**
      * 测试api

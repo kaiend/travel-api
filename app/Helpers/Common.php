@@ -54,4 +54,15 @@ class Common
 		}
 		return $data;
 	}
+
+    /**
+     * 转数组
+     * @param $result
+     * @return mixed
+     */
+    public static function json_array($result)
+    {
+        $result_json = json_encode($result);
+        return json_decode($result_json, true);
+    }
 }
