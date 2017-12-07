@@ -275,13 +275,14 @@ class UserValidator
         $only = ['phone','password','model_status','jpush_code','model_code'];
 
         $rules = [
-            'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
+            'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/|exists:hotel_user,mobile',
             'password' => 'required',
         ];
 
         $messages = [
             'phone.required' => '手机号不能为空',
             'phone.regex' => '手机号错误',
+            'phone.exists'=> '用户不存在',
 
             'password' => '密码不能为空',
         ];
