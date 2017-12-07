@@ -41,9 +41,11 @@ class OrderController extends  Controller
                     $data = DB::table('order')
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where([
-                        ['status','=',1],
-                        ['user_id','=',$id],
-                    ])->get();
+                            ['status','=',1],
+                            ['user_id','=',$id],
+                        ])
+                        ->orderBy('id','desc')
+                        ->get();
 
                     break;
                 case 'doing':
@@ -51,6 +53,7 @@ class OrderController extends  Controller
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where('user_id','=',$id)
                         ->whereIn('status', [2,3,4,5,6,7,8])
+                        ->orderBy('id','desc')
                         ->get();
                     break;
                 case 'done' :
@@ -58,6 +61,7 @@ class OrderController extends  Controller
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where('user_id','=',$id )
                         ->whereIn('status', [0,9])
+                        ->orderBy('id','desc')
                         ->get();
                     break;
                 default :
@@ -110,7 +114,9 @@ class OrderController extends  Controller
                         ->where([
                             ['status','=',10],
                             ['hotel_id','=',$hid],
-                        ])->get();
+                        ])
+                        ->orderBy('id','desc')
+                        ->get();
 
                     break;
                 case 'doing':
@@ -118,6 +124,7 @@ class OrderController extends  Controller
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where('hotel_id','=',$hid)
                         ->whereBetween('create_at', [$start,$end])
+                        ->orderBy('id','desc')
                         ->get();
                     break;
                 case 'done' :
@@ -125,6 +132,7 @@ class OrderController extends  Controller
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where('hotel_id','=',$hid )
                         ->whereIn('status', [0,9])
+                        ->orderBy('id','desc')
                         ->get();
                     break;
                 default :
@@ -467,7 +475,7 @@ class OrderController extends  Controller
                     'remarks' => $arr['remarks'],
                     'car_id'  => $arr['car_id'],
                     'created_at'  =>time(),
-                    'end' => '',
+                    'end' => $arr['end'],
                     'origin' => $arr['origin'],
                     'end_position' => $arr['end_position'],
                     'origin_position' => $arr['origin_position'],

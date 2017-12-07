@@ -66,16 +66,18 @@ class HotelController extends Controller
                     $dat['jpush_code'] = $input['jpush_code'];
                 }
             }
-            $result = Db::name('hotel_user')->where('user_id',$info['user_id'])->update($dat);
+            $result = Db::table('hotel_user')->where('id',$info['user_id'])->update($dat);
+            if( $result ){
+                $new_Data= DB::table('hotel_user')
+                    ->where('id',$info['id'])
+                    ->first();
+                $new_Datas = json_decode(json_encode($new_Data),true);
 
-            $new_Data= DB::table('hotel_user')
-                        ->where('id',$info['id'])
-                        ->first();
-            $new_Datas = json_decode(json_encode($new_Data),true);
-
-            $new_Datas['token'] = $this->token( $new_Datas['id'] );
-            return ReturnMessage::successData($new_Datas);
-
+                $new_Datas['token'] = $this->token( $new_Datas['id'] );
+                return ReturnMessage::successData($new_Datas);
+            }else{
+                return ReturnMessage::success('失败','1011');
+            }
         }
 
         return ReturnMessage::success('用户不存在或密码错误',1002);
@@ -90,28 +92,38 @@ class HotelController extends Controller
         $input = UserValidator::sign($request);
         $input['mobile'] = $input['phone'];
         unset($input['phone']);
-        $new =[
-            "model_status" => $input['model_status'],
-            "jpush_code" =>$input['jpush_code'],
-            "model_code" =>$input['model_code']
+        $data = DB::table('hotel_user')->where('mobile','=',$input['mobile'])->first();
+        $info = Common::json_array($data);
 
-        ];
-        $data = DB::table('hotel_user')->where('mobile','=',$input['mobile'])->get();
-        $info = json_decode(json_encode($data),true);
-        //用户存在，更新某些字段
-        DB::table('hotel_user')
-            ->where('id',$info[0]['id'])
-            ->update($new);
-        $new_Data= DB::table('hotel_user')
-            ->where('id',$info['id'])
-            ->first();
-        $new_Datas = json_decode(json_encode($new_Data),true);
+        $dat['status_login'] =1;
+        $dat['last_login_time'] =time();
+        if( $info['model_code'] != $input['model_code']){
+            $dat['model_code'] = $input['model_code'];
+            //向原设备发送提醒
+            $alert = "您的账号已经在另一地登录";
+            $msg = array(
+                "extras" => array(
+                    "status" => "104",
+                )
+            );
+            $push =new PushController();
+            $result = $push->sendNotifySpecial($info['jpush_code'],$alert,$msg);
+            if( $result['http_code']){
+                $dat['jpush_code'] = $input['jpush_code'];
+            }
+        }
+        $result = Db::table('hotel_user')->where('id',$info['user_id'])->update($dat);
+        if( $result ){
+            $new_Data= DB::table('hotel_user')
+                ->where('id',$info['id'])
+                ->first();
+            $new_Datas = json_decode(json_encode($new_Data),true);
 
-        $new_Datas['token'] = $this->token( $new_Datas['id'] );
-        return ReturnMessage::successData($new_Datas);
-
-
-
+            $new_Datas['token'] = $this->token( $new_Datas['id'] );
+            return ReturnMessage::successData($new_Datas);
+        }else{
+            return ReturnMessage::success('失败','1011');
+        }
     }
     /**
      * 修改密码
@@ -409,6 +421,12 @@ class HotelController extends Controller
      */
     public  function destroy()
     {
+//        $user = JWTAuth::parseToken()->getPayload();
+//        $id = $user['foo'];
+        $id=12;
+        $user_data= Hotel::getUserFirst($id);
+        dd($user_data);
+
 
     }
     /**

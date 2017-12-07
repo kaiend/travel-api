@@ -40,7 +40,7 @@ $api->version('v1', [
     //APP测试接口
     $api->get('/test','HotelController@test');
     //APP退出登录接口
-    $api->delete('/logout','HotelController@destroy');
+    $api->get('/logout','HotelController@destroy');
     //App首页服务类型接口
     $api->get('/index','HotelController@getServer');
     //APP订单接口

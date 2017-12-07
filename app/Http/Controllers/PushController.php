@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 
 use App\Helpers\Common;
+use App\Helpers\ReturnMessage;
 use App\Models\Hotel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -36,7 +37,11 @@ class PushController extends Controller
             )
         ];
         $result =$this ->sendNotifySpecial($regid,$alert,$message);
-        return $result;
+        if( $result['http_code']){
+            return ReturnMessage::success();
+        }else{
+            return ReturnMessage::success('失败','1011');
+        }
 
     }
     /**
