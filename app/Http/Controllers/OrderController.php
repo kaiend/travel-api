@@ -243,6 +243,9 @@ class OrderController extends  Controller
                    $last_data[$x]['content'] =$v;
                    $x ++;
                }
+               if( $data_to['parent_id'] == 30){
+                   $data_way =[];
+               }
                $ff=array_merge($last_data,$data_way);
                $bdata['word'] =$ff;
                return response()->json([
