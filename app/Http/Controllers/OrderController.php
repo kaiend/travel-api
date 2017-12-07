@@ -221,17 +221,35 @@ class OrderController extends  Controller
                         $data_way[$k]['content'] = json_decode($data_way[$k]['content'])[0];
                     }
                 }
+                //车系文字化
+               $b = $bdata['car_id'];
+               $detail['car_id'] = Config::get('order.car_series.'.$b);
+                //文字化某些字段
+               $detail['car_id']=$bdata['car_id'];
+               $detail['server_title']=$bdata['server_title'];
+               $detail['remarks']=$bdata['remarks'];
+               $detail['bottom_number']=$bdata['bottom_number'];
+               $detail['passenger_people']=$bdata['passenger_people'];
+               $detail['passenger_name']=$bdata['passenger_name'];
+               $detail['appointment']=$bdata['appointment'];
+               $detail['orders_name']=$bdata['orders_name'];
+               $detail['price']=$bdata['price'];
+               $detail['order_number']=$bdata['order_number'];
+               $config = Config::get('order.detail');
+               $last_data =[];
+                $x=0;
+               foreach( $detail as $k =>$v){
 
-                $b = $bdata['car_id'];
-                $bdata['car_series'] = Config::get('order.car_series.'.$b);
-
+                   $last_data[$x]['title'] =$config[$k];
+                   $last_data[$x]['content'] =$v;
+                   $x ++;
+               }
+               $ff=array_merge($last_data,$data_way);
+               $bdata['word'] =$ff;
                return response()->json([
                     'code' =>'1000',
                     'info' => 'success',
-                    'data' => [
-                        'formal'=> ReturnMessage::toString([$bdata]),
-                        'extra' => ReturnMessage::toString($data_way)
-                    ]
+                    'data' => $bdata
                ]);
 
             }else{
@@ -703,6 +721,11 @@ class OrderController extends  Controller
         }
 
     }
+    /**
+     * 追加订单详情
+     * @param $id
+     * @return \App\Helpers\json|\Illuminate\Http\JsonResponse
+     */
     public function getExtraDetail( $id )
     {
         //订单编号 查 追加订单
