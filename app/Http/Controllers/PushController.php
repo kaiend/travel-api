@@ -29,7 +29,7 @@ class PushController extends Controller
         $uid = $bdata['user_id'];
         $user_data =Hotel::getUserFirst( $uid );
         $regid =$user_data['jpush_code'];
-        $alert='订单号:'.$order_data['order_number'].'状态更新了！';
+        $alert='订单号:'.$bdata['order_number'].'状态更新了！';
         $message =[
             "extras" => array(
                 "status" => $bdata['status'],
