@@ -39,17 +39,16 @@ return [
         32 => '内部用车'
     ],
     'detail'=>[
-        'car_id' => '乘坐车型',
+        'order_number' =>'订单编号',
+        'orders_name'=>'下单人',
         'server_title' =>'服务类型',
-        'remarks' =>'备注',
-        'bottom_number' =>'酒店单号',
+        'appointment'=>'用车时间',
+        'passenger_name'=> '乘车人',
         'passenger_people'=>'乘车人数',
         'passenger_phone'=>'联系电话',
-        'passenger_name'=> '乘车人',
-        'appointment'=>'用车时间',
-        'orders_name'=>'下单人',
+        'car_id' => '乘坐车型',
         'price'=> '预计费用',
-        'order_number' =>'订单编号',
-
+        'bottom_number' =>'酒店单号',
+        'remarks' =>'备注',
     ]
 ];
