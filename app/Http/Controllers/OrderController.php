@@ -243,8 +243,15 @@ class OrderController extends  Controller
                    $last_data[$x]['content'] =$v;
                    $x ++;
                }
-               if($bdata_to['parent_id'] == 30){
+               if($bdata_to['parent_id'] == 30 || $bdata['type'] == 27){
                    $data_way =[];
+               }else if( $bdata['type'] == 26){
+                   unset($data_way['cip']);
+                   unset($data_way['end']);
+               }else if( $bdata['type'] == 28 ){
+                   unset($data_way['end']);
+               }else if( $bdata['type'] == 29){
+                   unset($data_way['origin']);
                }
                $ff=array_merge($last_data,$data_way);
                $bdata['word'] =$ff;
