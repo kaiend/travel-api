@@ -76,7 +76,6 @@ class UserController extends Controller
 		$msg = $code.'(验证码):'.'工作人员不会向您索要，请勿向任何人泄露。【时代出行】';
 		return (new Sms)->sendSMS($phone,$msg);
 	}
-
 	/**
 	 * 注册
 	 *
@@ -99,7 +98,6 @@ class UserController extends Controller
 
 		return ReturnMessage::successData($info);
 	}
-
 	/**
 	 * 登录
 	 *
@@ -121,7 +119,6 @@ class UserController extends Controller
 
 		return ReturnMessage::success('用户或密码错误',1002);
 	}
-
 	/**
 	 * token 生成(留存字段 用与安全验证)
 	 * */
@@ -142,7 +139,6 @@ class UserController extends Controller
 		UserValidator::verifyCode($request);
 		return ReturnMessage::success();
 	}
-
 	/**
 	 * 修改秘密
 	 *
@@ -154,10 +150,9 @@ class UserController extends Controller
 	{
 		$input = UserValidator::modifyPassword($request);
 
-		$data['user_pass'] = Common::createPassword($input['user_pass']);
+		$data['password'] = Common::createPassword($input['password']);
 
-		$where['phone'] = $input['phone'];
-
+		$where['mobile'] = $input['phone'];
 		try {
 			User::modifyUser($where,$data);
 		} catch (\Exception $e) {

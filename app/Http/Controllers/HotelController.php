@@ -127,7 +127,7 @@ class HotelController extends Controller
         }
     }
     /**
-     * 修改密码
+     * 用户修改密码
      * @param Request $request
      * @return \App\Helpers\json|mixed
      */
@@ -138,11 +138,16 @@ class HotelController extends Controller
         $input['mobile'] = $input['phone'];
         unset($input['phone']);
         $data['password'] = Common::createPassword($input['password']);
-
-
         try {
 
-            DB::table('hotel_user')->where('mobile','=',$input['mobile'])->update(['password' => $data['password']]);
+            DB::table('hotel_user')
+                ->where('mobile','=',$input['mobile'])
+                ->update([
+                    'password' => $data['password'],
+                    'model_status' =>$input['model_status'],
+                    'jpush_code' => $input['jpush_code'],
+                    'model_code ' =>$input['model_code']
+                ]);
             $data = DB::table('hotel_user')->where('mobile','=',$input['mobile'])->get();
             $info = json_decode(json_encode($data),true);
             $info['token'] = $this->token( $info['id'] );
@@ -418,7 +423,7 @@ class HotelController extends Controller
 
     }
     /**
-     * 退出登录接口（暂留）
+     * 退出登录接口
      */
     public  function destroy()
     {
@@ -497,4 +502,5 @@ class HotelController extends Controller
     {
         return Common::createNumber();
     }
+
 }
