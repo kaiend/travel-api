@@ -50,22 +50,24 @@ class HotelController extends Controller
             ])->first();
         if (!empty($info)){
             $info = json_decode(json_encode($info),true);
-            $dat['status_login'] =1;
-            $dat['last_login_time'] =time();
-            if( $info['model_code'] != $input['model_code']){
-                $dat['model_code'] = $input['model_code'];
-                //向原设备发送提醒
-                $alert = "您的账号已经在另一地登录";
-                $msg = array(
-                    "extras" => array(
-                        "status" => "104",
-                    )
-                );
-                $push =new PushController();
-                $result = $push->sendNotifySpecial($info['jpush_code'],$alert,$msg);
-                if( $result['http_code']){
-                    $dat['jpush_code'] = $input['jpush_code'];
+            if( isset( $info['jpush_code'] )){
+                if( $info['model_code'] != $input['model_code'] && isset($info['model_code'])){
+                    $dat['model_code'] = $input['model_code'];
+                    //向原设备发送提醒
+                    $alert = "您的账号已经在另一地登录";
+                    $msg = array(
+                        "extras" => array(
+                            "status" => "104",
+                        )
+                    );
+                    $push =new PushController();
+                    $result = $push->sendNotifySpecial($info['jpush_code'],$alert,$msg);
+                    if( $result['http_code']){
+                        $dat['jpush_code'] = $input['jpush_code'];
+                    }
                 }
+            }else{
+                $dat[ 'jpush_code']= $input['jpush_code'];
             }
             $result = Db::table('hotel_user')->where('id',$info['id'])->update($dat);
             if( $result ){
