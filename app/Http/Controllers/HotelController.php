@@ -302,7 +302,8 @@ class HotelController extends Controller
                                 'position'=> $arr['position'],
                                 'type'=>$arr['type'],
                                 'hotel_id' =>$user_data['hotel_id'],
-                                'avatar'   =>$avatar
+                                'avatar'   =>$avatar,
+                                'create_time' =>time()
                             ]
                         );
                         return ReturnMessage::success('success','1000');
@@ -318,7 +319,8 @@ class HotelController extends Controller
                                 'position'=> $arr['position'],
                                 'type'=> intval($arr['type']),
                                 'hotel_id' =>$user_data['hotel_id'],
-                                'avatar'   =>$avatar
+                                'avatar'   =>$avatar,
+                                'create_time' =>time()
                             ]
                         );
                         return ReturnMessage::success('success','1000');
