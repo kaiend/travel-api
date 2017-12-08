@@ -447,6 +447,7 @@ class HotelController extends Controller
                 ReturnMessage::success('失败','1011');
             }
         }
+        return ReturnMessage::success();
     }
     /**
      * 获得服务类目
