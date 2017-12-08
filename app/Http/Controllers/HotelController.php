@@ -73,6 +73,7 @@ class HotelController extends Controller
                 }
             }else{
                 $dat[ 'jpush_code']= $input['jpush_code'];
+                $dat['model_code'] = $input['model_code'];
             }
             $result = Db::table('hotel_user')->where('id',$info['id'])->update($dat);
             if( $result ){
@@ -127,7 +128,7 @@ class HotelController extends Controller
         }else{
             $dat[ 'jpush_code']= $input['jpush_code'];
         }
-        
+
         $result = Db::table('hotel_user')->where('id',$info['id'])->update($dat);
         if( $result ){
             $new_Data= DB::table('hotel_user')
