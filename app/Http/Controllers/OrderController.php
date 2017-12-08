@@ -809,6 +809,7 @@ class OrderController extends  Controller
             $id = $user['foo'];
             //查询当前用户的酒店ID和type
             $user_data = Hotel::getUserFirst($id);
+            $status =0;
             switch ($arr['type']){
                 case 'agree':$status = 1 ;break;
                 case 'reject':$status = 0; break;

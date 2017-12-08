@@ -519,7 +519,7 @@ class HotelController extends Controller
      */
     public function test()
     {
-        return Common::createNumber();
+        return $user_data= Hotel::getUserFirst(12);
     }
 
 }
