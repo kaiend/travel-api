@@ -123,7 +123,7 @@ class OrderController extends  Controller
                     $data = DB::table('order')
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where('hotel_id','=',$hid)
-                        ->whereBetween('create_at', [$start,$end])
+                        ->whereBetween('created_at', [$start,$end])
                         ->orderBy('id','desc')
                         ->get();
                     break;
