@@ -10,14 +10,16 @@ class CarValidator
 {
    public static function  userCar( Request $request)
    {
-       $only = ['type'];
+       $only = ['type','hotel_id'];
 
        $rules = [
            'type' =>'required',
+           'hotel_id' => 'required'
        ];
 
        $messages = [
            'type.required'  => '服务类型不能为空',
+           'hotel_id.required'  => '酒店id不能为空',
        ];
 
        $input = $request->only($only);

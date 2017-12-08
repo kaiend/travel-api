@@ -34,8 +34,7 @@ class CarController extends Controller
         return ReturnMessage::successData($bdata);
     }
 
-
-    public function getCars( Request $request )
+    public function getCars( $id, Request $request )
     {
 
         $arr = CarValidator::userCar($request);
@@ -44,6 +43,10 @@ class CarController extends Controller
             ->join('car_series','charges_rule.cars_id','=','car_series.id')
             ->where('charges_rule.service_id',$arr['type'])
             ->select('type','price','cars_id','service_id','series_name','image','status','parent_id')
+            ->where([
+                ['hotel_id',$arr['hotel_id']],
+                ['car_series.parent_id',$id]
+            ])
             ->get();
         $bdata=json_decode(json_encode($data),true);
 
