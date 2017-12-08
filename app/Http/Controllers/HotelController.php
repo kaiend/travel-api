@@ -50,6 +50,7 @@ class HotelController extends Controller
             ])->first();
         if (!empty($info)){
             $info = json_decode(json_encode($info),true);
+            $dat =[];
             if( isset( $info['jpush_code'] )){
                 if( $info['model_code'] != $input['model_code'] && isset($info['model_code'])){
                     $dat['model_code'] = $input['model_code'];
