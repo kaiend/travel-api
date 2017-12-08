@@ -66,6 +66,7 @@ class HotelController extends Controller
                     $result = $push->sendNotifySpecial($info['jpush_code'],$alert,$msg);
                     if( $result['http_code']){
                         $dat['jpush_code'] = $input['jpush_code'];
+                        $dat['model_code'] = $input['model_code'];
                     }
                 }
             }else{
@@ -116,6 +117,7 @@ class HotelController extends Controller
                 $result = $push->sendNotifySpecial($info['jpush_code'],$alert,$msg);
                 if( $result['http_code']){
                     $dat['jpush_code'] = $input['jpush_code'];
+                    $dat['model_code'] = $input['model_code'];
                 }
             }
         }else{
