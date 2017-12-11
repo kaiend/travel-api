@@ -22,7 +22,7 @@ class OrderValidator
             'time'=>'required',
             'name'=>'required',
             'people'=>'required',
-            'room_number'=>'required',
+            //'room_number'=>'required',
             'car_id' =>'required',
             'end' =>'required',
             'end_position' =>'required',
@@ -30,7 +30,7 @@ class OrderValidator
             'origin_position'=>'required',
             'price' =>'required',
             'type'  => 'required',
-            'hotel_number' =>'required'
+            //'hotel_number' =>'required'
         ];
 
         $messages = [
@@ -39,7 +39,7 @@ class OrderValidator
             'time.required'=>'乘车时间不能为空',
             'name.required'=>'乘车人姓名不能为空',
             'people.required'=>'乘车人数不能为空',
-            'room_number.required'=>'房间号不能为空',
+            //'room_number.required'=>'房间号不能为空',
             'car_id.required' =>'车辆不能为空',
             'end.required' =>'终点不能为空',
             'origin.required' =>'起点不能为空',
@@ -47,7 +47,7 @@ class OrderValidator
             'type.required'  => '服务类型不能为空',
             'origin_position.required' =>'起点经纬度不能为空',
             'end_position.required' =>'终点经纬度不能为空',
-            'hotel_number.required' =>'酒店订单号不能为空'
+            //'hotel_number.required' =>'酒店订单号不能为空'
         ];
 
         $input = $request->only($only);
@@ -75,13 +75,13 @@ class OrderValidator
             'time'=>'required',
             'name'=>'required',
             'people'=>'required',
-            'room_number'=>'required',
+            //'room_number'=>'required',
             'origin' =>'required',
             'car_id' =>'required',
             'price' =>'required',
             'type' =>'required',
             'origin_position'=>'required',
-            'hotel_number' =>'required'
+            //'hotel_number' =>'required'
         ];
 
         $messages = [
@@ -90,13 +90,13 @@ class OrderValidator
             'time.required'=>'乘车时间不能为空',
             'name.required'=>'乘车人姓名不能为空',
             'people.required'=>'乘车人数不能为空',
-            'room_number.required'=>'房间号不能为空',
+            //'room_number.required'=>'房间号不能为空',
             'car_id.required' =>'车辆不能为空',
             'origin.required' =>'起点不能为空',
             'origin_position.required' =>'起点经纬度不能为空',
             'price.required' =>'车费不能为空',
             'type.required'  => '服务类型不能为空',
-            'hotel_number.required' =>'酒店订单号不能为空'
+            //'hotel_number.required' =>'酒店订单号不能为空'
         ];
 
         $input = $request->only($only);
@@ -123,7 +123,7 @@ class OrderValidator
             'time'=>'required',
             'name'=>'required',
             'people'=>'required',
-            'room_number'=>'required',
+            //'room_number'=>'required',
             'origin' =>'required',
             'end' =>'required',
             'car_id' =>'required',
@@ -134,7 +134,7 @@ class OrderValidator
             'flight_number' =>'required',
             'terminal' => 'required',
             'cip' =>'required',
-            'hotel_number' =>'required'
+            //'hotel_number' =>'required'
         ];
 
         $messages = [
@@ -143,7 +143,7 @@ class OrderValidator
             'time.required'=>'乘车时间不能为空',
             'name.required'=>'乘车人姓名不能为空',
             'people.required'=>'乘车人数不能为空',
-            'room_number.required'=>'房间号不能为空',
+            //'room_number.required'=>'房间号不能为空',
             'car_id.required' =>'车辆不能为空',
             'origin.required' =>'起点不能为空',
             'end.required' =>'终点不能为空',
@@ -154,7 +154,7 @@ class OrderValidator
             'flight_number.required' =>'航班号不能为空',
             'terminal.required' => '航站楼不能为空',
             'cip.required' =>'cip服务不能为空',
-            'hotel_number.required' =>'酒店订单号不能为空'
+            //'hotel_number.required' =>'酒店订单号不能为空'
         ];
 
         $input = $request->only($only);
@@ -181,7 +181,7 @@ class OrderValidator
             'time'=>'required',
             'name'=>'required',
             'people'=>'required',
-            'room_number'=>'required',
+            //'room_number'=>'required',
             'origin' =>'required',
             'end' =>'required',
             'car_id' =>'required',
@@ -190,7 +190,7 @@ class OrderValidator
             'origin_position'=>'required',
             'end_position'=>'required',
             'cip' =>'required',
-            'hotel_number'=>'required'
+            //'hotel_number'=>'required'
         ];
 
         $messages = [
@@ -199,7 +199,7 @@ class OrderValidator
             'time.required'=>'乘车时间不能为空',
             'name.required'=>'乘车人姓名不能为空',
             'people.required'=>'乘车人数不能为空',
-            'room_number.required'=>'房间号不能为空',
+            //'room_number.required'=>'房间号不能为空',
             'car_id.required' =>'车辆不能为空',
             'origin.required' =>'起点不能为空',
             'end.required' =>'终点不能为空',
@@ -208,7 +208,7 @@ class OrderValidator
             'price.required' =>'车费不能为空',
             'type.required'  => '服务类型不能为空',
             'cip.required' =>'cip服务不能为空',
-            'hotel_number.required' =>'酒店订单不能为空'
+            //'hotel_number.required' =>'酒店订单不能为空'
         ];
 
         $input = $request->only($only);
@@ -235,7 +235,7 @@ class OrderValidator
             'time'=>'required',
             'name'=>'required',
             'people'=>'required',
-            'room_number'=>'required',
+            //'room_number'=>'required',
             'origin' =>'required',
             'end' =>'required',
             'car_id' =>'required',
@@ -245,7 +245,7 @@ class OrderValidator
             'end_position'=>'required',
             'trips' =>'required',
             'train_station' => 'required',
-            'hotel_number' => 'required',
+            //'hotel_number' => 'required',
         ];
 
         $messages = [
@@ -254,7 +254,7 @@ class OrderValidator
             'time.required'=>'乘车时间不能为空',
             'name.required'=>'乘车人姓名不能为空',
             'people.required'=>'乘车人数不能为空',
-            'room_number.required'=>'房间号不能为空',
+            //'room_number.required'=>'房间号不能为空',
             'car_id.required' =>'车辆不能为空',
             'origin.required' =>'起点不能为空',
             'end.required' =>'终点不能为空',
@@ -264,7 +264,7 @@ class OrderValidator
             'type.required'  => '服务类型不能为空',
             'trips.required' =>'车次不能为空',
             'train_station.required' => '火车站不能为空',
-            'hotel_number.required' =>'酒店订单不能为空'
+            //'hotel_number.required' =>'酒店订单不能为空'
         ];
 
         $input = $request->only($only);
