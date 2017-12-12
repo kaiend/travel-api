@@ -521,4 +521,22 @@ class HotelController extends Controller
         return $user_data= Hotel::getUserFirst(12);
     }
 
+    /**
+     * 出行地
+     * @param Request $request
+     * @return \App\Helpers\json
+     */
+    public function getTravel( Request $request)
+    {
+        $arr =UserValidator::getTravel($request);
+        $area =$arr['area'];
+        $type =$arr['type'];
+        $data =Config::get('order.'.$type.'.'.$area);
+        if( $data ){
+            return ReturnMessage::success($data);
+        }else{
+            return ReturnMessage::success('失败','1011');
+        }
+    }
+
 }

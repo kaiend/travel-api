@@ -41,6 +41,8 @@ $api->version('v1', [
     $api->get('/test','HotelController@test');
     //APP退出登录接口
     $api->get('/logout','HotelController@destroy');
+    //APP选飞机或者车站的地址
+    $api->get('/travel','HotelController@getTravel');
     //App首页服务类型接口
     $api->get('/index','HotelController@getServer');
     //APP订单接口

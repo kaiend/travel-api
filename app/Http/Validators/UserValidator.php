@@ -403,4 +403,28 @@ class UserValidator
         return $input;
 
     }
+    public static function getTravel( Request $request)
+    {
+        $only = ['area','type'];
+
+        $rules = [
+            'area' => 'required',
+            'type' => 'required'
+        ];
+
+        $messages = [
+            'area.required' => '地区不能为空',
+            'type.required' => '类型不能为空'
+
+        ];
+
+        $input = $request->only($only);
+
+        $validator = Validator::make($input, $rules, $messages);
+
+        if ($validator->fails())
+            exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+
+        return $input;
+    }
 }
