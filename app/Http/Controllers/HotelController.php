@@ -53,7 +53,7 @@ class HotelController extends Controller
             $dat['status_login'] =1;
             $dat['last_login_time'] =time();
             if( isset( $info['jpush_code'] )){
-                if( $info['model_code'] != $input['model_code'] && isset($info['model_code'])){
+                if( $info['model_code'] != $input['model_code'] ){
                     $dat['model_code'] = $input['model_code'];
                     //向原设备发送提醒
                     $alert = "您的账号已经在另一地登录";
@@ -68,9 +68,6 @@ class HotelController extends Controller
                         $dat['jpush_code'] = $input['jpush_code'];
 
                     }
-                }else{
-                    $dat['model_code'] = $info['model_code'];
-
                 }
 
             }else{
@@ -110,7 +107,7 @@ class HotelController extends Controller
         $dat['status_login'] =1;
         $dat['last_login_time'] =time();
         if( isset( $info['jpush_code'] )){
-            if( $info['model_code'] != $input['model_code'] && isset($info['model_code'])) {
+            if( $info['model_code'] != $input['model_code']) {
                 $dat['model_code'] = $input['model_code'];
                 //向原设备发送提醒
                 $alert = "您的账号已经在另一地登录";
@@ -125,10 +122,7 @@ class HotelController extends Controller
                     $dat['jpush_code'] = $input['jpush_code'];
 
                 }
-            }else{
-                $dat['model_code'] = $input['model_code'];
             }
-
         }else{
             $dat[ 'jpush_code']= $input['jpush_code'];
             $dat['model_code'] = $input['model_code'];
