@@ -194,7 +194,6 @@ class OrderController extends  Controller
             $data=DB::table('order')
                 ->where([
                     ['id',$id],
-                    ['judgment',1]
                 ])
                 ->first();
 
