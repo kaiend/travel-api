@@ -341,11 +341,17 @@ class OrderController extends  Controller
         //$arr = $request->only('id');
         $id =30;
         try {
-            JWTAuth::parseToken()->getPayload();
+            $user = JWTAuth::parseToken()->getPayload();
+            $uid = $user['foo'];
+            $user_data= Hotel::getUserFirst($uid);
+            $hid = $user_data['hotel_id'];
+            $cdata =DB::table('hotel_server')->where('hotel_id',$hid)->pluck('server_id');
+            $cdata = Common::json_array( $cdata );
             //查询该一级服务下的服务详情
             $data = DB::table('server_item')
                 ->select('id','parent_id','name','picture','field_name','content')
                 ->where( 'parent_id',$id)
+                ->whereIn('id',$cdata)
                 ->get();
             $bdata=json_decode(json_encode($data),true);
 
