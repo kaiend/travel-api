@@ -533,7 +533,7 @@ class HotelController extends Controller
         $type =$arr['type'];
         $data =Config::get('order.'.$type.'.'.$area);
         if( $data ){
-            return ReturnMessage::success($data);
+            return ReturnMessage::successData($data);
         }else{
             return ReturnMessage::success('失败','1011');
         }
