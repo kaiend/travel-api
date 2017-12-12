@@ -69,8 +69,10 @@ class HotelController extends Controller
 
                     }
                 }else{
-                    $dat['model_code'] = $input['model_code'];
+                    $dat['model_code'] = $info['model_code'];
+
                 }
+
             }else{
                 $dat[ 'jpush_code']= $input['jpush_code'];
                 $dat['model_code'] = $input['model_code'];
@@ -126,6 +128,7 @@ class HotelController extends Controller
             }else{
                 $dat['model_code'] = $input['model_code'];
             }
+
         }else{
             $dat[ 'jpush_code']= $input['jpush_code'];
             $dat['model_code'] = $input['model_code'];
