@@ -84,7 +84,6 @@ class OrderController extends  Controller
         }catch (JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
         }
-
     }
     /**
      * APP酒店订单列表
