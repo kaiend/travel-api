@@ -13,6 +13,7 @@ use App\Helpers\Common;
 use App\Helpers\ReturnMessage;
 use App\Http\Validators\OrderValidator;
 use App\Models\Hotel;
+use App\Models\User;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -48,6 +49,7 @@ class OrderController extends  Controller
                         ->get();
 
                     break;
+
                 case 'doing':
                     $data = DB::table('order')
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
@@ -67,6 +69,7 @@ class OrderController extends  Controller
                 default :
                     return ReturnMessage::success('订单类型未知' , '1006');
             }
+
             $bdata=json_decode(json_encode($data),true);
 
             if( count($bdata) != 0){
@@ -103,9 +106,10 @@ class OrderController extends  Controller
             if( empty($arr['type']) ){
                 return ReturnMessage::success('缺少订单参数' , '1005');
             }
-            $t = time();
-            $start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
-            $end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
+
+            //$t = time();
+            //$start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
+            //$end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
             switch ($arr['type']){
                 case 'wait':
                     $data = DB::table('order')
@@ -122,7 +126,8 @@ class OrderController extends  Controller
                     $data = DB::table('order')
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where('hotel_id','=',$hid)
-                        ->whereBetween('created_at', [$start,$end])
+                        //->whereBetween('created_at', [$start,$end])
+                        ->whereIn('status', [1,2,3,4,5,6,7,8])
                         ->orderBy('id','desc')
                         ->get();
                     break;
@@ -138,7 +143,7 @@ class OrderController extends  Controller
                     return ReturnMessage::success('订单类型未知' , '1006');
             }
             $bdata=json_decode(json_encode($data),true);
-
+            dd($bdata);
             if( count($bdata) != 0){
                 $final=ReturnMessage::toString($bdata);
 
