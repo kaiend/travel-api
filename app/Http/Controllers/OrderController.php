@@ -142,7 +142,6 @@ class OrderController extends  Controller
                     return ReturnMessage::success('订单类型未知' , '1006');
             }
             $bdata=json_decode(json_encode($data),true);
-            dd($bdata);
             if( count($bdata) != 0){
                 $final=ReturnMessage::toString($bdata);
 
