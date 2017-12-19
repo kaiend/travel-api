@@ -31,9 +31,10 @@ class OrderController extends  Controller
     {
        //获取订单的类型type
         $arr =$request->all();
-        try{
-            $user = JWTAuth::parseToken()->getPayload();
-            $id = $user['foo'];
+//        try{
+//            $user = JWTAuth::parseToken()->getPayload();
+//            $id = $user['foo'];
+            $id =1;
             if( empty($arr['type']) ){
                 return ReturnMessage::success('缺少订单参数' , '1005');
             }
@@ -73,6 +74,10 @@ class OrderController extends  Controller
             $bdata=json_decode(json_encode($data),true);
 
             if( count($bdata) != 0){
+                $type_data =Config::get('order.type');
+                foreach( $bdata as $k=>$v) {
+                    $bdata[$k]['type_name'] = $type_data[$v['type']];
+                }
                 $final=ReturnMessage::toString($bdata);
 
                 return ReturnMessage::successData($final);
@@ -84,9 +89,9 @@ class OrderController extends  Controller
                     'data' => []
                 ]);
             }
-        }catch (JWTException $e){
-            return ReturnMessage::success('非法token' ,'1009');
-        }
+//        }catch (JWTException $e){
+//            return ReturnMessage::success('非法token' ,'1009');
+//        }
     }
     /**
      * APP酒店订单列表
