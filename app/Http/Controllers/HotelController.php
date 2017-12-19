@@ -520,7 +520,6 @@ class HotelController extends Controller
     {
         return $user_data= Hotel::getUserFirst(12);
     }
-
     /**
      * 出行地
      * @param Request $request
