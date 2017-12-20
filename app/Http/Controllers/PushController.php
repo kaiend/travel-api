@@ -42,7 +42,18 @@ class PushController extends Controller
                     ->get();
                 $cdata =Common::json_array( $cdata );
                 foreach( $cdata as $k=>$v){
-                    return $v['jpush_code'];
+                    $regid = $v['jpush_code'];
+                    $message =[
+                        "extras" => array(
+                            "status" => $bdata['status'],
+                        )
+                    ];
+                    $result =$this ->sendNotifySpecial($regid,$alert,$message);
+                    if( $result['http_code']){
+                        return ReturnMessage::success();
+                    }else{
+                        return ReturnMessage::success('失败','1011');
+                    }
                 }
                 break;
             //通知下单人
