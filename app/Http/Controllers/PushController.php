@@ -23,25 +23,45 @@ class PushController extends Controller
 
     public function pushStatus( Request $request )
     {
-        $arr =$request->only('order_id');
+        $arr =$request->only('order_id','type');
         //查询
         $order_data =DB::table('order')->where('id',$arr['order_id'])->first();
         $bdata = Common::json_array($order_data);
+        $cid = $bdata['hotel_id'];
         $uid = $bdata['user_id'];
-        $user_data =Hotel::getUserFirst( $uid );
-        $regid =$user_data['jpush_code'];
+        $cdata=[];
         $alert='订单号:'.$bdata['order_number'].'状态更新了！';
-        $message =[
-            "extras" => array(
-                "status" => $bdata['status'],
-            )
-        ];
-        $result =$this ->sendNotifySpecial($regid,$alert,$message);
-        if( $result['http_code']){
-            return ReturnMessage::success();
-        }else{
-            return ReturnMessage::success('失败','1011');
+        switch($arr['type']){
+            //下单通知管理员
+            case 'make':
+                $cdata = DB::table('hotel_user')
+                    ->where([
+                        ['hotel_id',$cid],
+                        //['type',2]
+                    ])
+                    ->get();
+                $cdata =Common::json_array( $cdata );
+                foreach( $cdata as $k=>$v){
+                    $re =1;
+                }
+                break;
+            //通知下单人
+            case 'form':
+                $user_data = Hotel::getUserFirst( $uid );
+                $regid =$user_data['jpush_code'];
+                $message =[
+                    "extras" => array(
+                        "status" => $bdata['status'],
+                    )
+                ];
+                $result =$this ->sendNotifySpecial($regid,$alert,$message);
+                if( $result['http_code']){
+                    return ReturnMessage::success();
+                }else{
+                    return ReturnMessage::success('失败','1011');
+                }
         }
+        dd($cdata);
 
     }
     /**
