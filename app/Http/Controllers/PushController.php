@@ -42,7 +42,7 @@ class PushController extends Controller
                     ->get();
                 $cdata =Common::json_array( $cdata );
                 foreach( $cdata as $k=>$v){
-                    $re =1;
+                    return $v['jpush_code'];
                 }
                 break;
             //通知下单人
