@@ -13,6 +13,7 @@ use App\Helpers\Common;
 use App\Helpers\ReturnMessage;
 use App\Models\Hotel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use JPush\Client;
 
@@ -29,8 +30,9 @@ class PushController extends Controller
         $bdata = Common::json_array($order_data);
         $cid = $bdata['hotel_id'];
         $uid = $bdata['user_id'];
-        //$cdata=[];
-        $alert='订单号:'.$bdata['order_number'].'状态更新了！';
+        $status= $bdata['status'];
+        $config =Config::get('order.trace');
+        $alert='订单号:'.$bdata['order_number'].'---'.$config[$status];
         switch($arr['type']){
             //下单通知管理员
             case 'make':
