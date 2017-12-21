@@ -29,7 +29,7 @@ class PushController extends Controller
         $bdata = Common::json_array($order_data);
         $cid = $bdata['hotel_id'];
         $uid = $bdata['user_id'];
-        $cdata=[];
+        //$cdata=[];
         $alert='订单号:'.$bdata['order_number'].'状态更新了！';
         switch($arr['type']){
             //下单通知管理员
@@ -37,23 +37,27 @@ class PushController extends Controller
                 $cdata = DB::table('hotel_user')
                     ->where([
                         ['hotel_id',$cid],
-                        //['type',2]
+                        ['type',2]
                     ])
                     ->get();
                 $cdata =Common::json_array( $cdata );
-                foreach( $cdata as $k=>$v){
-                    $regid = $v['jpush_code'];
-                    $message =[
-                        "extras" => array(
-                            "status" => $bdata['status'],
-                        )
-                    ];
-                    $result =$this ->sendNotifySpecial($regid,$alert,$message);
-                    if( $result['http_code']){
-                        return ReturnMessage::success();
-                    }else{
-                        return ReturnMessage::success('失败','1011');
+                if( $cdata ){
+                    foreach( $cdata as $k=>$v){
+                        $regid = $v['jpush_code'];
+                        $message =[
+                            "extras" => array(
+                                "status" => $bdata['status'],
+                            )
+                        ];
+                        $result =$this ->sendNotifySpecial($regid,$alert,$message);
+                        if( $result['http_code']){
+                            return ReturnMessage::success();
+                        }else{
+                            return ReturnMessage::success('失败','1011');
+                        }
                     }
+                }else{
+                    return ReturnMessage::success('失败','1011');
                 }
                 break;
             //通知下单人
@@ -71,9 +75,10 @@ class PushController extends Controller
                 }else{
                     return ReturnMessage::success('失败','1011');
                 }
+            break;
+            default :
+                return ReturnMessage::success('失败','1011');
         }
-        dd($cdata);
-
     }
     /**
      * 向所有设备推送消息-广播
