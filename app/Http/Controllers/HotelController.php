@@ -518,7 +518,12 @@ class HotelController extends Controller
      */
     public function test()
     {
-        return $user_data= Hotel::getUserFirst(12);
+        $t = time();
+        $start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
+        $end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
+        print_r($start);
+        print_r($end);
+
     }
     /**
      * 出行地
