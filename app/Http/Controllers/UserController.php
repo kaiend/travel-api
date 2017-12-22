@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Common;
 use App\Helpers\Sms;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Validators\UserValidator;
 use App\Helpers\ReturnMessage;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
 class UserController extends Controller
@@ -173,8 +175,6 @@ class UserController extends Controller
 		return ReturnMessage::success();
 	}
 
-
-
 	/**
 	 * 获取用户信息
 	 * @param $request
@@ -189,4 +189,21 @@ class UserController extends Controller
 
 		return ReturnMessage::successData($info);
 	}
+
+	public function test( Request $request)
+    {
+        $arr =$request->only('oid');
+        //$id =$arr['oid'];
+        $id =4;
+        //$odata =Order::getOrderFirst(['id'=>$id]);
+        $odata=DB::table('order')->where('id',$id)->first();
+        $odata =json_decode(json_encode($odata),true);
+        $odata['type'] = '接机';
+        $odata['chauffeur_name'] = '张师傅';
+        $odata['car_series'] ='宝马5系';
+        $odata['car_number'] = '京AAA';
+        $msg ='【时代出行】您好，您的【'.$odata['type'].'】用车服务预约成功，司机'.mb_substr($odata['chauffeur_name'],0,1).'师傅 联系电话：'.$odata['chauffeur_phone'].'将在【'.date('Y-m-d H:i:s',$odata['appointment']).'】到【'.$odata['origin'].'】接您。您的预约车辆为【'.$odata['car_series'].'】，车牌号【'.$odata['car_number'].'】。如有任何疑问，请联系致电：010-85117878。';
+        $phone ='15531143712';
+        return (new Sms)->sendSMS($phone,$msg);
+    }
 }

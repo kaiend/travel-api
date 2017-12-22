@@ -38,7 +38,7 @@ $api->version('v1', [
     //APP修改密码
     $api->post('/password','HotelController@editPassword');
     //APP测试接口
-    $api->get('/test','HotelController@test');
+    $api->get('/test','UserController@test');
     //APP退出登录接口
     $api->get('/logout','HotelController@destroy');
     //APP选飞机或者车站的地址
