@@ -41,7 +41,7 @@ class PushController extends Controller
                 $cdata = DB::table('hotel_user')
                     ->where([
                         ['hotel_id',$cid],
-                        ['type',2]
+//                        ['type',2]
                     ])
                     ->get();
 //                dd($cdata);
