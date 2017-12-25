@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Common;
 use App\Helpers\ReturnMessage;
+use App\Models\Chauffeur;
 use App\Models\Hotel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -35,30 +36,51 @@ class PushController extends Controller
         $config =Config::get('order.trace');
         $alert='订单号:'.$bdata['order_number'].'---'.$config[$status];
 
+        $chauffeur_id =$bdata['chauffeur_id'];
+        $chauffeur_data =Chauffeur::getUserFirst($chauffeur_id);
+
         switch($arr['type']){
-            //下单通知管理员
+            //下单通知司机----下单通知酒店管理员
             case 'make':
+                //通知司机
+                if($chauffeur_data['jpush_code']){
+                    $regid =$chauffeur_data['jpush_code'];
+                    $message =[
+                        "extras" => array(
+                            "status" => $bdata['status'],
+                        )
+                    ];
+                    $result =$this ->sendNotifySpecial($regid,$alert,$message);
+                    if( $result['http_code']){
+                        return ReturnMessage::success();
+                    }else{
+                        return ReturnMessage::success('失败','1011');
+                    }
+                }
+                //推送管理员
                 $cdata = DB::table('hotel_user')
                     ->where([
                         ['hotel_id',$cid],
 //                        ['type',2]
                     ])
                     ->get();
-//                dd($cdata);
+                //dd($cdata);
                 $cdata =Common::json_array( $cdata );
+                $message =[
+                        "extras" => array(
+                            "status" => $bdata['status'],
+                        )
+                    ];
                 if( $cdata ){
                     foreach( $cdata as $k=>$v){
-                        $regid = $v['jpush_code'];
-                        $message =[
-                            "extras" => array(
-                                "status" => $bdata['status'],
-                            )
-                        ];
-                        $result =$this ->sendNotifySpecial($regid,$alert,$message);
-                        if( $result['http_code']){
-                            return ReturnMessage::success();
-                        }else{
-                            return ReturnMessage::success('失败','1011');
+                        $regid= $v['jpush_code'];
+                        if($regid){
+                            $result =$this ->sendNotifySpecial($regid,$alert,$message);
+                            if( $result['http_code']){
+                                return ReturnMessage::success();
+                            }else{
+                                return ReturnMessage::success('失败','1011');
+                            }
                         }
                     }
                 }else{
