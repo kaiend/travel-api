@@ -26,13 +26,15 @@ class PushController extends Controller
     {
         $arr =$request->only('order_id','type');
         //查询
-        $order_data =DB::table('order')->where('id',$arr['order_id'])->first();
+        $order_data =DB::table('order')->where('order_number',$arr['order_id'])->first();
+
         $bdata = Common::json_array($order_data);
         $cid = $bdata['hotel_id'];
         $uid = $bdata['user_id'];
         $status= $bdata['status'];
         $config =Config::get('order.trace');
         $alert='订单号:'.$bdata['order_number'].'---'.$config[$status];
+
         switch($arr['type']){
             //下单通知管理员
             case 'make':
@@ -42,6 +44,7 @@ class PushController extends Controller
                         ['type',2]
                     ])
                     ->get();
+//                dd($cdata);
                 $cdata =Common::json_array( $cdata );
                 if( $cdata ){
                     foreach( $cdata as $k=>$v){
