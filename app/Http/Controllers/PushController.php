@@ -28,8 +28,9 @@ class PushController extends Controller
         $arr =$request->only('order_id','type');
         //查询
         $order_data =DB::table('order')->where('order_number',$arr['order_id'])->first();
-
         $bdata = Common::json_array($order_data);
+        $con =Config::get('order.type');
+        $bdata['type_name'] =$con[$bdata['type']];
         $cid = $bdata['hotel_id'];
         $uid = $bdata['user_id'];
         $status= $bdata['status'];
@@ -38,19 +39,21 @@ class PushController extends Controller
 
         $chauffeur_id =$bdata['chauffeur_id'];
         $chauffeur_data =Chauffeur::getUserFirst($chauffeur_id);
-
         switch($arr['type']){
             //下单通知司机----下单通知酒店管理员
             case 'make':
                 //通知司机
                 if($chauffeur_data['jpush_code']){
-                    $regid =$chauffeur_data['jpush_code'];
+                    $regids =$chauffeur_data['jpush_code'];
                     $message =[
                         "extras" => array(
-                            "status" => $bdata['status'],
+                            'status'=> '112',
+                            "data" => $bdata,
                         )
                     ];
-                    $result =$this ->sendNotifySpecial($regid,$alert,$message);
+                    $appkey ='e3aa521e067467d9e4dba5bb';
+                    $secret ='1ec040fbba99095178d35521';
+                    $result =$this ->sendNotifySpecial($regids,$alert,$message,$appkey,$secret);
                     if( $result['http_code']){
                         return ReturnMessage::success();
                     }else{
@@ -75,7 +78,7 @@ class PushController extends Controller
                     foreach( $cdata as $k=>$v){
                         $regid= $v['jpush_code'];
                         if($regid){
-                            $result =$this ->sendNotifySpecial($regid,$alert,$message);
+                            $result =$this ->sendNotifySpecial($regid,$alert,$message,$this->appKey,$this->master_secret);
                             if( $result['http_code']){
                                 return ReturnMessage::success();
                             }else{
@@ -96,7 +99,7 @@ class PushController extends Controller
                         "status" => $bdata['status'],
                     )
                 ];
-                $result =$this ->sendNotifySpecial($regid,$alert,$message);
+                $result =$this ->sendNotifySpecial($regid,$alert,$message,$this->appKey,$this->master_secret);
                 if( $result['http_code']){
                     return ReturnMessage::success();
                 }else{
@@ -133,9 +136,9 @@ class PushController extends Controller
      * @param $message 需要推送的消息体
      * @return mixed
      */
-    public function sendNotifySpecial($regid, $alert, $message)
+    public function sendNotifySpecial($regid, $alert, $message,$appkey,$secret)
     {
-        $client = new Client($this->appKey,$this->master_secret);
+        $client = new Client($appkey,$secret);
 
         $result = $client->push()
             ->setPlatform('all')
