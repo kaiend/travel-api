@@ -89,7 +89,7 @@ class PushController extends Controller
                     $message =[
                         "extras" => array(
                             'status'=> '112',
-                            "data" => $bdata,
+                            "data" => ReturnMessage::toString($bdata),
                         )
                     ];
                     $appkey ='e3aa521e067467d9e4dba5bb';
