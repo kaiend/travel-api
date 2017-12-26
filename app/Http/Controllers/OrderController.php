@@ -147,6 +147,10 @@ class OrderController extends  Controller
             }
             $bdata=json_decode(json_encode($data),true);
             if( count($bdata) != 0){
+                $type_data =Config::get('order.type');
+                foreach( $bdata as $k=>$v) {
+                    $bdata[$k]['type_name'] = $type_data[$v['type']];
+                }
                 $final=ReturnMessage::toString($bdata);
 
                 return ReturnMessage::successData($final);
