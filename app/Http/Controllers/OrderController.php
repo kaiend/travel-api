@@ -247,7 +247,7 @@ class OrderController extends  Controller
                 //车系文字化
                 $b = $bdata['car_id'];
                 $detail['car_id'] = Config::get('order.car_series.'.$b);
-                $detail['price']=$bdata['price'];
+                //$detail['price']=$bdata['price'];
 
                 $detail['bottom_number']=$bdata['bottom_number'];
                 $detail['remarks']=$bdata['remarks'];
