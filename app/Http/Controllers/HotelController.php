@@ -21,6 +21,8 @@ use Tymon\JWTAuth\Facades\JWTFactory;
 
 class HotelController extends Controller
 {
+    private $appKey ='50505e64af2ea4b5e8e27e26';
+    private $master_secret ='f90b3ccdce62056bb134aaaf';
     /**
      *生成token
      * @param $data 用户id
@@ -63,7 +65,8 @@ class HotelController extends Controller
                         )
                     );
                     $push =new PushController();
-                    $result = $push->sendNotifySpecial($info['jpush_code'],$alert,$msg);
+
+                    $result = $push->sendNotifySpecial($info['jpush_code'],$alert,$msg,$this->appKey,$this->master_secret);
                     if( $result['http_code']){
                         $dat['jpush_code'] = $input['jpush_code'];
 
@@ -117,7 +120,7 @@ class HotelController extends Controller
                     )
                 );
                 $push = new PushController();
-                $result = $push->sendNotifySpecial($info['jpush_code'], $alert, $msg);
+                $result = $push->sendNotifySpecial($info['jpush_code'], $alert, $msg,$this->appKey,$this->master_secret);
                 if ($result['http_code']) {
                     $dat['jpush_code'] = $input['jpush_code'];
 
