@@ -51,7 +51,10 @@ class CarController extends Controller
         $bdata=json_decode(json_encode($data),true);
 
         if( count($bdata) != 0){
-            $bdata[0]['image'] ='http://travel.shidaichuxing.com/upload/'.$bdata[0]['image'];
+            foreach( $bdata as $k=>$v){
+                $bdata[$k]['image']='http://travel.shidaichuxing.com/upload/'.$bdata[$k]['image'];
+            }
+            dd($bdata);
             $final=ReturnMessage::toString($bdata);
             return ReturnMessage::successData($final);
 
