@@ -273,18 +273,18 @@ class OrderController extends  Controller
                 $oid =$bdata['order_number'];
                 //查询订单的轨迹
                 $trace_data = OrderStatus::getOrderTrace( $oid );
-                $fdata =[
-                    'status' =>1,
-                    'update_time' => $bdata['created_at']
 
-                ];
-                array_unshift($trace_data,$fdata);
                 $con = Config::get('order.trace');
                 //组装数据
                 foreach($trace_data as $k =>$v){
                     $trace_data[$k]['status_name'] = $con[$v['status']] ;
                     $trace_data[$k]['status'] =$v['status'];
+                    if($v['status'] ==2 ){
+                        unset($trace_data[$k]);
+                    }
+
                 }
+                dd( $trace_data);
                 $bdata['trace'] =$trace_data;
                 return response()->json([
                     'code' =>'1000',

@@ -27,7 +27,7 @@ class OrderStatus extends Model
      */
     public static function  getOrderTrace( $id )
     {
-        $obj= static::where(['order_number'=> $id])->get();
+        $obj= static::where(['order_number'=> $id])->orderBy('id','desc')->get();
         $data = Common::json_array($obj);
         return $data;
     }
