@@ -54,7 +54,7 @@ class CarController extends Controller
             foreach( $bdata as $k=>$v){
                 $bdata[$k]['image']='http://travel.shidaichuxing.com/upload/'.$bdata[$k]['image'];
             }
-            
+
             $final=ReturnMessage::toString($bdata);
             return ReturnMessage::successData($final);
 
