@@ -284,7 +284,6 @@ class OrderController extends  Controller
                     }
 
                 }
-                dd( $trace_data);
                 $bdata['trace'] =$trace_data;
                 return response()->json([
                     'code' =>'1000',
