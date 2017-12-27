@@ -13,6 +13,7 @@ use App\Helpers\Common;
 use App\Helpers\ReturnMessage;
 use App\Http\Validators\OrderValidator;
 use App\Models\Hotel;
+use App\Models\OrderStatus;
 use App\Models\User;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -268,6 +269,23 @@ class OrderController extends  Controller
                 }
                 $ff=array_merge($last_data,$data_way);
                 $bdata['word'] =$ff;
+                //查询订单的编号
+                $oid =$bdata['order_number'];
+                //查询订单的轨迹
+                $trace_data = OrderStatus::getOrderTrace( $oid );
+                $fdata =[
+                    'status' =>1,
+                    'update_time' => $bdata['created_at']
+
+                ];
+                array_unshift($trace_data,$fdata);
+                $con = Config::get('order.trace');
+                //组装数据
+                foreach($trace_data as $k =>$v){
+                    $trace_data[$k]['status_name'] = $con[$v['status']] ;
+                    $trace_data[$k]['status'] =$v['status'];
+                }
+                $bdata['trace'] =$trace_data;
                 return response()->json([
                     'code' =>'1000',
                     'info' => 'success',
