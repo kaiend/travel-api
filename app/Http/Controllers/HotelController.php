@@ -461,7 +461,7 @@ class HotelController extends Controller
         return ReturnMessage::success();
     }
     /**
-     * 获得服务类目
+     * 首页获得服务类目
      * @return \App\Helpers\json|mixed
      */
     public function getServer()
@@ -510,6 +510,10 @@ class HotelController extends Controller
 
                 }
             }
+            foreach($tree as $k=>$v){
+                $tree[$k]['picture'] ='http://travel.shidaichuxing.com/upload/'.$tree[$k]['picture'];
+            }
+            
             return ReturnMessage::successData($tree);
         }catch (JWTException $e){
             return ReturnMessage::success('非法token', '1009');
