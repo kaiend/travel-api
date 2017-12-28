@@ -481,9 +481,11 @@ class HotelController extends Controller
 
             $items = array();
             foreach( $data as $k=>$v){
+                if($v['id'] ==20){
+                    unset($data[$k]);
+                }
                 $items[$v['parent_id']] = $v;
             }
-
             $ids =array_keys( $items );
 
             $last_data = DB::table('server_item')
@@ -496,6 +498,7 @@ class HotelController extends Controller
             foreach( $last_data as $k=>$v){
                 $fdata[$v['id']] = $v;
             }
+
             $final_data =array_merge($fdata,$data);
             $jdata =array();
             foreach( $final_data as $k=>$v){
@@ -513,7 +516,7 @@ class HotelController extends Controller
             foreach($tree as $k=>$v){
                 $tree[$k]['picture'] ='http://travel.shidaichuxing.com/upload/'.$tree[$k]['picture'];
             }
-            
+
             return ReturnMessage::successData($tree);
         }catch (JWTException $e){
             return ReturnMessage::success('非法token', '1009');
