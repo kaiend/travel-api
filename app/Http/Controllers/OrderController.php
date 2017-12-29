@@ -106,9 +106,11 @@ class OrderController extends  Controller
             $user = JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
             $user_data = Hotel::getUserFirst($id);
+
             //酒店id
             $hid =  $user_data['hotel_id'];
-            if( empty($arr['type']) ){
+
+            if( !isset($arr['type']) ){
                 return ReturnMessage::success('缺少订单参数' , '1005');
             }
 
@@ -147,6 +149,7 @@ class OrderController extends  Controller
                     return ReturnMessage::success('订单类型未知' , '1006');
             }
             $bdata=json_decode(json_encode($data),true);
+
             if( count($bdata) != 0){
                 $type_data =Config::get('order.type');
                 foreach( $bdata as $k=>$v) {
