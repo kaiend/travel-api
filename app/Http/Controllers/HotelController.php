@@ -109,7 +109,7 @@ class HotelController extends Controller
 
         $dat['status_login'] =1;
         $dat['last_login_time'] =time();
-        if( isset( $info['jpush_code'] )){
+        if( !empty( $info['jpush_code'] )){
             if( $info['model_code'] != $input['model_code']) {
                 $dat['model_code'] = $input['model_code'];
                 //向原设备发送提醒
