@@ -26,6 +26,7 @@ class PushController extends Controller
     public function pushStatus( Request $request )
     {
         $arr =$request->only('order_id','type');
+
         //查询
         $order_data =DB::table('order')
             ->join('hotel_user','order.user_id','=','hotel_user.id')
@@ -69,6 +70,7 @@ class PushController extends Controller
             )
             ->where('order_number',$arr['order_id'])
             ->first();
+
         $bdata = Common::json_array($order_data);
         $con =Config::get('order.type');
         $bdata['type_name'] =$con[$bdata['type']];
@@ -79,12 +81,12 @@ class PushController extends Controller
         $alert='订单号:'.$bdata['order_number'].'---'.$config[$status];
 
         $chauffeur_id =$bdata['chauffeur_id'];
-        $chauffeur_data =Chauffeur::getUserFirst($chauffeur_id);
+        $chauffeur_data =Chauffeur::getUserFirst($chauffeur_id);dd($chauffeur_data);
         switch($arr['type']){
             //下单通知司机----下单通知酒店管理员
             case 'make':
-                //通知司机
-                if($chauffeur_data['jpush_code']){
+                if(!empty($chauffeur_data['jpush_code'])){
+
                     $regids =$chauffeur_data['jpush_code'];
                     $message =[
                         "extras" => array(
