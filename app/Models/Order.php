@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+use App\Helpers\Common;
+
 class Order extends Model
 {
 	protected $guarded = [];
@@ -8,7 +10,7 @@ class Order extends Model
 	/**
 	 * 充值记录
 	 */
-	protected $table = 'wx_order';
+	protected $table = 'order';
 
 	/**
 	 * 允许批量赋值的字段
@@ -20,7 +22,6 @@ class Order extends Model
 	 * */
 	protected $hidden = [];
 
-
 	/**
 	 * 获取订单信息
 	 *
@@ -29,9 +30,10 @@ class Order extends Model
 	 * */
 	public static function getOrderFirst( array $where)
 	{
-		return static::where( $where )->first();
-	}
 
+        $obj=  static::where( $where )->first()->toArray();
+		return $obj;
+	}
 	/**
 	 * 根据条件修改
 	 * @param array $where
@@ -40,9 +42,9 @@ class Order extends Model
 	 * */
 	public static function modifyOrder( array $where, array $input)
 	{
-		return static::where( $where )->update($input);
+	    $obj =static::where( $where )->update($input);
+		return $obj;
 	}
-
 	/**
 	 * 获取订单列表
 	 * @param array $where
@@ -50,7 +52,33 @@ class Order extends Model
 	 * */
 	public static function orderList( array $where )
 	{
-		return static::where( $where )->orderBy('created_at','desc')->get()->toArray();
+        $obj =static::where( $where )->orderBy('created_at','desc')->get()->toArray();
+		return $obj;
 	}
-
+    /**
+     * 今日新增订单
+     * @param $where
+     * @return int
+     */
+    public static function getNewOder(array $where)
+    {
+        $t = time();
+        $start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
+        $end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
+        $obj =static::where($where)->whereBetween('created_at',[$start,$end])->count();
+        return $obj;
+    }
+    /**
+     * 月结算总量
+     * @param $where
+     * @return int
+     */
+    public static function getMonthMum(array $where)
+    {
+        $BeginDate=date('Y-m-01', strtotime(date("Y-m-d")));
+        $start = strtotime($BeginDate);
+        $end =strtotime(date('Y-m-d', strtotime("$BeginDate +1 month")))-1;
+        $obj =static::where($where)->whereBetween('created_at',[$start,$end])->count();
+        return $obj;
+    }
 }

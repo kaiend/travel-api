@@ -38,7 +38,7 @@ $api->version('v1', [
     //APP修改密码
     $api->post('/password','HotelController@editPassword');
     //APP测试接口
-    $api->get('/test','UserController@test');
+    $api->get('/test','HotelController@test');
     //APP退出登录接口
     $api->get('/logout','HotelController@destroy');
     //APP选飞机或者车站的地址
@@ -112,6 +112,19 @@ $api->version('v1', [
     $api->group(['prefix' => 'push'] , function(){
         //状态变化推送接口
         \Dingo\Api\Facade\Route::get('/order/status' ,'PushController@pushStatus');
+
+    });
+    //APP账户统计
+    $api->group(['prefix' => 'account'] , function(){
+        //账户统计接口
+        \Dingo\Api\Facade\Route::get('/index' ,'HotelController@getAccount');
+
+    });
+    $api->group(['prefix' => 'finance'] , function(){
+        //财务管理接口
+        \Dingo\Api\Facade\Route::get('/index' ,'HotelController@getFinancial');
+        //财务管理筛选接口
+        \Dingo\Api\Facade\Route::get('/filter' ,'HotelController@getFilter');
 
     });
 });

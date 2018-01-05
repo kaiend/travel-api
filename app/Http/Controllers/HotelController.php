@@ -10,6 +10,7 @@ use App\Helpers\Common;
 use App\Helpers\ReturnMessage;
 use App\Http\Validators\UserValidator;
 use App\Models\Hotel;
+use App\Models\Order;
 use App\Models\ServerItem;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -529,12 +530,8 @@ class HotelController extends Controller
      */
     public function test()
     {
-        $t = time();
-        $start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
-        $end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
-        print_r($start);
-        print_r($end);
-
+        $data =Order::getMonthCount(['user_id'=>1,'clearing_type'=>1]);
+        return ReturnMessage::successData($data);
     }
     /**
      * 出行地
@@ -553,5 +550,164 @@ class HotelController extends Controller
             return ReturnMessage::success('失败','1011');
         }
     }
+    /**
+     * 账户统计
+     * @return \App\Helpers\json|mixed
+     */
+    public function getAccount()
+    {
+        try {
+            $user = JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+            //查询当前用户的酒店ID和type
+            $user_data = Hotel::getUserFirst($id);
+            $cip_fee=DB::table('hotel_fee')->where('company_id',$user_data['hotel_id'])->first();
+            $cip_fee =Common::json_array($cip_fee);
+            $where =['user_id'=>$user_data['id']];
+            //今日新增
+            $new_order =Order::getNewOder($where);
+            //本月订单总量
+            $month_sum =Order::getMonthMum($where);
+            $order_data =Order::orderList($where);
+            foreach($order_data as $k=>$v){
+                if($v['cip'] == 1){
+                    $order_data[$k]['total_fee'] =$v['price']+$cip_fee['cip_fee'];
+                }else{
+                    $order_data[$k]['total_fee'] =$v['price'];
+                }
+                $order_data[$k]['date'] =date('Y-m',$v['created_at']);
+            }
+            $collection = collect($order_data);
+            //待结算费用
+            $unpaid = $collection->sum('total_fee');
+            //账户流水明细
+            $detail =$collection->groupBy('date')->toArray();
+//            if($user_data['rebate']){
+//                //查询结算表的返佣情况
+//            }
+            $last_data=[
+                'new' =>$new_order,
+                'count'=>$month_sum,
+                'unpaid'=>$unpaid,
+                'detail' =>$detail
+            ];
+            $last_data=ReturnMessage::toString($last_data);
+            return ReturnMessage::successData($last_data);
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token', '1009');
+        }
+    }
+    public function getFinancial()
+    {
+        try {
+            $user = JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+            //查询当前用户的酒店ID和type
+            $user_data = Hotel::getUserFirst($id);
+            $cip_fee=DB::table('hotel_fee')->where('company_id',$user_data['hotel_id'])->first();
+            $cip_fee =Common::json_array($cip_fee);
+            $where =['hotel_id'=>$user_data['hotel_id']];
+            //本月消费金额
+            $BeginDate=date('Y-m-01', strtotime(date("Y-m-d")));
+            $start = strtotime($BeginDate);
+            $end =strtotime(date('Y-m-d', strtotime("$BeginDate +1 month")))-1;
+            $m_data =DB::table('order')->where($where)->whereBetween('created_at',[$start,$end])->get();
+            $m_data =Common::json_array($m_data);
+            foreach ($m_data as $key=>$val){
+                if($val['cip'] == 1){
+                    $m_data[$key]['total_fee'] =$val['price']+$cip_fee['cip_fee'];
+                }else{
+                    $m_data[$key]['total_fee'] =$val['price'];
+                }
+            }
+            $collection = collect($m_data);
+            //本月消费金额结算费用
+            $m_fee = $collection->sum('total_fee');
 
+            //本月订单总量
+            $month_sum =Order::getMonthMum($where);
+            $order_data =Order::orderList($where);
+            foreach($order_data as $k=>$v){
+                if($v['cip'] == 1){
+                    $order_data[$k]['total_fee'] =$v['price']+$cip_fee['cip_fee'];
+                }else{
+                    $order_data[$k]['total_fee'] =$v['price'];
+                }
+                $order_data[$k]['date'] =date('Y-m',$v['created_at']);
+            }
+            $collection = collect($order_data);
+            //待结算费用
+            $unpaid = $collection->sum('total_fee');
+            //财务明细
+            $detail =$collection->groupBy('date')->toArray();
+//            if($user_data['rebate']){
+//                //查询结算表的返佣情况
+//            }
+            $last_data=[
+                'new' =>$m_fee,
+                'count'=>$month_sum,
+                'unpaid'=>$unpaid,
+                'detail' =>$detail
+            ];
+            $last_data=ReturnMessage::toString($last_data);
+            return ReturnMessage::successData($last_data);
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token', '1009');
+        }
+    }
+
+    public function getFilter( Request $request )
+    {
+        $arr =$request ->only('clearing_type','start','end');
+        try {
+            $user = JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+
+            //查询当前用户的酒店ID和type
+            $user_data = Hotel::getUserFirst($id);
+            $handle = DB::table('order');
+            $where =[
+                ['hotel_id',$user_data['hotel_id']]
+            ];
+            foreach( $arr as $k =>$v){
+                if( $v ){
+                    $where[$k] = $v;
+                }
+            }
+            unset($where['start']);
+            unset($where['end']);
+
+            $start =intval( $arr['start'] );
+            $end =  intval( $arr['end'] );
+            if( !empty( $start ) && !empty( $end )){
+                $data =$handle
+                    //->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+                    ->where($where)
+                    ->whereBetween('appointment', [$start, $end])->get();
+            }else{
+
+                $data =$handle
+                    //->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+                    ->where($where)
+                    ->get();
+            }
+            $bdata=json_decode(json_encode($data),true);
+
+            if( count($bdata) != 0){
+                $final=ReturnMessage::toString($bdata);
+
+                return ReturnMessage::successData($final);
+
+            }else{
+                return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'data' => []
+                ]);
+            }
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+
+    }
 }
