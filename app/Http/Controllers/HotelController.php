@@ -491,6 +491,7 @@ class HotelController extends Controller
             $last_data = DB::table('server_item')
                         ->whereIn('id',$ids)
                         ->select('id','parent_id','name','picture')
+                        ->orderBy('sort','desc')
                         ->get();
             $last_data =Common::json_array( $last_data );
 
