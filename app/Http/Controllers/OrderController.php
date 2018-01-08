@@ -236,6 +236,9 @@ class OrderController extends  Controller
                        unset($field_names['end']);
                    }else if( $bdata['type'] == 29){
                        unset($field_names['origin']);
+                   }else if($bdata['type'] == 20){
+                       unset($field_names['origin']);
+                       unset($field_names['end']);
                    }
                     foreach (  array_flip($field_names) as $k => $v) {
 
