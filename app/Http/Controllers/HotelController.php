@@ -597,6 +597,10 @@ class HotelController extends Controller
             return ReturnMessage::success('非法token', '1009');
         }
     }
+    /**
+     *财务管理
+     * @return \App\Helpers\json|mixed
+     */
     public function getFinancial()
     {
         try {
@@ -655,7 +659,11 @@ class HotelController extends Controller
             return ReturnMessage::success('非法token', '1009');
         }
     }
-
+    /**
+     * 财务明细筛选
+     * @param Request $request
+     * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
+     */
     public function getFilter( Request $request )
     {
         $arr =$request ->only('clearing_type','start','end');
@@ -683,7 +691,7 @@ class HotelController extends Controller
                 $data =$handle
                     //->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                     ->where($where)
-                    ->whereBetween('appointment', [$start, $end])->get();
+                    ->whereBetween('complete_at', [$start, $end])->get();
             }else{
 
                 $data =$handle
