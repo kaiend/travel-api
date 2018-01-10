@@ -323,7 +323,8 @@ class HotelController extends Controller
                                 'type'=>$arr['type'],
                                 'hotel_id' =>$user_data['hotel_id'],
                                 'avatar'   =>$avatar,
-                                'create_time' =>time()
+                                'create_time' =>time(),
+                                'password' =>Common::createPassword(substr($arr['phone'],-6))
                             ]
                         );
                         $rid='';
@@ -361,7 +362,8 @@ class HotelController extends Controller
                                 'type'=> intval($arr['type']),
                                 'hotel_id' =>$user_data['hotel_id'],
                                 'avatar'   =>$avatar,
-                                'create_time' =>time()
+                                'create_time' =>time(),
+                                'password' =>Common::createPassword(substr($arr['phone'],-6))
                             ]
                         );
                         $rid='';
@@ -573,8 +575,11 @@ class HotelController extends Controller
      */
     public function test()
     {
-//        $data =Order::getMonthCount(['user_id'=>1,'clearing_type'=>1]);
-//        return ReturnMessage::successData($data);
+        $rid =1;
+        DB::table('hotel_role')->insert([
+            'role_id' =>$rid,
+            'user_id' =>$role_id
+        ]);
     }
     /**
      * 出行地
