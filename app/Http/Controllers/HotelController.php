@@ -343,7 +343,7 @@ class HotelController extends Controller
                                 break;
 
                         }
-                        DB::table('hotel_role')->insert([
+                        DB::table('hotel_role_user')->insert([
                             'role_id' =>$rid,
                             'user_id' =>$role_id
                         ]);
@@ -382,7 +382,7 @@ class HotelController extends Controller
                                 break;
 
                         }
-                        DB::table('hotel_role')->insert([
+                        DB::table('hotel_role_user')->insert([
                             'role_id' =>$rid,
                             'user_id' =>$role_id
                         ]);
@@ -575,11 +575,7 @@ class HotelController extends Controller
      */
     public function test()
     {
-        $rid =1;
-        DB::table('hotel_role')->insert([
-            'role_id' =>$rid,
-            'user_id' =>$role_id
-        ]);
+
     }
     /**
      * 出行地
