@@ -24,7 +24,7 @@ class VersionController extends Controller
                     'info' => 'success',
                     'data' => [
                         'code' => intval($arr['version']),
-                        'name' => 'V1.0.1',
+                        'name' => '1.0.1',
                         'title' =>'发现新版本（V1.0.1）',
                         'word' =>'新增【财务管理】时刻查看财务汇总
 新增【账户统计】浏览所有下单统计，所有数据一目了然！',
