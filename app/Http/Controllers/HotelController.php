@@ -530,8 +530,8 @@ class HotelController extends Controller
      */
     public function test()
     {
-        $data =Order::getMonthCount(['user_id'=>1,'clearing_type'=>1]);
-        return ReturnMessage::successData($data);
+//        $data =Order::getMonthCount(['user_id'=>1,'clearing_type'=>1]);
+//        return ReturnMessage::successData($data);
     }
     /**
      * 出行地
