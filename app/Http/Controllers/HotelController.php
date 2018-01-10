@@ -314,7 +314,7 @@ class HotelController extends Controller
                        return ReturnMessage::success('没有权限','1010');
                     }else{
 
-                        DB::table('hotel_user')->insert(
+                        $role_id =DB::table('hotel_user')->insertGetId(
                             [
                                 'name' => $arr['name'],
                                 'mobile'=> $arr['phone'],
@@ -344,7 +344,7 @@ class HotelController extends Controller
                         }
                         DB::table('hotel_role')->insert([
                             'role_id' =>$rid,
-                            'user_id' =>$id
+                            'user_id' =>$role_id
                         ]);
 
                         return ReturnMessage::success('success','1000');
@@ -352,7 +352,7 @@ class HotelController extends Controller
 
                 }else{
                     if(in_array(intval($arr['type']),[1,2,3,4]) ){
-                        DB::table('hotel_user')->insert(
+                        $role_id =DB::table('hotel_user')->insertGetId(
                             [
                                 'name' => $arr['name'],
                                 'mobile'=> $arr['phone'],
@@ -382,7 +382,7 @@ class HotelController extends Controller
                         }
                         DB::table('hotel_role')->insert([
                             'role_id' =>$rid,
-                            'user_id' =>$id
+                            'user_id' =>$role_id
                         ]);
 
                         return ReturnMessage::success('success','1000');

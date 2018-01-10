@@ -21,14 +21,14 @@ class VersionController extends Controller
      */
     public function getVersion(Request $request)
     {
-        $arr = $request->only('from','version');
+        $arr = $request->only('from');
         switch ($arr['from']){
             case 'Android':
                 return response()->json([
                     'code' =>'1000',
                     'info' => 'success',
                     'data' => [
-                        'code' => intval($arr['version']),
+                        'code' => 10,
                         'name' => '1.0.1',
                         'title' =>'发现新版本（V1.0.1）',
                         'word' =>'新增【财务管理】时刻查看财务汇总
