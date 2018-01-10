@@ -114,9 +114,9 @@ class OrderController extends  Controller
                 return ReturnMessage::success('缺少订单参数' , '1005');
             }
 
-            //$t = time();
-            //$start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
-            //$end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
+            $t = time();
+            $start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
+            $end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
             switch ($arr['type']){
                 case 'wait':
                     $data = DB::table('order')
@@ -134,6 +134,7 @@ class OrderController extends  Controller
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where('hotel_id','=',$hid)
                         ->whereIn('status', [1,2,3,4,5,6,7,8])
+                        ->whereBetween('created_at',[$start,$end])
                         ->orderBy('id','desc')
                         ->get();
                     break;
