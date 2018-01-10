@@ -21,7 +21,13 @@ class VersionController extends Controller
                 return response()->json([
                     'code' =>'1000',
                     'info' => 'success',
-                    'data' => intval($arr['version'])
+                    'data' => [
+                        'version' => intval($arr['version']),
+                        'title' =>'发现新版本（V1.0.1）',
+                        'word' =>'新增【财务管理】时刻查看财务汇总
+新增【账户统计】浏览所有下单统计，所有数据一目了然！',
+                        'url'  =>'https://fir.im/3gct'
+                    ]
                 ]);
             break;
             case 'IOS':
