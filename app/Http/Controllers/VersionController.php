@@ -14,6 +14,11 @@ use Illuminate\Http\Request;
 
 class VersionController extends Controller
 {
+    /**
+     * 版本更新接口
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getVersion(Request $request)
     {
         $arr = $request->only('from','version');

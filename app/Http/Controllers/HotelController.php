@@ -313,6 +313,7 @@ class HotelController extends Controller
                     if(in_array(intval($arr['type']),[1,2]) ){
                        return ReturnMessage::success('没有权限','1010');
                     }else{
+
                         DB::table('hotel_user')->insert(
                             [
                                 'name' => $arr['name'],
@@ -325,6 +326,27 @@ class HotelController extends Controller
                                 'create_time' =>time()
                             ]
                         );
+                        $rid='';
+                        switch($arr['type']){
+                            case '2':
+                                //插入超级管理员权限
+                                $rid = 1;
+                            break;
+                            case '3':
+                                //插入财务管理权限
+                                $rid = 8;
+                            break;
+                            case '4':
+                                //插入财务管理权限
+                                $rid = 3;
+                                break;
+
+                        }
+                        DB::table('hotel_role')->insert([
+                            'role_id' =>$rid,
+                            'user_id' =>$id
+                        ]);
+
                         return ReturnMessage::success('success','1000');
                     }
 
@@ -342,6 +364,27 @@ class HotelController extends Controller
                                 'create_time' =>time()
                             ]
                         );
+                        $rid='';
+                        switch($arr['type']){
+                            case '2':
+                                //插入超级管理员权限
+                                $rid = 1;
+                                break;
+                            case '3':
+                                //插入财务管理权限
+                                $rid = 8;
+                                break;
+                            case '4':
+                                //插入财务管理权限
+                                $rid = 3;
+                                break;
+
+                        }
+                        DB::table('hotel_role')->insert([
+                            'role_id' =>$rid,
+                            'user_id' =>$id
+                        ]);
+
                         return ReturnMessage::success('success','1000');
                     }
                 }
