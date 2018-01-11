@@ -168,14 +168,9 @@ class UserValidator
 
 		$validator = Validator::make($input, $rules, $messages);
 
-		if ($validator->fails())
-		    //PC
-		    if(!empty($input['jsoncallback'])){
-                exit($input['jsoncallback'].json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
-            }else{
-                exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
-            }
 
+        if ($validator->fails())
+            exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
 
 		self::redisVerify($input);
 
@@ -183,11 +178,17 @@ class UserValidator
 	}
 
 	//验证码验证
-	private static function redisVerify($input)
-	{
-		if (!Redis::exists($input['phone']) || (Redis::get($input['phone']) != $input['code']))
-			exit(json_encode(['info'=>'验证码错误','code'=>'1004']));
-	}
+    private static function redisVerify($input)
+    {
+        if(!empty($input['jsoncallback'])){
+            if (!Redis::exists($input['phone']) || (Redis::get($input['phone']) != $input['code']))
+                exit($input['jsoncallback'].'('.json_encode(['info'=>'验证码错误','code'=>'1004']).')');
+        }else{
+            if (!Redis::exists($input['phone']) || (Redis::get($input['phone']) != $input['code']))
+                exit(json_encode(['info'=>'验证码错误','code'=>'1004']));
+        }
+
+    }
 
 	/**
      * 修改密码数据验证
