@@ -70,6 +70,7 @@ class CarController extends Controller
                 ['hotel_id',$arr['hotel_id']],
                 ['car_series.parent_id',$id]
             ])
+            ->distinct('charges_rule.cars_id')
             ->get();
         $bdata=json_decode(json_encode($data),true);
 

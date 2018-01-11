@@ -28,7 +28,7 @@ class OrderController extends  Controller
      * @param Request $request
      * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
      */
-    public function getList( Request $request)
+    public function getList( Request $request)w
     {
        //获取订单的类型type
         $arr =$request->all();
