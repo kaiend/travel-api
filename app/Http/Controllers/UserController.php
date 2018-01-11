@@ -143,7 +143,7 @@ class UserController extends Controller
             ];
             $result =json_encode($data);
             $callback=$re['jsoncallback'];
-            return $callback."($result)";
+            return ReturnMessage::success('success',1000,$callback."($result)");
         }else{
             return ReturnMessage::success();
         }
