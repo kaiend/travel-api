@@ -143,9 +143,6 @@ class UserValidator
 
         return $input;
     }
-
-
-
 	/**
 	 * 验证码验证verifyCode
 	 *
@@ -154,7 +151,7 @@ class UserValidator
 	 * */
 	public static function verifyCode( Request $request )
 	{
-		$only = ['phone','code'];
+		$only = ['phone','code','jsoncallback'];
 
 		$rules = [
 			'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
@@ -177,7 +174,7 @@ class UserValidator
 
 		self::redisVerify($input);
 
-		return;
+		return $input;
 	}
 
 	//验证码验证

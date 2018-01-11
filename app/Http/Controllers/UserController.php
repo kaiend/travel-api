@@ -49,7 +49,6 @@ class UserController extends Controller
 
 		return ReturnMessage::success('验证码发送失败',1002);
 	}
-
 	/**
 	 * 生成验证码
 	 * @author yxk
@@ -64,7 +63,6 @@ class UserController extends Controller
 		}
 		return $code;
 	}
-
 	/**
 	 * 调用短信发送接口
 	 *
@@ -128,7 +126,6 @@ class UserController extends Controller
 	{
 		return '';
 	}
-
 	/**
 	 * 判断验证码是否正确
 	 *
@@ -138,8 +135,19 @@ class UserController extends Controller
 	 * */
 	public function verifyCode( Request $request )
 	{
-		UserValidator::verifyCode($request);
-		return ReturnMessage::success();
+		$re =UserValidator::verifyCode($request);
+		if($re['jsoncallback']=='callback'){
+            $data = [
+                'code' =>1000,
+                'info'   =>'success'
+            ];
+            $result =json_encode($data);
+            $callback=$re['jsoncallback'];
+            return $callback."($result)";
+        }else{
+            return ReturnMessage::success();
+        }
+
 	}
 	/**
 	 * 修改秘密
