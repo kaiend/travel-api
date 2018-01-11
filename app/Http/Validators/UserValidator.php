@@ -170,7 +170,13 @@ class UserValidator
 		$validator = Validator::make($input, $rules, $messages);
 
 		if ($validator->fails())
-			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+		    //PC
+		    if(!empty($only['jsoncallback'])){
+                exit($only['jsoncallback'].json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+            }else{
+                exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+            }
+
 
 		self::redisVerify($input);
 
