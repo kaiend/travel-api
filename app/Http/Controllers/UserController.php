@@ -165,11 +165,20 @@ class UserController extends Controller
 		$where['mobile'] = $input['phone'];
 		try {
 			User::modifyUser($where,$data);
+            if($input['jsoncallback']=='callback'){
+                $data = [
+                    'code' =>1000,
+                    'info'   =>'success'
+                ];
+                $result =json_encode($data);
+                $callback=$input['jsoncallback'];
+                return $callback."($result)";
+            }else{
+                return ReturnMessage::success();
+            }
 		} catch (\Exception $e) {
 			return ReturnMessage::success('修改密码失败',1002);
 		}
-
-		return ReturnMessage::success();
 	}
 
 	/**

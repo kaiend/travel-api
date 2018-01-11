@@ -11,8 +11,11 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ReturnMessage;
 use App\Http\Validators\CarValidator;
+use App\Models\Hotel;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CarController extends Controller
 {
@@ -20,18 +23,38 @@ class CarController extends Controller
      * 车系接口
      * @return mixed
      */
-    public function getSeries()
+    public function getSeries(Request $request)
     {
-        $data = DB::table('car_series')
-            ->where([
-                ['parent_id' , 0 ],
-                ['status',1]
-            ])
-            ->select("id","series_name")
-            ->get();
-        $bdata = json_decode(json_encode($data),true);
+        try {
+            $user = JWTAuth::parseToken()->getPayload();
+            $id = intval($user['foo']);
+            $arr =$request->only('type');
+            //查询当前用户的酒店ID和type
+            $user_data= Hotel::getUserFirst($id);
+            $hid =$user_data['hotel_id'];
+            $cdata =DB::table('server_car')
+                ->join('car_series','server_car.series_id','car_series.id')
+                ->where([
+                    ['company_id',$hid],
+                    ['item_id',$arr['type']]
+                ])
+                ->pluck('parent_id');
+            $data = DB::table('car_series')
+                ->where([
+                    ['parent_id' , 0 ],
+                    ['status',1]
+                ])
+                ->whereIn('id',$cdata)
+                ->select("id","series_name")
+                ->get();
+            $bdata = json_decode(json_encode($data),true);
 
-        return ReturnMessage::successData($bdata);
+            return ReturnMessage::successData($bdata);
+
+        }catch(JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+
     }
 
     public function getCars( $id, Request $request )

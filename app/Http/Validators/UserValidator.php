@@ -185,14 +185,14 @@ class UserValidator
 	}
 
 	/**
- * 修改密码数据验证
- *
- * @param Request $request
- * @return mixed
- * */
+     * 修改密码数据验证
+     *
+     * @param Request $request
+     * @return mixed
+    * */
     public static function modifyPassword( Request $request )
     {
-        $only = ['phone','code','user_pass'];
+        $only = ['phone','code','user_pass','jsoncallback'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/|exists:user,phone',
