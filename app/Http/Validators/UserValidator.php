@@ -152,7 +152,6 @@ class UserValidator
 	public static function verifyCode( Request $request )
 	{
 		$only = ['phone','code','jsoncallback'];
-
 		$rules = [
 			'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
 			'code' => 'required',
@@ -171,8 +170,8 @@ class UserValidator
 
 		if ($validator->fails())
 		    //PC
-		    if(!empty($only['jsoncallback'])){
-                exit($only['jsoncallback'].json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+		    if(!empty($input['jsoncallback'])){
+                exit($input['jsoncallback'].json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
             }else{
                 exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
             }
