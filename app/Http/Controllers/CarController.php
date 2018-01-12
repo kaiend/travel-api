@@ -48,9 +48,15 @@ class CarController extends Controller
                 ->select("id","series_name")
                 ->get();
             $bdata = json_decode(json_encode($data),true);
-
-            return ReturnMessage::successData($bdata);
-
+            if(count($bdata) != 0){
+                return ReturnMessage::successData($bdata);
+            }else{
+                return response()->json([
+                    'code' => '1000',
+                    'info' => 'success',
+                    'data' => []
+                ]);
+            }
         }catch(JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
         }
