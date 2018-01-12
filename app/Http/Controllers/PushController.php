@@ -85,7 +85,7 @@ class PushController extends Controller
         switch($arr['type']){
             //下单通知司机----下单通知酒店管理员
             case 'make':
-                if(!empty($chauffeur_data['jpush_code'])){
+                if(!empty($chauffeur_data['jpush_code']) && $chauffeur_data['status_login'] ==1){
 
                     $regids =$chauffeur_data['jpush_code'];
                     $message =[

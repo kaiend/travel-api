@@ -180,7 +180,6 @@ class UserController extends Controller
 			return ReturnMessage::success('修改密码失败',1002);
 		}
 	}
-
 	/**
 	 * 用户注销
 	 * @param $request

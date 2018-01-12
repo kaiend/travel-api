@@ -28,7 +28,7 @@ class OrderController extends  Controller
      * @param Request $request
      * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
      */
-    public function getList( Request $request)w
+    public function getList( Request $request)
     {
        //获取订单的类型type
         $arr =$request->all();
@@ -237,7 +237,7 @@ class OrderController extends  Controller
                        unset($field_names['end']);
                    }else if( $bdata['type'] == 29){
                        unset($field_names['origin']);
-                   }else if($bdata['type'] == 20){
+                   }else if(in_array($bdata['type'],[20,39,40,41])){
                        unset($field_names['origin']);
                        unset($field_names['end']);
                    }
