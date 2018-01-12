@@ -98,7 +98,7 @@ class PushController extends Controller
                     $secret ='1ec040fbba99095178d35521';
                     $result =$this ->sendNotifySpecial($regids,$alert,$message,$appkey,$secret);
                     if( $result['http_code']){
-                        return ReturnMessage::successData($bdata);
+                        return ReturnMessage::success();
                     }else{
                         return ReturnMessage::success('失败','1011');
                     }
