@@ -535,7 +535,7 @@ class OrderController extends  Controller
             DB::beginTransaction();
             try{
                 //插入数据
-                DB::table('order')->insert(
+                $insert_id =DB::table('order')->insertGetId(
                     [
                         'appointment' => $arr['time'],
                         'passenger_name' => $arr['name'],
@@ -566,7 +566,7 @@ class OrderController extends  Controller
                 if(!is_null($field_mame)){
                     foreach(  $field_mame as $k =>$v){
                         DB::table('way_to') ->insert([
-                            'order_id' =>$id,
+                            'order_id' =>$insert_id,
                             'name' =>$v,
                             'content' =>json_encode([$arr[$v]])
                         ]);
