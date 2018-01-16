@@ -532,43 +532,59 @@ class OrderController extends  Controller
             $id = $user['foo'];
             //查询当前用户的酒店ID和type
             $user_data= Hotel::getUserFirst($id);
+            DB::beginTransaction();
+            try{
+                //插入数据
+                DB::table('order')->insert(
+                    [
+                        'appointment' => $arr['time'],
+                        'passenger_name' => $arr['name'],
+                        'passenger_phone' => $arr['phone'],
+                        'passenger_people' => $arr['people'],
+                        'room_number' => $arr['room_number'],
+                        'order_number' =>Common::createNumber(),
+                        'remarks' => $arr['remarks'],
+                        'car_id'  => $arr['car_id'],
+                        'created_at'  =>time(),
+                        'end' => $arr['end'],
+                        'origin' => $arr['origin'],
+                        'end_position' => $arr['end_position'],
+                        'origin_position' => $arr['origin_position'],
+                        'price' => $arr['price'],
+                        'type' =>  $arr['type'],
+                        'orders_name' => $user_data['name'],
+                        'orders_phone' => $user_data['mobile'],
+                        'user_id' =>$user_data['id'],
+                        'hotel_id'  =>$user_data['hotel_id'],
+                        'judgment' => 1,
+                        'bottom_number' =>$arr['hotel_number']
+                    ]
+                );
+                //插入展字段
+                $field =DB::table('server_item')->where('id',$arr['type']) ->value('field_name');
+                $field_mame = json_decode($field);
+                if(!is_null($field_mame)){
+                    foreach(  $field_mame as $k =>$v){
+                        DB::table('way_to') ->insert([
+                            'order_id' =>$id,
+                            'name' =>$v,
+                            'content' =>json_encode([$arr[$v]])
+                        ]);
+                    }
+                }
 
-            //插入数据
-            $re = DB::table('order')->insert(
-                [
-                    'appointment' => $arr['time'],
-                    'passenger_name' => $arr['name'],
-                    'passenger_phone' => $arr['phone'],
-                    'passenger_people' => $arr['people'],
-                    'room_number' => $arr['room_number'],
-                    'order_number' =>Common::createNumber(),
-                    'remarks' => $arr['remarks'],
-                    'car_id'  => $arr['car_id'],
-                    'created_at'  =>time(),
-                    'end' => $arr['end'],
-                    'origin' => $arr['origin'],
-                    'end_position' => $arr['end_position'],
-                    'origin_position' => $arr['origin_position'],
-                    'price' => $arr['price'],
-                    'type' =>  $arr['type'],
-                    'orders_name' => $user_data['name'],
-                    'orders_phone' => $user_data['mobile'],
-                    'user_id' =>$user_data['id'],
-                    'hotel_id'  =>$user_data['hotel_id'],
-                    'judgment' => 1,
-                    'bottom_number' =>$arr['hotel_number']
-                ]
-            );
-            if($re){
+                DB::commit();
                 return ReturnMessage::success();
-            }else{
-                return ReturnMessage::success( '失败','1011');
+            }catch (\Exception $e) {
+                DB::rollback();
+                return response()->json([
+                    'code' => $e->getCode(),
+                    'info' => $e->getMessage(),
+                ]);
             }
-
         }catch(JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
         }
-
     }
     /**
      * 接机

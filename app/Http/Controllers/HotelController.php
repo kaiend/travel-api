@@ -575,7 +575,16 @@ class HotelController extends Controller
      */
     public function test()
     {
+        $arr['type'] =31;
+        $field =DB::table('server_item')->where('id',$arr['type']) ->value('field_name');
+        $field_mame = json_decode($field);
+        if(!is_null($field_mame)){
 
+        }else{
+
+        }
+
+        dd($field_mame);
     }
     /**
      * 出行地

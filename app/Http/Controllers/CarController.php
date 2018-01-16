@@ -63,6 +63,12 @@ class CarController extends Controller
 
     }
 
+    /**
+     * 车辆详情
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|mixed
+     */
     public function getCars( $id, Request $request )
     {
 
