@@ -77,17 +77,22 @@ class CarController extends Controller
         $data = DB::table('charges_rule')
             ->join('car_series','charges_rule.cars_id','=','car_series.id')
             ->where('charges_rule.service_id',$arr['type'])
-            ->select('type','price','cars_id','service_id','series_name','image','status','parent_id')
+            ->select('type','price','cars_id','service_id','series_name','image','status','parent_id','market_price')
             ->where([
                 ['hotel_id',$arr['hotel_id']],
                 ['car_series.parent_id',$id]
             ])
             ->distinct('charges_rule.cars_id')
             ->get();
+            //dd($data);
         $bdata=json_decode(json_encode($data),true);
 
         if( count($bdata) != 0){
             foreach( $bdata as $k=>$v){
+                if(!is_null($v['market_price'])){
+                    $bdata[$k]['price'] = $v['market_price'];
+                }
+                unset($bdata[$k]['market_price']);
                 $bdata[$k]['image']='http://travel.shidaichuxing.com/upload/'.$bdata[$k]['image'];
             }
 
@@ -103,7 +108,6 @@ class CarController extends Controller
         }
 
     }
-
     public function getSerie( Request $request )
     {
         $arr = $request ->all();
