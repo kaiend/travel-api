@@ -470,7 +470,7 @@ class OrderController extends  Controller
                     ]);
                 }
                 DB::commit();
-                $this->hotelLog($id,$user_data['name'],'创建了订单',$user_data['hotel_id']);
+                $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id']);
                 return ReturnMessage::success();
             }catch (\Exception $e){
                 DB::rollback();
@@ -574,7 +574,7 @@ class OrderController extends  Controller
                 }
 
                 DB::commit();
-                $this->hotelLog($id,$user_data['name'],'创建了订单',$user_data['hotel_id']);
+                $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id']);
                 return ReturnMessage::success();
             }catch (\Exception $e) {
                 DB::rollback();
@@ -650,7 +650,7 @@ class OrderController extends  Controller
                     ]);
                 }
                 DB::commit();
-                $this->hotelLog($id,$user_data['name'],'创建了订单',$user_data['hotel_id']);
+                $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id']);
                 return ReturnMessage::success();
             }catch (\Exception $e){
                 DB::rollback();
@@ -718,7 +718,7 @@ class OrderController extends  Controller
                     ]);
                 }
                 DB::commit();
-                $this->hotelLog($id,$user_data['name'],'创建了订单',$user_data['hotel_id']);
+                $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id']);
                 return ReturnMessage::success();
             }catch (\Exception $e){
                 DB::rollback();
@@ -783,7 +783,7 @@ class OrderController extends  Controller
                 ]);
             }
             if( $re ){
-                $this->hotelLog($id,$user_data['name'],'追加了订单',$user_data['hotel_id']);
+                $this->hotelLog($id,$user_data['name'],'APP追加了订单',$user_data['hotel_id']);
                 return ReturnMessage::success();
             }else{
                 return ReturnMessage::success('失败','1011');
