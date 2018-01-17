@@ -22,7 +22,6 @@ class PushController extends Controller
 {
     private $appKey ='50505e64af2ea4b5e8e27e26';
     private $master_secret ='f90b3ccdce62056bb134aaaf';
-
     /**
      * 派单推送接口(后台专用)
      * @param Request $request
@@ -158,6 +157,18 @@ class PushController extends Controller
                 return ReturnMessage::success('失败','1011');
         }
     }
+    public static  function createOrder($data){
+        //下单推送-管理员
+        //1.查询消息详情
+        $where =
+        print_r($data);
+
+    }
+
+
+
+
+
     /**
      * 向所有设备推送消息-广播
      * @param $alert  消息的标题
