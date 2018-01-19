@@ -25,6 +25,7 @@ class Controller extends BaseController
         $data['operation'] = $operation;
         $data['createTime'] = time();
         $data['hotelId'] = $hotelId;
+        $data['companyId'] =$hotelId;
 
         DB::table('log')->insert($data);
     }
