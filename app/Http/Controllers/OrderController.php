@@ -32,7 +32,6 @@ class OrderController extends  Controller
     {
        //获取订单的类型type
         $arr =$request->all();
-        $id =1;
         try{
             $user = JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
