@@ -13,6 +13,7 @@ use App\Helpers\Common;
 use App\Helpers\ReturnMessage;
 use App\Models\Chauffeur;
 use App\Models\Hotel;
+use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -157,11 +158,39 @@ class PushController extends Controller
                 return ReturnMessage::success('失败','1011');
         }
     }
-    public static  function createOrder($data){
+    public  function createOrder($data){
         //下单推送-管理员
         //1.查询消息详情
-        $where =
-        print_r($data);
+        $where =[
+            'channel' =>2,
+            'type' => 2,
+            'condition'=>1 //1为下单
+        ];
+        $re =Message::getMessageFirst($where);
+        //return $re;
+        $config =Config::get('order.type');
+        $type =$data['type'];
+        //return $config[$type];
+        $data['appointment'] =strtotime($data['appointment']);
+        $data['appointment'] =date('m月d日 H:i');
+
+        $alert =str_replace("[type]服务",$config[$type],$re['title']);
+        $message =str_replace("[passenger_name]/[appointment]/[origin]至[end]",$data['passenger_name'].'/'.$data['appointment'].'/'.$data['origin'].'至'.$data['end'],$re['content']);
+        $m_data =[
+            "extras" => array(
+                'status'=> '120',
+                "data" => $message,
+            )
+        ];
+        //$result =$this->sendNotifySpecial();
+        return $m_data;
+        return $re['content'];
+        return $re['title'];
+
+        return $data['type'];
+        return $re;
+        //$alert =$re[''];
+
 
     }
 

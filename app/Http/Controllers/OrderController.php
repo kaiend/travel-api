@@ -24,7 +24,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class OrderController extends  Controller
 {
     /**
-     * APP订单列表
+     * APP我的订单列表
      * @param Request $request
      * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
      */
@@ -39,53 +39,105 @@ class OrderController extends  Controller
                 return ReturnMessage::success('缺少订单参数' , '1005');
             }
             switch ($arr['type']){
-                case 'wait':
+                //全部订单
+                case 'all':
                     $data = DB::table('order')
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where([
-                            ['status','=',1],
                             ['user_id','=',$id],
                         ])
                         ->orderBy('id','desc')
                         ->get();
+                    break;
+                //待执行
+                case 'wait':
+                    $data = DB::table('order')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+                        ->where([
+                            ['user_id','=',$id],
+                        ])
+                        ->whereIn('status', [2,3,4])
+                        ->orderBy('id','desc')
+                        ->get();
 
                     break;
-
+                //执行中
                 case 'doing':
                     $data = DB::table('order')
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where('user_id','=',$id)
-                        ->whereIn('status', [2,3,4,5,6,7,8])
+                        ->whereIn('status', [5,6,7,8])
                         ->orderBy('id','desc')
                         ->get();
                     break;
+                //取消订单
+                case 'cancel':
+                    $data = DB::table('order')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+                        ->where([
+                            ['status','=',0],
+                            ['user_id','=',$id]
+                        ])
+                        ->orderBy('id','desc')
+                        ->get();
+                    break;
+                //历史订单
                 case 'done' :
                     $data = DB::table('order')
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
-                        ->where('user_id','=',$id )
-                        ->whereIn('status', [0,9])
+                        ->where([
+                            ['status','=',9],
+                            ['user_id','=',$id]
+                        ])
                         ->orderBy('id','desc')
                         ->get();
                     break;
                 default :
                     return ReturnMessage::success('订单类型未知' , '1006');
             }
+            //最近订单
+            $today_data =DB::table('order')
+                ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+                ->where('user_id','=',$id)
+                ->orderBy('id','desc')
+                ->limit(5)
+                ->get();
+            $today_data=Common::json_array($today_data);
+            //dd($today_data);
+            //待审核
+            $count =DB::table('order')
+                ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+                ->where([
+                    ['user_id','=',$id],
+                    ['status','=',10]
+                ])
+                ->count();
 
             $bdata=json_decode(json_encode($data),true);
 
             if( count($bdata) != 0){
                 $type_data =Config::get('order.type');
+                $status_name =Config::get('status_name');
                 foreach( $bdata as $k=>$v) {
+                    $bdata[$k]['status_name'] = $status_name[$v['status']];
                     $bdata[$k]['type_name'] = $type_data[$v['type']];
                 }
                 $final=ReturnMessage::toString($bdata);
 
-                return ReturnMessage::successData($final);
+                return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'count'=>"$count",
+                    'today'=>ReturnMessage::toString($today_data) ,
+                    'data' => $final,
+                ]);
 
             }else{
                 return response()->json([
                     'code' =>'1000',
                     'info' => 'success',
+                    'count'=>"$count",
+                    'today'=>ReturnMessage::toString($today_data),
                     'data' => []
                 ]);
             }
@@ -118,7 +170,26 @@ class OrderController extends  Controller
             $start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
             $end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
             switch ($arr['type']){
-                case 'wait':
+                case 'all':
+                    $data = DB::table('order')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+                        ->where('hotel_id','=',$hid)
+                        ->whereIn('status', [1,2,3,4,5,6,7,8])
+                        ->orderBy('id','desc')
+                        ->get();
+                    break;
+                //今日新增
+                case 'today':
+                    $data = DB::table('order')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+                        ->where('hotel_id','=',$hid)
+                        ->whereIn('status', [1,2,3,4,5,6,7,8])
+                        ->whereBetween('created_at',[$start,$end])
+                        ->orderBy('id','desc')
+                        ->get();
+                    break;
+                //待审核
+                case 'undo':
                     $data = DB::table('order')
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where([
@@ -129,41 +200,81 @@ class OrderController extends  Controller
                         ->get();
 
                     break;
+                //待执行
+                case 'wait':
+                    $data = DB::table('order')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+                        ->where('hotel_id','=',$hid)
+                        ->whereIn('status', [2,3,4])
+                        ->orderBy('id','desc')
+                        ->get();
+                    break;
+                //执行中
                 case 'doing':
                     $data = DB::table('order')
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where('hotel_id','=',$hid)
-                        ->whereIn('status', [1,2,3,4,5,6,7,8])
-                        ->whereBetween('created_at',[$start,$end])
+                        ->whereIn('status', [5,6,7,8])
                         ->orderBy('id','desc')
                         ->get();
                     break;
-                case 'done' :
+                //取消订单
+                case 'cancel' :
                     $data = DB::table('order')
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
-                        ->where('hotel_id','=',$hid )
-                        ->whereIn('status', [0,9])
+                        ->where([
+                            ['hotel_id','=',$hid],
+                            ['status','=',0]
+                        ] )
                         ->orderBy('id','desc')
                         ->get();
                     break;
                 default :
                     return ReturnMessage::success('订单类型未知' , '1006');
             }
+            //今日新增
+            $today_data =DB::table('order')
+                ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+                ->where('hotel_id','=',$hid)
+                ->whereIn('status', [1,2,3,4,5,6,7,8])
+                ->whereBetween('created_at',[$start,$end])
+                ->orderBy('id','desc')
+                ->get();
+            $today_data=Common::json_array($today_data);
+            //待审核
+            $count =DB::table('order')
+                ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+                ->where([
+                    ['hotel_id','=',$hid],
+                    ['status','=',10]
+                ])
+                ->count();
             $bdata=json_decode(json_encode($data),true);
 
             if( count($bdata) != 0){
                 $type_data =Config::get('order.type');
-                foreach( $bdata as $k=>$v) {
+                $status_name =Config::get('status_name');
+                foreach($bdata as $k=>$v) {
+                    $bdata[$k]['status_name'] = $status_name[$v['status']];
                     $bdata[$k]['type_name'] = $type_data[$v['type']];
                 }
-                $final=ReturnMessage::toString($bdata);
 
-                return ReturnMessage::successData($final);
+                $final=ReturnMessage::toString($bdata);
+                return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'count'=>"$count",
+                    'today'=>ReturnMessage::toString($today_data) ,
+                    'data' => $final,
+                ]);
+
 
             }else{
                 return response()->json([
                     'code' =>'1000',
                     'info' => 'success',
+                    'count'=>"$count",
+                    'today'=>ReturnMessage::toString($today_data) ,
                     'data' => []
                 ]);
             }
