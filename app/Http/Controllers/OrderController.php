@@ -32,6 +32,7 @@ class OrderController extends  Controller
     {
        //获取订单的类型type
         $arr =$request->all();
+        $id =1;
         try{
             $user = JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
@@ -103,7 +104,14 @@ class OrderController extends  Controller
                 ->limit(10)
                 ->get();
             $today_data=Common::json_array($today_data);
-            //dd($today_data);
+            $type_data =Config::get('order.type');
+            $status_name =Config::get('order.status_name');
+            if(count($today_data) != 0){
+                foreach( $today_data as $k=>$v) {
+                    $today_data[$k]['status_name'] = $status_name[$v['status']];
+                    $today_data[$k]['type_name'] = $type_data[$v['type']];
+                }
+            }
             //待审核
             $count =DB::table('order')
                 ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
@@ -116,8 +124,6 @@ class OrderController extends  Controller
             $bdata=json_decode(json_encode($data),true);
 
             if( count($bdata) != 0){
-                $type_data =Config::get('order.type');
-                $status_name =Config::get('status_name');
                 foreach( $bdata as $k=>$v) {
                     $bdata[$k]['status_name'] = $status_name[$v['status']];
                     $bdata[$k]['type_name'] = $type_data[$v['type']];
@@ -242,6 +248,14 @@ class OrderController extends  Controller
                 ->orderBy('id','desc')
                 ->get();
             $today_data=Common::json_array($today_data);
+            $type_data =Config::get('order.type');
+            $status_name =Config::get('order.status_name');
+            if(count($today_data) != 0){
+                foreach( $today_data as $k=>$v) {
+                    $today_data[$k]['status_name'] = $status_name[$v['status']];
+                    $today_data[$k]['type_name'] = $type_data[$v['type']];
+                }
+            }
             //待审核
             $count =DB::table('order')
                 ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
@@ -253,8 +267,6 @@ class OrderController extends  Controller
             $bdata=json_decode(json_encode($data),true);
 
             if( count($bdata) != 0){
-                $type_data =Config::get('order.type');
-                $status_name =Config::get('status_name');
                 foreach($bdata as $k=>$v) {
                     $bdata[$k]['status_name'] = $status_name[$v['status']];
                     $bdata[$k]['type_name'] = $type_data[$v['type']];
