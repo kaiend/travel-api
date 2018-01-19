@@ -100,7 +100,7 @@ class OrderController extends  Controller
                 ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                 ->where('user_id','=',$id)
                 ->orderBy('id','desc')
-                ->limit(5)
+                ->limit(10)
                 ->get();
             $today_data=Common::json_array($today_data);
             //dd($today_data);
@@ -170,6 +170,7 @@ class OrderController extends  Controller
             $start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
             $end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
             switch ($arr['type']){
+                //全部订单
                 case 'all':
                     $data = DB::table('order')
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
