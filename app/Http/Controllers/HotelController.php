@@ -575,43 +575,7 @@ class HotelController extends Controller
      */
     public function test()
     {
-        $data =[
-            "id"=>"1",
-            "user_id"=>"4",
-            "hotel_id"=>"1",
-            "car_id"=>"4",
-            "order_number"=>"180108324849101",
-            "end"=>"北京饭店",
-            "origin"=>"北京南站",
-            "price"=> "600",
-            "type"=>"28",
-            "orders_name"=>"安卓测试一",
-            "orders_phone"=>"15910570293",
-            "appointment"=>"2018-01-09 16:30",
-            "passenger_name"=>"安柏林",
-            "passenger_phone"=>"15810035051",
-            "passenger_people"=>"4",
-            "bottom_number"=>"",
-            "room_number"=>"5555",
-            "chauffeur_name"=>"杨一",
-            "chauffeur_phone"=>"18311161659",
-            "cip"=>"2",
-            "created_at"=>"2018-01-08 16:32",
-            "status"=>"9",
-            "chauffeur_id"=>"2",
-            "remarks"=>"",
-            "origin_position"=>"116.385814,39.871182",
-            "end_position"=>"116.415768,39.914953",
-            "complete_at"=>"1515400970",
-            "judgment"=> "1",
-            "mileage"=>"6.9公里",
-            "send_id"=>"1",
-            "send_type"=>"1",
-            "clearing_type"=>"1",
-        ];
-        $push = new PushController();
-        $re =$push->createOrder($data);
-        dd($re);
+        dd($this->token(4));
     }
     /**
      * 出行地

@@ -432,45 +432,104 @@ class OrderController extends  Controller
                 return ReturnMessage::success('非法token' ,'1009');
         }
     }
+
     /**
-     * App订单搜索
+     * APP订单搜索
+     * from:manage酒店订单 ,my 我的订单搜索
      * @param Request $request
      * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
      */
     public function searchOrder( Request $request )
     {
-        $arr =$request ->only('type','start','end','orders_name','order_number','room_number');
+        $arr =$request ->only('from','type','status','start','end','orders_name','bottom_number','room_number');
 
         try {
-            JWTAuth::parseToken()->getPayload();
+            $user =JWTAuth::parseToken()->getPayload();
+            $id =$user['foo'];
+            $user_data =Hotel::getUserFirst($id);
+            $hid =$user_data['hotel_id'];
+            if($arr['from'] == 'manage'){
+                $where = [
+                    ['hotel_id',$hid]
+                ];
+            }else{
+                $where = [
+                    ['user_id',$id]
+                ];
+            }
             $handle = DB::table('order');
-            $where = [
-                ['judgment',1]
-            ];
-           foreach( $arr as $k =>$v){
-              if( $v ){
-                  $where[$k] = $v;
-              }
-           }
-           unset($where['start']);
-           unset($where['end']);
 
-           $start =intval( $arr['start'] );
-           $end =  intval( $arr['end'] );
-           if( !empty( $start ) && !empty( $end )){
-               $data =$handle
-                   ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
-                   ->where($where)
-                   ->whereBetween('appointment', [$start, $end])->get();
-           }else{
+            foreach( $arr as $k =>$v){
+                if( $v ){
+                    $where[$k] = $v;
+                }
+            }
+            unset($where['start']);
+            unset($where['end']);
+            unset($where['from']);
+            $start =intval( $arr['start'] );
+            $end =  intval( $arr['end'] );
+            if(isset($where['status'])){
+                switch ($where['status']){
+                    //全部
+                    case '1':
+                        $whereIn=[1,2,3,4,5,6,7,8,9,0,10];
+                    break;
+                    //待执行
+                    case '2':
+                        $whereIn=[2,3,4];
+                    break;
+                    //执行中
+                    case '3':
+                        $whereIn=[5,6,7,8];
+                    break;
+                    //已完成
+                    case '4':
+                        $whereIn=[9];
+                        break;
+                    //已取消
+                    case '5':
+                        $whereIn=[0];
+                        break;
+                    //待审核
+                    case '6':
+                        $whereIn=[10];
+                        break;
+                    default:
+                        $whereIn =[];
+                }
+                unset($where['status']);
+                if( !empty( $start ) && !empty( $end )){
+                    $data =$handle
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number','room_number')
+                        ->where($where)
+                        ->whereBetween('appointment', [$start, $end])
+                        ->whereIn('status',$whereIn)
+                        ->get();
+                }else{
 
-               $data =$handle
-                   ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
-                   ->where($where)
-                   ->get();
-           }
+                    $data =$handle
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number','room_number')
+                        ->where($where)
+                        ->whereIN('status',$whereIn)
+                        ->get();
+                }
+            }else{
+                if( !empty( $start ) && !empty( $end )){
+                    $data =$handle
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number','room_number')
+                        ->where($where)
+                        ->whereBetween('appointment', [$start, $end])
+                        ->get();
+                }else{
+
+                    $data =$handle
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number','room_number')
+                        ->where($where)
+                        ->get();
+                }
+            }
             $bdata=json_decode(json_encode($data),true);
-
             if( count($bdata) != 0){
                 $final=ReturnMessage::toString($bdata);
 
@@ -486,7 +545,6 @@ class OrderController extends  Controller
         }catch (JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
         }
-        
     }
     /**
      * App 用车--特殊路线列表
