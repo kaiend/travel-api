@@ -81,6 +81,17 @@ class OrderController extends  Controller
                         ->orderBy('id','desc')
                         ->get();
                     break;
+                //待审核
+                case 'undo':
+                    $data = DB::table('order')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+                        ->where([
+                            ['status','=',10],
+                            ['user_id','=',$id]
+                        ])
+                        ->orderBy('id','desc')
+                        ->get();
+                    break;
                 //历史订单
                 case 'done' :
                     $data = DB::table('order')
