@@ -343,10 +343,14 @@ class OrderController extends  Controller
                     ['id',$id],
                 ])
                 ->first();
-
             $bdata=json_decode(json_encode($data),true);
             if( count($bdata) != 0){
-
+                //添加是否取消字段
+                if(in_array($bdata['status'],[1,2,3,4,5,6])){
+                    $bdata['cancel'] =1;
+                }else{
+                    $bdata['cancel'] =0;
+                }
                 $bdata['appointment'] = date('Y-m-d H:i',$bdata['appointment']);
                 $bdata['created_at'] = date('Y-m-d H:i',$bdata['created_at']);
                 //获取所属服务
@@ -412,7 +416,6 @@ class OrderController extends  Controller
                 $oid =$bdata['order_number'];
                 //查询订单的轨迹
                 $trace_data = OrderStatus::getOrderTrace( $oid );
-
                 $con = Config::get('order.trace');
                 //组装数据
                 foreach($trace_data as $k =>$v){
