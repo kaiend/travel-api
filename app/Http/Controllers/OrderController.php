@@ -173,7 +173,7 @@ class OrderController extends  Controller
                     $data = DB::table('order')
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
                         ->where('hotel_id','=',$hid)
-                        ->whereIn('status', [1,2,3,4,5,6,7,8])
+                        ->whereIn('status', [0,1,2,3,4,5,6,7,8,9,10])
                         ->orderBy('id','desc')
                         ->get();
                     break;
