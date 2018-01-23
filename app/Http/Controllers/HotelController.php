@@ -575,7 +575,13 @@ class HotelController extends Controller
      */
     public function test()
     {
-        dd($this->token(4));
+       $cip =100;
+       $data =DB::table('order')->where('id',1)->get();
+       $data =Common::json_array($data);
+       foreach ($data as $k=>$v){
+           $data[$k]['total'] =$data[$k]['price']+$cip;
+       }
+       dd($data);
     }
     /**
      * 出行地

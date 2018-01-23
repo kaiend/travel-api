@@ -92,25 +92,20 @@ class OrderController extends  Controller
                         ->orderBy('id','desc')
                         ->get();
                     break;
+                //最近订单
+                case 'addToday':
+                    $data =DB::table('order')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+                        ->where('user_id','=',$id)
+                        ->orderBy('id','desc')
+                        ->limit(10)
+                        ->get();
+                    break;
                 default :
                     return ReturnMessage::success('订单类型未知' , '1006');
             }
-            //最近订单
-            $today_data =DB::table('order')
-                ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
-                ->where('user_id','=',$id)
-                ->orderBy('id','desc')
-                ->limit(10)
-                ->get();
-            $today_data=Common::json_array($today_data);
             $type_data =Config::get('order.type');
             $status_name =Config::get('order.status_name');
-            if(count($today_data) != 0){
-                foreach( $today_data as $k=>$v) {
-                    $today_data[$k]['status_name'] = $status_name[$v['status']];
-                    $today_data[$k]['type_name'] = $type_data[$v['type']];
-                }
-            }
             //待审核
             $count =DB::table('order')
                 ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
@@ -133,7 +128,6 @@ class OrderController extends  Controller
                     'code' =>'1000',
                     'info' => 'success',
                     'count'=>"$count",
-                    'today'=>ReturnMessage::toString($today_data) ,
                     'data' => $final,
                 ]);
 
@@ -142,7 +136,6 @@ class OrderController extends  Controller
                     'code' =>'1000',
                     'info' => 'success',
                     'count'=>"$count",
-                    'today'=>ReturnMessage::toString($today_data),
                     'data' => []
                 ]);
             }
@@ -224,6 +217,17 @@ class OrderController extends  Controller
                         ->orderBy('id','desc')
                         ->get();
                     break;
+                //历史订单
+                case 'done' :
+                    $data = DB::table('order')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+                        ->where([
+                            ['status','=',9],
+                            ['hotel_id','=',$hid]
+                        ])
+                        ->orderBy('id','desc')
+                        ->get();
+                    break;
                 //取消订单
                 case 'cancel' :
                     $data = DB::table('order')
@@ -235,26 +239,22 @@ class OrderController extends  Controller
                         ->orderBy('id','desc')
                         ->get();
                     break;
+                //最近订单
+                case 'addToday':
+                    //今日新增
+                    $data =DB::table('order')
+                        ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+                        ->where('hotel_id','=',$hid)
+                        ->whereIn('status', [1,2,3,4,5,6,7,8])
+                        ->whereBetween('created_at',[$start,$end])
+                        ->orderBy('id','desc')
+                        ->get();
+                    break;
                 default :
                     return ReturnMessage::success('订单类型未知' , '1006');
             }
-            //今日新增
-            $today_data =DB::table('order')
-                ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
-                ->where('hotel_id','=',$hid)
-                ->whereIn('status', [1,2,3,4,5,6,7,8])
-                ->whereBetween('created_at',[$start,$end])
-                ->orderBy('id','desc')
-                ->get();
-            $today_data=Common::json_array($today_data);
             $type_data =Config::get('order.type');
             $status_name =Config::get('order.status_name');
-            if(count($today_data) != 0){
-                foreach( $today_data as $k=>$v) {
-                    $today_data[$k]['status_name'] = $status_name[$v['status']];
-                    $today_data[$k]['type_name'] = $type_data[$v['type']];
-                }
-            }
             //待审核
             $count =DB::table('order')
                 ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
@@ -276,7 +276,6 @@ class OrderController extends  Controller
                     'code' =>'1000',
                     'info' => 'success',
                     'count'=>"$count",
-                    'today'=>ReturnMessage::toString($today_data) ,
                     'data' => $final,
                 ]);
 
@@ -286,7 +285,6 @@ class OrderController extends  Controller
                     'code' =>'1000',
                     'info' => 'success',
                     'count'=>"$count",
-                    'today'=>ReturnMessage::toString($today_data) ,
                     'data' => []
                 ]);
             }
@@ -432,7 +430,6 @@ class OrderController extends  Controller
                 return ReturnMessage::success('非法token' ,'1009');
         }
     }
-
     /**
      * APP订单搜索
      * from:manage酒店订单 ,my 我的订单搜索
