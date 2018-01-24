@@ -52,47 +52,50 @@ class HotelController extends Controller
                 ['password',$input['password']]
             ])->first();
         if (!empty($info)){
-            $info = json_decode(json_encode($info),true);
-            $dat['status_login'] =1;
-            $dat['last_login_time'] =time();
-            if( !empty( $info['jpush_code'] )){
-                if( $info['model_code'] != $input['model_code'] ){
-                    $dat['model_code'] = $input['model_code'];
-                    //向原设备发送提醒
-                    $alert = "您的账号已经在另一地登录";
-                    $msg = array(
-                        "extras" => array(
-                            "status" => "104",
-                        )
-                    );
-                    $push =new PushController();
+            if($info['status'] == 0){
+                return   ReturnMessage::success('您的账户已被冻结，如有疑问，请联系管理员！',1002);
+            }else{
+                $info = json_decode(json_encode($info),true);
+                $dat['status_login'] =1;
+                $dat['last_login_time'] =time();
+                if( !empty( $info['jpush_code'] )){
+                    if( $info['model_code'] != $input['model_code'] ){
+                        $dat['model_code'] = $input['model_code'];
+                        //向原设备发送提醒
+                        $alert = "您的账号已经在另一地登录";
+                        $msg = array(
+                            "extras" => array(
+                                "status" => "104",
+                            )
+                        );
+                        $push =new PushController();
 
-                    $result = $push->sendNotifySpecial($info['jpush_code'],$alert,$msg,$this->appKey,$this->master_secret);
-                    if( $result['http_code']){
-                        $dat['jpush_code'] = $input['jpush_code'];
+                        $result = $push->sendNotifySpecial($info['jpush_code'],$alert,$msg,$this->appKey,$this->master_secret);
+                        if( $result['http_code']){
+                            $dat['jpush_code'] = $input['jpush_code'];
 
+                        }
                     }
+
+                }else{
+                    $dat[ 'jpush_code']= $input['jpush_code'];
+                    $dat['model_code'] = $input['model_code'];
                 }
+                $dat['model_status'] = $input['model_status'];
+                $result = Db::table('hotel_user')->where('id',$info['id'])->update($dat);
+                if( $result ){
+                    $new_Data= DB::table('hotel_user')
+                        ->where('id',$info['id'])
+                        ->first();
+                    $new_Datas = json_decode(json_encode($new_Data),true);
 
-            }else{
-                $dat[ 'jpush_code']= $input['jpush_code'];
-                $dat['model_code'] = $input['model_code'];
-            }
-            $dat['model_status'] = $input['model_status'];
-            $result = Db::table('hotel_user')->where('id',$info['id'])->update($dat);
-            if( $result ){
-                $new_Data= DB::table('hotel_user')
-                    ->where('id',$info['id'])
-                    ->first();
-                $new_Datas = json_decode(json_encode($new_Data),true);
-
-                $new_Datas['token'] = $this->token( $new_Datas['id'] );
-                return ReturnMessage::successData($new_Datas);
-            }else{
-                return ReturnMessage::success('失败','1011');
+                    $new_Datas['token'] = $this->token( $new_Datas['id'] );
+                    return ReturnMessage::successData($new_Datas);
+                }else{
+                    return ReturnMessage::success('失败','1011');
+                }
             }
         }
-
         return ReturnMessage::success('用户不存在或密码错误',1002);
     }
     /**

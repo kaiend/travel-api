@@ -130,9 +130,16 @@ class OrderController extends  Controller
 
             if( count($bdata) != 0){
                 foreach( $bdata as $k=>$v) {
+                    //添加是否取消字段
+                    if(in_array($v['status'],[1,2,3,4,5,6])){
+                        $bdata[$k]['cancel'] =1;
+                    }else{
+                        $bdata[$k]['cancel'] =0;
+                    }
                     $bdata[$k]['status_name'] = $status_name[$v['status']];
                     $bdata[$k]['type_name'] = $type_data[$v['type']];
                 }
+                dd($bdata);
                 $final=ReturnMessage::toString($bdata);
 
                 return response()->json([
@@ -345,12 +352,6 @@ class OrderController extends  Controller
                 ->first();
             $bdata=json_decode(json_encode($data),true);
             if( count($bdata) != 0){
-                //添加是否取消字段
-                if(in_array($bdata['status'],[1,2,3,4,5,6])){
-                    $bdata['cancel'] =1;
-                }else{
-                    $bdata['cancel'] =0;
-                }
                 $bdata['appointment'] = date('Y-m-d H:i',$bdata['appointment']);
                 $bdata['created_at'] = date('Y-m-d H:i',$bdata['created_at']);
                 //获取所属服务
