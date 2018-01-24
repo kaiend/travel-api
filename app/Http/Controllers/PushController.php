@@ -235,6 +235,7 @@ class PushController extends Controller
             ->addRegistrationId($regid)
             ->iosNotification($alert, $message)
             ->androidNotification($alert, $message)
+            ->setOptions(['apns_production'=>true])
             ->send();
 
         return Common::json_array($result);
