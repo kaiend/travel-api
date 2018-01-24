@@ -139,7 +139,6 @@ class OrderController extends  Controller
                     $bdata[$k]['status_name'] = $status_name[$v['status']];
                     $bdata[$k]['type_name'] = $type_data[$v['type']];
                 }
-                dd($bdata);
                 $final=ReturnMessage::toString($bdata);
 
                 return response()->json([
