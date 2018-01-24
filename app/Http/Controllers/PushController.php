@@ -196,9 +196,6 @@ class PushController extends Controller
     }
 
 
-
-
-
     /**
      * 向所有设备推送消息-广播
      * @param $alert  消息的标题
@@ -212,9 +209,9 @@ class PushController extends Controller
         $result = $client->push()
             ->addAllAudience() // 推送所有观众
             ->setPlatform('all')
+            ->options(['apns_production'=>true])
             ->iosNotification($alert, $message)
             ->androidNotification($alert, $message)
-            ->setOptions(['apns_production'=>true])
             ->send();
 
         return Common::json_array($result);
@@ -232,10 +229,11 @@ class PushController extends Controller
 
         $result = $client->push()
             ->setPlatform('all')
+            ->options(['apns_production'=>true])
             ->addRegistrationId($regid)
             ->iosNotification($alert, $message)
             ->androidNotification($alert, $message)
-            ->setOptions(['apns_production'=>true])
+
             ->send();
 
         return Common::json_array($result);
