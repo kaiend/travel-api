@@ -13,6 +13,7 @@ use App\Helpers\Common;
 use App\Helpers\ReturnMessage;
 use App\Http\Validators\OrderValidator;
 use App\Models\Hotel;
+use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\User;
 use Dingo\Api\Http\Request;
@@ -322,8 +323,20 @@ class OrderController extends  Controller
         try{
             $user = JWTAuth::parseToken()->getPayload();
             $uid = $user['foo'];
+            $where=[
+                'id' =>$id
+            ];
+            //当前订单的数据
+            $order_data =Order::getOrderFirst($where);
             if( $re ==$uid ){
                 $data = DB::table('order')->where('id',$id)->update(['status' => 0 ]);
+                //取消订单插入一条记录
+                DB::table('order_status')
+                    ->insert([
+                        'order_number'=>$order_data['order_number'],
+                        'status'=> 0,
+                        'update_time' =>time()
+                    ]);
                 if( $data == 0){
                     return ReturnMessage::success('订单取消失败，请重试', '1007');
                 }
