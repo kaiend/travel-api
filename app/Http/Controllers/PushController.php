@@ -229,7 +229,7 @@ class PushController extends Controller
 
         $result = $client->push()
             ->setPlatform('all')
-            //->options(['apns_production'=>true])
+            ->options(['apns_production'=>true])
             ->addRegistrationId($regid)
             ->iosNotification($alert, $message)
             ->androidNotification($alert, $message)

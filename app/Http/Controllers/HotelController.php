@@ -8,6 +8,7 @@
 namespace App\Http\Controllers;
 use App\Helpers\Common;
 use App\Helpers\ReturnMessage;
+use App\Helpers\Sms;
 use App\Http\Validators\UserValidator;
 use App\Models\Hotel;
 use App\Models\Order;
@@ -24,6 +25,7 @@ class HotelController extends Controller
 {
     private $appKey ='50505e64af2ea4b5e8e27e26';
     private $master_secret ='f90b3ccdce62056bb134aaaf';
+    private $phone ='15531143712';
     /**
      *生成token
      * @param $data 用户id
@@ -574,7 +576,6 @@ class HotelController extends Controller
      */
     public function test()
     {
-        $id =2;
 
     }
     /**
