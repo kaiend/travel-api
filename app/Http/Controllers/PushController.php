@@ -83,7 +83,7 @@ class PushController extends Controller
         $uid = $bdata['user_id'];
         $status= $bdata['status'];
         $config =Config::get('order.trace');
-        $alert='订单号:'.$bdata['order_number'].'---'.$config[$status];
+        //$alert='订单号:'.$bdata['order_number'].'---'.$config[$status];
 
         $chauffeur_id =$bdata['chauffeur_id'];
         $chauffeur_data =Chauffeur::getUserFirst($chauffeur_id);
