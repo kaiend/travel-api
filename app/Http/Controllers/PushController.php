@@ -84,7 +84,7 @@ class PushController extends Controller
         $status= $bdata['status'];
         $config =Config::get('order.trace');
         //$alert='订单号:'.$bdata['order_number'].'---'.$config[$status];
-
+        $alert ='调度已将新订单指派给您，请及时接单。点击查看订单！';
         $chauffeur_id =$bdata['chauffeur_id'];
         $chauffeur_data =Chauffeur::getUserFirst($chauffeur_id);
         switch($arr['type']){
@@ -101,7 +101,6 @@ class PushController extends Controller
                     ];
                     $appkey ='e3aa521e067467d9e4dba5bb';
                     $secret ='1ec040fbba99095178d35521';
-                    $alert ='调度已将新订单指派给您，请及时接单。点击查看订单！';
                     $result =$this ->sendNotifySpecial($regids,$alert,$message,$appkey,$secret);
                     if( $result['http_code']){
                         return ReturnMessage::success();
