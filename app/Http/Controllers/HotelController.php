@@ -25,7 +25,6 @@ class HotelController extends Controller
 {
     private $appKey ='50505e64af2ea4b5e8e27e26';
     private $master_secret ='f90b3ccdce62056bb134aaaf';
-    private $phone ='15531143712';
     /**
      *生成token
      * @param $data 用户id
@@ -574,8 +573,12 @@ class HotelController extends Controller
      * 测试api
      * @return int
      */
-    public function test()
+    public function test(Request $request)
     {
+        $arr =$request->only('phone');
+        if(!isset($arr['phone'])){
+            return ReturnMessage::success('失败','1001');
+        }
 
     }
     /**

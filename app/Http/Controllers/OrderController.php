@@ -12,6 +12,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Common;
 use App\Helpers\ReturnMessage;
 use App\Http\Validators\OrderValidator;
+use App\Models\Chauffeur;
 use App\Models\Hotel;
 use App\Models\Order;
 use App\Models\OrderStatus;
@@ -363,7 +364,62 @@ class OrderController extends  Controller
                 ])
                 ->first();
             $bdata=json_decode(json_encode($data),true);
+            $hid =$bdata['hotel_id'];
             if( count($bdata) != 0){
+                //添加一个详情页顶部的状态标示
+                $detail_status =Config::get('order.detail_status_name');
+                $bdata['status_title'] = $detail_status[$bdata['status']];
+                //对应订单不同状态联系人不同
+                if(in_array($bdata['status'],[0,1,2,10])){
+                    $high_data=DB::table('hotel')->where('id',$hid)->first();
+                    $high_data=Common::json_array($high_data);
+                    //1.负责人信息
+                    $concat=[
+                        'mame'    =>'主管: '.$high_data['principal'],
+                        'picture' =>$high_data['pic'],
+                        'phone_number' =>$high_data['mobile'],
+                        'concat' => '联系主管',
+                        'series_name' =>'',
+                        'car_number'  =>'',
+                        'car_corlor'  =>''
+                    ];
+                }else{
+                    //2.司机信息
+                    $chauffer_data=Chauffeur::getUserFirst($bdata['chauffeur_id']);
+                    if(!empty($chauffer_data['car_id'])){
+                        //司机的车详细信息
+                        $new_Data =DB::table('cars')
+                            ->join('car_series','cars.series_id','=','car_series.id')
+                            ->join('motorcade','cars.fleet_id','motorcade.id')
+                            ->where('cars.chauffeur_id',$chauffer_data['id'])
+                            ->join('chauffeur','cars.chauffeur_id','=','chauffeur.id')
+                            ->first();
+                        $new_Data=Common::json_array($new_Data);
+                    }else{
+                        //司机没有绑定车辆
+                        $new_Data =DB::table('chauffeur')
+                            ->join('motorcade','chauffeur.team_id','=','motorcade.id')
+                            ->where('chauffeur.id',$chauffer_data['id'])
+                            ->first();
+                        $new_Data=Common::json_array($new_Data);
+                        $new_Data['series_name'] ='';
+                        $new_Data['car_number'] ='';
+                        $new_Data['car_corlor'] ='';
+                    }
+                    $concat=[
+                        'mame'    =>'司机: '.$chauffer_data['name'],
+                        'picture' =>$chauffer_data['picture'],
+                        'phone_number' =>$chauffer_data['phone'],
+                        'concat' => '联系司机',
+                        'series_name' =>$new_Data['series_name'],
+                        'car_number'  =>$new_Data['car_number'],
+                        'car_corlor'  =>$new_Data['car_corlor']
+
+
+
+                    ];
+                }
+                $created_time =$bdata['created_at'];
                 $bdata['appointment'] = date('Y-m-d H:i',$bdata['appointment']);
                 $bdata['created_at'] = date('Y-m-d H:i',$bdata['created_at']);
                 //获取所属服务
@@ -377,8 +433,9 @@ class OrderController extends  Controller
                    $type_name = json_decode($bdata_to['type_name']);
                    $field_name = json_decode($bdata_to['field_name']);
                    $field_names =array_flip( $field_name );
-                   if($bdata_to['parent_id'] == 30 || $bdata['type'] == 27){
-                       $field_names =[];
+                   if($bdata['type'] == 27){
+                       unset($field_names['cip']);
+                       unset($field_names['origin']);
                    }else if( $bdata['type'] == 26){
                        unset($field_names['cip']);
                        unset($field_names['end']);
@@ -386,7 +443,7 @@ class OrderController extends  Controller
                        unset($field_names['end']);
                    }else if( $bdata['type'] == 29){
                        unset($field_names['origin']);
-                   }else if(in_array($bdata['type'],[20,39,40,41])){
+                   }else if(in_array($bdata['type'],[20,39,40,41,31,32])){
                        unset($field_names['origin']);
                        unset($field_names['end']);
                    }
@@ -434,12 +491,16 @@ class OrderController extends  Controller
                 foreach($trace_data as $k =>$v){
                     $trace_data[$k]['status_name'] = $con[$v['status']] ;
                     $trace_data[$k]['status'] =$v['status'];
-                    if($v['status'] ==2 ){
-                        unset($trace_data[$k]);
-                    }
-
                 }
+                $first =[
+                    "status" => 1,
+                    "update_time" =>$created_time,
+                    "status_name" => "下单"
+                ] ;
+                //向后插入一个数组
+                array_push($trace_data,$first);
                 $bdata['trace'] =$trace_data;
+                $bdata['contact'] =$concat;
                 return response()->json([
                     'code' =>'1000',
                     'info' => 'success',
