@@ -575,11 +575,8 @@ class HotelController extends Controller
      */
     public function test(Request $request)
     {
-        $arr =$request->only('phone');
-        if(!isset($arr['phone'])){
-            return ReturnMessage::success('失败','1001');
-        }
-
+        $re =Common::timeInterval(1517120100);
+        dump($re);
     }
     /**
      * 出行地

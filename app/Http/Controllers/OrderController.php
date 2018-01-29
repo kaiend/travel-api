@@ -488,9 +488,13 @@ class OrderController extends  Controller
                 $trace_data = OrderStatus::getOrderTrace( $oid );
                 $con = Config::get('order.trace');
                 //组装数据
+                $server_start=[];
                 foreach($trace_data as $k =>$v){
                     $trace_data[$k]['status_name'] = $con[$v['status']] ;
                     $trace_data[$k]['status'] =$v['status'];
+                    if($v['status'] == 4){
+                      $server_start =$v['update_time'];
+                    }
                 }
                 $first =[
                     "status" => 1,
@@ -501,6 +505,22 @@ class OrderController extends  Controller
                 array_push($trace_data,$first);
                 $bdata['trace'] =$trace_data;
                 $bdata['contact'] =$concat;
+                //dd($trace_data);
+                //为订单详情添加一个服务时间长度字段
+                if(in_array($bdata['status'],[1,2,10])){
+                    $str='已等待';
+                    $time =$trace_data[0]['update_time'];
+                    $re =Common::timeInterval($time,time());
+                    $bdata['wait_time'] =$str.$re;
+                }if($bdata['status'] == 3){
+                    $bdata['wait_time']='等待服务';
+                }else if($bdata['status'] == 9){
+                    $str ='已服务';
+                    $end =$trace_data[0]['update_time'];
+                    $start =$server_start;
+                    $re =Common::timeInterval($start,$end);
+                    $bdata['wait_time'] =$str.$re;
+                }
                 return response()->json([
                     'code' =>'1000',
                     'info' => 'success',

@@ -65,4 +65,33 @@ class Common
         $result_json = json_encode($result);
         return json_decode($result_json, true);
     }
+
+    /**
+     * 时间转换函数
+     * @param $timestamp
+     * @return string
+     */
+    public static function timeInterval($start,$end) {
+        $str='';
+        $format=array('秒钟','分钟','小时','天','个月');
+        if(is_numeric($start) && is_numeric($end)){
+            $i=$end-$start;
+            switch($i){
+                case 60>$i: $str=$i.$format[0];break;
+                case 3600>$i: $str=round ($i/60).$format[1];break;
+                case 86400>$i:
+                    $m = $i%3600;
+                    switch($m){
+                        case $m>60: $str=floor($i/3600).$format[2].floor ($m/60).$format[1];break;
+                        case $m<60: $str=$str=round ($i/3600).$format[2];break;
+                    }
+                    break;
+                case 2592000>$i:
+                    $str=round ($i/86400).$format[3];break;
+                case 31104000>$i: $str=round ($i/2592000).$format[4];break;
+                case $i>31104000: $str=date('m-d', $timestamp);break;
+            }
+        }
+        return $str;
+    }
 }
