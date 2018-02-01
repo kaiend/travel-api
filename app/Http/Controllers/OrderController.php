@@ -1208,7 +1208,6 @@ class OrderController extends  Controller
             return ReturnMessage::success('非法token', '1009');
         }
     }
-
     /**
      * 投诉建议
      * @param Request $request
@@ -1240,6 +1239,25 @@ class OrderController extends  Controller
             }
         } catch (JWTException $e) {
             return ReturnMessage::success('非法token', '1009');
+        }
+    }
+    public function getRemind(array $user_data)
+    {
+        //下单的提醒
+        $order_number='180119165653995';
+        $result =1;//订单id
+        $message=DB::table('message')->where('id',7)->first();
+        $message =Common::json_array($message);
+        $common =new Common();
+        $message_data=[
+            'user'=>'APP的ceshi',
+            'time' => date('Y-m-d H:i:s',time())
+        ];
+        $user_data['hotel_id']=1;
+        $order_number_url = url('http://travel.shidaichuxing.com/home/homeorder/orderdetails?id='.$order_number);
+        $message['content'] .='<a id="order_number_buchongfu" href="javascript:openapp(\''.$order_number_url.'\',\'189admin\',\'订单详情\');" class="btn btn-primary" data-dismiss="modal">订单号：'.$order_number.'</ a>';
+        if($message){
+            $msg = $common->goEasy($result,$message['id'],$message['title'],$message['mark'].'_'.$user_data['hotel_id'],$message['content'],$message_data);
         }
     }
 }

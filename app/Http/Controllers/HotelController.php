@@ -573,17 +573,8 @@ class HotelController extends Controller
      * 测试api
      * @return int
      */
-    public function test(Request $request)
+    public function test()
     {
-        $hid =2;
-        //查询酒店是否开启审核
-        $hotel_ids =DB::table('order_audit')->pluck('hotel_id');
-        $hotel_ids =Common::json_array($hotel_ids);
-        if(in_array($hid,$hotel_ids)){
-            echo 1;
-        }else{
-            echo 2;
-        }
     }
     /**
      * 出行地

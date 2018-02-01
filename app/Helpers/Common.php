@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\DB;
+
 class Common
 {
 	/**
@@ -13,7 +15,6 @@ class Common
 	{
 		return '###'.md5(md5($pass));
 	}
-
 	/**
 	 * 生成订单号
 	 * */
@@ -22,7 +23,6 @@ class Common
 		return date('ymds').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 7);
         //return md5('chuxing'.time());
 	}
-
 	/**
 	 * 转时间格式
 	 * @param $data
@@ -54,7 +54,6 @@ class Common
 		}
 		return $data;
 	}
-
     /**
      * 转数组
      * @param $result
@@ -65,10 +64,10 @@ class Common
         $result_json = json_encode($result);
         return json_decode($result_json, true);
     }
-
     /**
      * 时间转换函数
-     * @param $timestamp
+     * @param $start
+     * @param $end
      * @return string
      */
     public static function timeInterval($start,$end) {
@@ -94,7 +93,6 @@ class Common
         }
         return $str;
     }
-
     /**
      * 测试消息提醒
      * @param $order_id
@@ -107,13 +105,12 @@ class Common
      */
     public function goEasy($order_id,$mid,$title,$mark,$content,$data)
     {
-
         if(strpos($content,'xxx') !== false){
-            $preg = preg_replace("\[xxx\]", $data['user'], $content);
+            $preg = preg_replace("[xxx]", $data['user'], $content);
         }
 
         if(strpos($content,'time') !== false){
-            $preg = preg_replace("\[time\]", $data['time'], $preg);
+            $preg = preg_replace("[time]", $data['time'], $preg);
         }
         if(!isset($preg)){
             $preg = $content;
@@ -126,7 +123,7 @@ class Common
             'content' => $preg,
             'create_time' => time(),
         );
-        $list_id = Db::name('message_list')->insertGetId($msg);
+        $list_id = DB::table('message_list')->insertGetId($msg);
 
         $data = array(
             'appkey' => 'BC-af1909bf4e844d7f8d9d18604a910fc4',
@@ -138,18 +135,21 @@ class Common
         $result = $this->vpost($url,$data);
         return $result;
     }
-    //楼上的demo
-//    if($resu){
-//    $message_sql = Db::name('message')
-//    ->where('condition',1)
-//    ->where('status',1)
-//    ->find();
-//    $message_data = array(
-//    'user' => session('name'),
-//    'time' => time(),
-//    );
-//    if($message_sql){
-//    $msg = $this->goEasy($result,$message_sql['id'],$message_sql['title'],$message_sql['mark'],$message_sql['content'],$message_data);
-//    }
-//    $this->success('添加成功',url("adminOrder/index"));
+    //https 请求post
+    public function vpost($url,$post_data){
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);    // https请求 不验证证书和hosts
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        // post数据
+        curl_setopt($ch, CURLOPT_POST, 1);
+        // post的变量
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+
+        $output = curl_exec($ch);
+        curl_close($ch);
+
+        return $output;
+    }
 }
