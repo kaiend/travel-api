@@ -521,6 +521,8 @@ class OrderController extends  Controller
                     $re =Common::timeInterval($start,$end);
                     $bdata['wait_time'] =$str.$re;
                 }
+                $type_data =Config::get('order.type');
+                $bdata['type_name'] =$type_data[$bdata['type']];
                 return response()->json([
                     'code' =>'1000',
                     'info' => 'success',
