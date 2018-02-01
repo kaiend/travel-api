@@ -1148,37 +1148,63 @@ class OrderController extends  Controller
      */
     public function makeCheck( Request $request)
     {
-        $arr = $request->only('order_id','type');
-        //$arr = OrderValidator::makeCheck($request);
+        $arr =OrderValidator::check($request);
         try {
             $user = JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
             //查询当前用户的酒店ID和type
-            $user_data = Hotel::getUserFirst($id);
+            //$user_data = Hotel::getUserFirst($id);
+            //查询当前订单信息
+            $order_data =Order::getOrderFirst(['id'=>$arr['order_id']]);
             $status =0;
             switch ($arr['type']){
                 case 'agree':$status = 1 ;break;
-                case 'reject':$status = 0; break;
+                case 'reject':$status = 2; break;
                 default:ReturnMessage::success('失败','1011');
             }
-
-            if( intval($user_data['type']) == 2){
-                //更新订单状态
-                $re = DB::table('order')
-                    ->where('id',intval($arr['order_id']))
-                    ->update(['status'=>$status]);
-                if( $re ){
-                    return ReturnMessage::success();
-                }else{
-                    return ReturnMessage::success('Update failed','1011');
-                }
+            $re =DB::table('order_audit_content')->insert([
+                'order_number' =>$order_data['order_data'],
+                'content'      =>$arr['reason'],
+                'user_id'      =>$id,
+                'created_at'   =>time(),
+                'status'       =>$status
+            ]);
+            if($re){
+                return ReturnMessage::success();
             }else{
-                return ReturnMessage::success('No Power','1011');
+                return ReturnMessage::success('失败','1001');
             }
-
         } catch (JWTException $e) {
             return ReturnMessage::success('非法token', '1009');
         }
     }
 
+    public function getSuggest(Request $request)
+    {
+        $arr =$request->only('content','phone');
+        try {
+            $user = JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+            $user_data = Hotel::getUserFirst($id);
+            $re = DB::table('suggest')->insert([
+                    'suggest_number' =>Common::createNumber(),
+                    'title' => 'APP酒店端投诉建议(统一)',
+                    'content' => $arr['content'].$arr['phone'],
+                    'created_at' =>time(),
+                    'type'  =>1,
+                    'hotel_id' =>$user_data['hotel_id'],
+                    'suggest_name'=>$user_data['name'],
+                    'send' =>1,
+                    'parent_id'=>0
+
+            ]);
+            if($re){
+                return ReturnMessage::success();
+            }else{
+                return ReturnMessage::success('失败','1001');
+            }
+        } catch (JWTException $e) {
+            return ReturnMessage::success('非法token', '1009');
+        }
+    }
 }

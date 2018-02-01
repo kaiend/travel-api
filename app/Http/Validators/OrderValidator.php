@@ -319,23 +319,25 @@ class OrderValidator
         return $input;
     }
 
-    public static function  makeCheck( Request $request)
+    public static function check( Request $request)
     {
-        $only = ['order_id','type'];
+        $only = ['type','order_id','reason'];
 
         $rules = [
-            'order_id '=>'required',
             'type' =>'required',
+            'order_id' => 'required'
         ];
 
         $messages = [
-            'order_id.required' =>'订单号不能为空',
-            'type.required' =>'操作类型不能为空',
+            'type.required'  => '操作类型不能为空',
+            'order_id.required'  => '订单id不能为空',
         ];
 
         $input = $request->only($only);
 
+
         $validator = Validator::make($input, $rules, $messages);
+
 
         if ($validator->fails())
             exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1011']));
