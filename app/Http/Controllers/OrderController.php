@@ -700,6 +700,28 @@ class OrderController extends  Controller
         }
     }
     /**
+     * 判断下单时订单的状态
+     * @param array $user_data
+     * @return int
+     */
+    private function  orderStatus(array $user_data)
+    {
+        $hid =$user_data['hotel_id'];
+        //查询酒店是否开启审核
+        $hotel_ids =DB::table('order_audit')->pluck('hotel_id');
+        $hotel_ids =Common::json_array($hotel_ids);
+        if(in_array($hid,$hotel_ids)){
+            if(in_array($user_data['type'],[1,2])){
+                $status =1;
+            }else{
+                $status =10;
+            }
+        }else{
+            $status =1;
+        }
+        return $status;
+    }
+    /**
      * 特殊路线下单
      * @param Request $request
      * @return \App\Helpers\json
@@ -713,6 +735,7 @@ class OrderController extends  Controller
             //查询当前用户的酒店ID和type
             $user_data= Hotel::getUserFirst($id);
             $type = intval($arr['type']);
+            $status=$this->orderStatus($user_data);
             DB::beginTransaction();
             try{
                 //查询
@@ -738,7 +761,8 @@ class OrderController extends  Controller
                         'user_id' =>$user_data['id'],
                         'hotel_id'  =>$user_data['hotel_id'],
                         'judgment' => 1,
-                        'bottom_number' =>$arr['hotel_number']
+                        'bottom_number' =>$arr['hotel_number'],
+                        'status' =>$status
 
                     ]
                 );
@@ -818,6 +842,7 @@ class OrderController extends  Controller
             $id = $user['foo'];
             //查询当前用户的酒店ID和type
             $user_data= Hotel::getUserFirst($id);
+            $status=$this->orderStatus($user_data);
             DB::beginTransaction();
             try{
                 //插入数据
@@ -843,7 +868,8 @@ class OrderController extends  Controller
                         'user_id' =>$user_data['id'],
                         'hotel_id'  =>$user_data['hotel_id'],
                         'judgment' => 1,
-                        'bottom_number' =>$arr['hotel_number']
+                        'bottom_number' =>$arr['hotel_number'],
+                        'status' =>$status
                     ]
                 );
                 //插入展字段
@@ -895,7 +921,7 @@ class OrderController extends  Controller
             $id = $user['foo'];
     //        //查询当前用户的酒店ID和type
             $user_data= Hotel::getUserFirst($id);
-
+            $status=$this->orderStatus($user_data);
             DB::beginTransaction();
             try{
                 //插入基础数据
@@ -922,7 +948,8 @@ class OrderController extends  Controller
                         'hotel_id'  =>$user_data['hotel_id'],
                         'judgment' => 1,
                         'bottom_number' =>$arr['hotel_number'],
-                        'cip' => $arr['cip']
+                        'cip' => $arr['cip'],
+                        'status' =>$status
                     ]
                 );
                 //插入展字段
@@ -964,7 +991,7 @@ class OrderController extends  Controller
             $id = $user['foo'];
             //查询当前用户的酒店ID和type
             $user_data= Hotel::getUserFirst($id);
-
+            $status=$this->orderStatus($user_data);
             DB::beginTransaction();
             try{
                 //插入基础数据
@@ -990,7 +1017,8 @@ class OrderController extends  Controller
                         'user_id' =>$user_data['id'],
                         'hotel_id'  =>$user_data['hotel_id'],
                         'judgment' => 1,
-                        'bottom_number' =>$arr['hotel_number']
+                        'bottom_number' =>$arr['hotel_number'],
+                        'status' =>$status
                     ]
                 );
                 //插入展字段

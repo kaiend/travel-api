@@ -575,8 +575,15 @@ class HotelController extends Controller
      */
     public function test(Request $request)
     {
-        $re =Common::timeInterval(1517120100);
-        dump($re);
+        $hid =2;
+        //查询酒店是否开启审核
+        $hotel_ids =DB::table('order_audit')->pluck('hotel_id');
+        $hotel_ids =Common::json_array($hotel_ids);
+        if(in_array($hid,$hotel_ids)){
+            echo 1;
+        }else{
+            echo 2;
+        }
     }
     /**
      * 出行地
