@@ -1179,6 +1179,11 @@ class OrderController extends  Controller
         }
     }
 
+    /**
+     * 投诉建议
+     * @param Request $request
+     * @return \App\Helpers\json
+     */
     public function getSuggest(Request $request)
     {
         $arr =$request->only('content','phone');
