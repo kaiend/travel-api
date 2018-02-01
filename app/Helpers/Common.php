@@ -94,4 +94,62 @@ class Common
         }
         return $str;
     }
+
+    /**
+     * 测试消息提醒
+     * @param $order_id
+     * @param $mid
+     * @param $title
+     * @param $mark
+     * @param $content
+     * @param $data
+     * @return mixed
+     */
+    public function goEasy($order_id,$mid,$title,$mark,$content,$data)
+    {
+
+        if(strpos($content,'xxx') !== false){
+            $preg = preg_replace("\[xxx\]", $data['user'], $content);
+        }
+
+        if(strpos($content,'time') !== false){
+            $preg = preg_replace("\[time\]", $data['time'], $preg);
+        }
+        if(!isset($preg)){
+            $preg = $content;
+        }
+
+        $msg = array(
+            'order_id' => $order_id,
+            'mid' => $mid,
+            'title' => $title,
+            'content' => $preg,
+            'create_time' => time(),
+        );
+        $list_id = Db::name('message_list')->insertGetId($msg);
+
+        $data = array(
+            'appkey' => 'BC-af1909bf4e844d7f8d9d18604a910fc4',
+            'channel' => $mark,
+            'content' => $list_id,
+        );
+
+        $url = 'http://rest-hangzhou.goeasy.io/publish';
+        $result = $this->vpost($url,$data);
+        return $result;
+    }
+    //楼上的demo
+//    if($resu){
+//    $message_sql = Db::name('message')
+//    ->where('condition',1)
+//    ->where('status',1)
+//    ->find();
+//    $message_data = array(
+//    'user' => session('name'),
+//    'time' => time(),
+//    );
+//    if($message_sql){
+//    $msg = $this->goEasy($result,$message_sql['id'],$message_sql['title'],$message_sql['mark'],$message_sql['content'],$message_data);
+//    }
+//    $this->success('添加成功',url("adminOrder/index"));
 }

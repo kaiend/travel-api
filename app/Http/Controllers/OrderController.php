@@ -375,7 +375,7 @@ class OrderController extends  Controller
                     $high_data=Common::json_array($high_data);
                     //1.负责人信息
                     $concat=[
-                        'mame'    =>'主管: '.$high_data['principal'],
+                        'name'    =>'主管: '.$high_data['principal'],
                         'picture' =>$high_data['pic'],
                         'phone_number' =>$high_data['mobile'],
                         'concat' => '联系主管',
@@ -407,7 +407,7 @@ class OrderController extends  Controller
                         $new_Data['car_corlor'] ='';
                     }
                     $concat=[
-                        'mame'    =>'司机: '.$chauffer_data['name'],
+                        'name'    =>'司机: '.$chauffer_data['name'],
                         'picture' =>$chauffer_data['picture'],
                         'phone_number' =>$chauffer_data['phone'],
                         'concat' => '联系司机',
