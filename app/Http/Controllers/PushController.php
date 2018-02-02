@@ -14,10 +14,13 @@ use App\Helpers\ReturnMessage;
 use App\Models\Chauffeur;
 use App\Models\Hotel;
 use App\Models\Message;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use JPush\Client;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class PushController extends Controller
 {
@@ -158,7 +161,7 @@ class PushController extends Controller
                 return ReturnMessage::success('失败','1011');
         }
     }
-    public  function createOrder($data){
+    public function createOrder($data){
         //下单推送-管理员
         //1.查询消息详情
         $where =[
@@ -194,7 +197,88 @@ class PushController extends Controller
 
     }
 
+    /**
+     * App详情页的催一下
+     * @param Request $request
+     * @return \App\Helpers\json
+     */
+    public function makeDing(Request $request)
+    {
+        $arr =$request->only('type','order_id');
+        if(is_null($arr['type']) || is_null($arr['order_id'])){
+           return ReturnMessage::success('缺少参数','1001');
+        }
+        try{
+            $user = JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+            $user_data =Hotel::getUserFirst($id);
+            //获得酒店的id
+            $hotel_id =$user_data['hotel_id'];
+            //获得当前酒店的负责人
+            $p_data =DB::table('hotel_user')->where('hotel_id',$hotel_id)->whereIn('type',[1,2])->get();
+            $p_data =Common::json_array($p_data);
+            $o_data =Order::getOrderFirst(['id'=>$arr['order_id']]);
+            $type_name =Config::get('order.type');
+            $o_data['type_name'] =$type_name[$o_data['type']];
+            $alert='';
+            switch ($arr['type']){
+                //推送主管审批
+                case 'manage':
+                    $alert ="【时代出行】【".$o_data['type_name']."】订单".$o_data['order_number']."需要您审批，为保证服务品质，请您尽快完成订单审批。点击查看订单详情！";
+                    $message =[
+                        "extras" => array(
+                            'status'=> '114',
+                            "data" => ['order_id' =>$arr['order_id']],
+                        )
+                    ];
+                //推送负责人+管理员
+                    if( $p_data ){
+                        foreach( $p_data as $k=>$v){
+                            $regid= $v['jpush_code'];
+                            if($regid){
+                                $result =$this ->sendNotifySpecial($regid,$alert,$message,$this->appKey,$this->master_secret);
+                                if( $result['http_code']){
+                                    return ReturnMessage::success();
+                                }else{
+                                    return ReturnMessage::success('失败','1011');
+                                }
+                            }
+                        }
+                    }
+                break;
+                case 'driver':
+                    $alert ="调度已将【".$o_data['type_name']."】订单".$o_data['order_number']."指派给您，请及时接单。点击查看订单！";
+                    $message =[
+                        "extras" => array(
+                            'status'=> '114',
+                            "data" => ['order_id' =>$arr['order_id']],
+                        )
+                    ];
+                    $appkey ='e3aa521e067467d9e4dba5bb';
+                    $secret ='1ec040fbba99095178d35521';
+                    $c_data =Chauffeur::getUserFirst($o_data['chauffeur_id']);
+                    $regid =$c_data['jpush_code'];
+                    //推送司机
+                    $result =$this ->sendNotifySpecial($regid,$alert,$message,$appkey,$secret);
+                    if( $result['http_code']){
+                        return ReturnMessage::success();
+                    }else{
+                        return ReturnMessage::success('失败','1011');
+                    }
+                    break;
+                default:return ReturnMessage::success('错误类型','1001');
+            }
 
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+
+    }
+
+
+    /**
+     *以下是极光推送方法
+     */
     /**
      * 向所有设备推送消息-广播
      * @param $alert  消息的标题

@@ -30,8 +30,13 @@ class Hotel extends Model
 
     public static function  getUserFirst( $id )
     {
-        $obj= static::where(['id'=> $id])->first();
-        return json_decode(json_encode($obj),true);
+        $obj= static::where(['id'=> $id])->first()->toArray();
+        return $obj;
+    }
+    public static function  getUserList( array $where)
+    {
+        $obj= static::where($where)->get()->toArray();
+        return  $obj;
     }
 
 }

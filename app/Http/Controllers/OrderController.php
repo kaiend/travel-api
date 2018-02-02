@@ -414,9 +414,6 @@ class OrderController extends  Controller
                         'series_name' =>$new_Data['series_name'],
                         'car_number'  =>$new_Data['car_number'],
                         'car_corlor'  =>$new_Data['car_corlor']
-
-
-
                     ];
                 }
                 $created_time =$bdata['created_at'];
@@ -523,6 +520,7 @@ class OrderController extends  Controller
                 }
                 $type_data =Config::get('order.type');
                 $bdata['type_name'] =$type_data[$bdata['type']];
+                $bdata['dispatch'] ='18510570020';
                 return response()->json([
                     'code' =>'1000',
                     'info' => 'success',
