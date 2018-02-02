@@ -1239,6 +1239,11 @@ class OrderController extends  Controller
             return ReturnMessage::success('非法token', '1009');
         }
     }
+
+    /**
+     * 荒废方法
+     * @param array $user_data
+     */
     public function getRemind(array $user_data)
     {
         //下单的提醒
