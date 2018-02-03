@@ -88,7 +88,6 @@ class Common
                 case 2592000>$i:
                     $str=round ($i/86400).$format[3];break;
                 case 31104000>$i: $str=round ($i/2592000).$format[4];break;
-                case $i>31104000: $str=date('m-d', $timestamp);break;
             }
         }
         return $str;
