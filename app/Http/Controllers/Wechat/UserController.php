@@ -94,8 +94,7 @@ class UserController extends Controller
                     ['phone',$input['phone']],
                     ['user_pass',$input['user_pass']]
                 ])->first();
-            dump($datas);die;
-            if(!empty($datas)){
+            if(empty($datas)){
                 DB::table('personal_user')->insert([
                     'phone' => $input['phone'],
                     'user_pass' => $input['user_pass'],
