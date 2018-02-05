@@ -137,6 +137,8 @@ $api->version('v1', [
     $api->group(['prefix'=>'wechat'],function(){
         //获取验证码
         \Dingo\Api\Facade\Route::get('/code' ,'Wechat\UserController@sendCode');
+        //验证验证码
+        \Dingo\Api\Facade\Route::get('/verification' ,'Wechat\UserController@verifyCode');
         //登陆
         \Dingo\Api\Facade\Route::post('/login' ,'Wechat\UserController@login');
         //注册
