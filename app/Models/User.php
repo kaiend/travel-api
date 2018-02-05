@@ -8,7 +8,7 @@ class User extends Model
 	/**
 	 * 用户表
 	 */
-	protected $table = 'user';
+	protected $table = 'personal_user';
 
 	/**
 	 * 允许批量赋值的字段
@@ -29,7 +29,8 @@ class User extends Model
 	 * */
 	public static function getUserFirst( array $where)
 	{
-		return static::where( $where )->first();
+        $data = static::where( $where )->first();
+        return $data;
 	}
 
 	/**

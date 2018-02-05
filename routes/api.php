@@ -133,6 +133,16 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::get('/filter' ,'HotelController@getFilter');
     });
 
+    //小程序
+    $api->group(['prefix'=>'wechat'],function(){
+        //获取验证码
+        \Dingo\Api\Facade\Route::get('/code' ,'Wechat\UserController@sendCode');
+        //登陆
+        \Dingo\Api\Facade\Route::get('/login' ,'Wechat\UserController@login');
+        //注册
+        \Dingo\Api\Facade\Route::get('/register' ,'Wechat\UserController@register');
+    });
+
 });
 
 

@@ -105,12 +105,13 @@ class UserValidator
 
 		$input = $request->only($only);
 
-		$validator = Validator::make($input, $rules, $messages);
+		//$validator = Validator::make($input, $rules, $messages);
 
-		if ($validator->fails())
-			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+		/*if ($validator->fails())
+			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));*/
 
 		$input['user_pass'] = Common::createPassword($input['user_pass']);;
+
 
 		return $input;
 	}
