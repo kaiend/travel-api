@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Wechat;
 
 use App\Helpers\Common;
 use App\Helpers\Sms;
+use App\Helpers\SaveImage;
 use App\Library\WxPay\WxPay;
 use App\Models\Order;
 use App\Models\User;
@@ -245,5 +246,63 @@ class UserController extends Controller
         $code = $request->input('code');
 
         return ReturnMessage::successData(WxPay::getSession($code));
+    }
+
+    /**
+     * 出行卡数据填写
+     *
+     * @author yxk
+     * @param $request
+     * @return mixed
+     * */
+    public function travelCard( Request $request )
+    {
+        $input = UserValidator::travelCard($request);
+
+        $where['id'] = $input['id'];
+        $input['travel_card_phone'] =$input['phone'];
+        unset($input['id']);
+        unset($input['phone']);
+        $input['card_audit_status']=0;
+        try {
+            User::modifyUser($where,$input);
+            //成功后，插入一条进入card_audit表中
+            DB::table('card_audit')->insert([
+                'uid' =>$where['id'],
+                'card_audit_status' =>0,
+                'pic' =>$input['travel_card'],
+                'create_time' =>time()
+            ]);
+        } catch (\Exception $e) {
+            return ReturnMessage::success('修改失败',1002);
+        }
+
+        return ReturnMessage::success();
+    }
+
+    /**
+     * 上传出行卡
+     * @param Request $request
+     * @return mixed
+     *
+     * */
+    public function updateTravelCard(Request $request)
+    {
+        if(!$request->hasFile('travelCard')){
+            return ReturnMessage::success('上传文件为空！',1002);
+        }
+
+        $file = $request->file('travelCard');
+        //判断文件上传过程中是否出错
+        if(!$file->isValid()){
+            return ReturnMessage::success('文件上传出错！',1002);
+        }
+
+        $newFileName = md5(time().rand(0,10000));
+
+        $data['travel_card'] = SaveImage::travelCard($newFileName,$file);
+
+        return ReturnMessage::successData([$data['travel_card']]);
+
     }
 }
