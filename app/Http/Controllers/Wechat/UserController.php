@@ -89,12 +89,12 @@ class UserController extends Controller
 		$input = UserValidator::register($request);
 
 		try {
-            $data = DB::table('personal_user')
+            $datas = DB::table('personal_user')
                 ->where([
                     ['phone',$input['phone']],
                     ['user_pass',$input['user_pass']]
                 ])->first();
-            if(!empty($info)){
+            if(!empty($datas)){
                 DB::table('personal_user')->insert([
                     'phone' => $input['phone'],
                     'user_pass' => $input['user_pass'],
