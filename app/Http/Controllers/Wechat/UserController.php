@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Wechat;
 
 use App\Helpers\Common;
 use App\Helpers\Sms;
+use App\Library\WxPay\WxPay;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -217,6 +218,8 @@ class UserController extends Controller
 
 		$info  = User::getUserFirst($input);
 
+        $info = Common::json_array($info);
+
 		return ReturnMessage::successData($info);
 	}
 
@@ -230,5 +233,17 @@ class UserController extends Controller
         $msg ='您好,您的【'.$odata['type'].'】用车服务预约成功,司机'.mb_substr($odata['chauffeur_name'],0,1).'师傅 联系电话:'.$odata['chauffeur_phone'].'将在【'.date('Y-m-d H:i:s',$odata['appointment']).'】到【'.$odata['origin'].'】接您。您的预约车辆为【'.$odata['car_series'].'】,车牌号【'.$odata['car_number'].'】。如有任何疑问,请联系致电：010-85117878。【时代出行】';
         $phone =$odata['passenger_phone'];
         return (new Sms)->sendSMS($phone,$msg);
+    }
+
+    /**
+     * 获取小程序openid
+     * @param $request
+     * @return array
+     * */
+    public function getOpenId( Request $request )
+    {
+        $code = $request->input('code');
+
+        return ReturnMessage::successData(WxPay::getSession($code));
     }
 }

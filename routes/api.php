@@ -138,11 +138,21 @@ $api->version('v1', [
         //获取验证码
         \Dingo\Api\Facade\Route::get('/code' ,'Wechat\UserController@sendCode');
         //验证验证码
-        \Dingo\Api\Facade\Route::get('/verification' ,'Wechat\UserController@verifyCode');
+        \Dingo\Api\Facade\Route::post('/verification' ,'Wechat\UserController@verifyCode');
         //登陆
         \Dingo\Api\Facade\Route::post('/login' ,'Wechat\UserController@login');
         //注册
         \Dingo\Api\Facade\Route::post('/register' ,'Wechat\UserController@register');
+        //下订单
+        \Dingo\Api\Facade\Route::post('/order' ,'Wechat\OrderController@order');
+        //注销
+        \Dingo\Api\Facade\Route::post('/order' ,'Wechat\UserController@order');
+        //获取用户信息
+        \Dingo\Api\Facade\Route::get('/getUserInfo', 'Wechat\UserController@getUserInfo');
+        //获取小程序openid
+        \Dingo\Api\Facade\Route::get('/getOpenId', 'Wechat\UserController@getOpenId');
+        //出行卡数据添加
+        \Dingo\Api\Facade\Route::get('/travelCard', 'Wechat\UserController@travelCard');
     });
 
 });
