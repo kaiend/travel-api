@@ -89,10 +89,20 @@ class UserController extends Controller
 		$input = UserValidator::register($request);
 
 		try {
-            DB::table('personal_user')->insert([
-                'phone' => $input['phone'],
-                'user_pass' => $input['user_pass'],
-            ]);
+            $data = DB::table('personal_user')
+                ->where([
+                    ['phone',$input['phone']],
+                    ['user_pass',$input['user_pass']]
+                ])->first();
+            if(!empty($info)){
+                DB::table('personal_user')->insert([
+                    'phone' => $input['phone'],
+                    'user_pass' => $input['user_pass'],
+                ]);
+            }else{
+                return ReturnMessage::success('该手机号已注册',1005);
+            }
+
 		} catch (\Exception $e) {
 			return ReturnMessage::success('注册失败',1002);
 		}
