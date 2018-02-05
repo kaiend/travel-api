@@ -177,18 +177,15 @@ class UserValidator
 		return $input;
 	}
 
-	//验证码验证
+
+    //验证码验证
     private static function redisVerify($input)
     {
-        if(!empty($input['jsoncallback'])){
-            if (!Redis::exists($input['phone']) || (Redis::get($input['phone']) != $input['code']))
-                exit($input['jsoncallback'].'('.json_encode(['info'=>'验证码错误','code'=>'1004']).')');
-        }else{
-            if (!Redis::exists($input['phone']) || (Redis::get($input['phone']) != $input['code']))
-                exit(json_encode(['info'=>'验证码错误','code'=>'1004']));
-        }
-
+        if (!Redis::exists($input['phone']) || (Redis::get($input['phone']) != $input['code']))
+            exit(json_encode(['info'=>'验证码错误','code'=>'1004']));
     }
+
+
 
 	/**
      * 修改密码数据验证
@@ -198,7 +195,7 @@ class UserValidator
     * */
     public static function modifyPassword( Request $request )
     {
-        $only = ['phone','code','user_pass','jsoncallback'];
+        $only = ['phone','code','user_pass'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/|exists:user,phone',
