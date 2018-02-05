@@ -144,7 +144,9 @@ $api->version('v1', [
         //注册
         \Dingo\Api\Facade\Route::post('/register' ,'Wechat\UserController@register');
         //下订单
-        \Dingo\Api\Facade\Route::post('/order' ,'Wechat\OrderController@order');
+        \Dingo\Api\Facade\Route::post('/order' ,'Wechat\OrderController@createOrder');
+        //订单列表
+        \Dingo\Api\Facade\Route::get('/orderList', 'Wechat\OrderController@orderList');
         //注销
         \Dingo\Api\Facade\Route::post('/logout' ,'Wechat\UserController@logout');
         //获取用户信息
@@ -159,6 +161,8 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::get('/cardAudit', 'Wechat\ServiceController@getAudit');
         //改变状态
         \Dingo\Api\Facade\Route::get('/status', 'Wechat\ServiceController@changeStatus');
+        //账户充值
+        \Dingo\Api\Facade\Route::any('/topUp', 'Wechat\PayController@topUp');
     });
 
 });

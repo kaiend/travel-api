@@ -35,11 +35,26 @@ class OrderController extends Controller
         $input = WxorderValidator::topUp($request);
         $order['order_number'] = $input['order_number'];
         try {
-       /*     DB::table('users')->insert([
-                'name' => str_random(10),
-                'email' => str_random(10).'@gmail.com',
-                'password' => bcrypt('secret'),
-            ]);*/
+            DB::table('order')->insert([
+                'user_id'=>$input['user_id'],
+                'hotel_id'=>$input['city'],
+                'car_id'=>$input['car_series'],
+                'end'=>$input['end'],
+                'origin'=>$input['origin'],
+                'price'=>$input['price'],
+                'type'=>$input['type'],
+                'orders_name'=>$input['orders_name'],
+                'orders_phone'=>$input['orders_phone'],
+                'passenger_name'=>$input['passenger_name'],
+                'passenger_phone'=>$input['passenger_phone'],
+                'appointment'=>$input['appointment'],
+                'created_at'=>time(),
+                'remarks'=>$input['remarks'],
+                'judgment'=>4,
+                'origin_position'=>$input['origin_position'],
+                'end_position'=>$input['end_position']
+
+            ]);
             //下单成功后给时代负责人发送短信
             $this->sendMessage($order['order_number']);
         } catch (\Exception $e) {
@@ -56,4 +71,22 @@ class OrderController extends Controller
         $msg ='您有新的订单了,订单编号'.$data.'【时代出行】';
         return (new Sms())->sendSMS($this->phone,$msg);
     }
+
+    /**
+     * 订单列表
+     *
+     * @param $request
+     * @return mixed
+     * */
+    public function orderList( Request $request )
+    {
+        $input['user_id'] = $request->input('user_id');
+
+        if (!$input['user_id'])
+            return ReturnMessage::success('用户不能为空',1002);
+
+        return ReturnMessage::successData(Common::formatTime(Order::orderList($input)));
+
+    }
+
 }

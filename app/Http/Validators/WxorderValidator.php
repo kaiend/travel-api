@@ -16,7 +16,7 @@ class WxorderValidator
 	 * */
 	public static function topUp( Request $request )
 	{
-		$only = ['user_id','type','price','vehicle','vehicle_number','origin','end','car_series','orders_name','orders_phone','appointment','passenger_name','passenger_phone','cip'];
+		$only = ['user_id','type','price','vehicle','vehicle_number','origin','end','car_series','orders_name','orders_phone','appointment','passenger_name','passenger_phone','cip','origin_position','end_position','city','remarks'];
 
 		$rules = [
 			'type' => 'required',
@@ -50,6 +50,9 @@ class WxorderValidator
 			'orders_phone.regex' => '下单人手机号错误',
 
 			'appointment.required' => '预约时间不能为空',
+            'origin_position.required' => '起点经纬度不能为空',
+            'end_position.required' => '终点经纬度不能为空',
+            'city.required' => '城市编码不能为空',
 
 
 		];

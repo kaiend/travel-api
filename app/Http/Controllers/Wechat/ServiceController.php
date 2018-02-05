@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Wechat;
 
 use App\Helpers\Common;
 use App\Helpers\ReturnMessage;
+use App\Http\Controllers\Controller;
 use App\Helpers\Sms;
 use App\Models\CarSeries;
 use App\Models\Order;
