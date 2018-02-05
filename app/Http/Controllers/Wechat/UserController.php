@@ -133,7 +133,7 @@ class UserController extends Controller
                 ['user_pass',$input['user_pass']]
             ])->first();
 		if (!empty($info)){
-			$info = $info->toArray();
+			$info = Common::json_array($info);
 			//$info['token'] = $this->token();
 			return ReturnMessage::successData($info);
 		}
