@@ -152,9 +152,13 @@ $api->version('v1', [
         //获取小程序openid
         \Dingo\Api\Facade\Route::get('/getOpenId', 'Wechat\UserController@getOpenId');
         //出行卡数据添加
-        \Dingo\Api\Facade\Route::get('/travelCard', 'Wechat\UserController@travelCard');
+        \Dingo\Api\Facade\Route::put('/travelCard', 'Wechat\UserController@travelCard');
         //上传出行卡
-        \Dingo\Api\Facade\Route::get('/updateTravelCard', 'Wechat\UserController@updateTravelCard');
+        \Dingo\Api\Facade\Route::post('/updateTravelCard', 'Wechat\UserController@updateTravelCard');
+        //出行卡审核状态
+        \Dingo\Api\Facade\Route::get('/cardAudit', 'Wechat\ServiceController@getAudit');
+        //改变状态
+        \Dingo\Api\Facade\Route::get('/status', 'Wechat\ServiceController@changeStatus');
     });
 
 });
