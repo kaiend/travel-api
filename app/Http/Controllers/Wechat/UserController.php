@@ -103,6 +103,7 @@ class UserController extends Controller
             ->where([
                 ['phone',$input['phone']],
             ])->first();
+        $info=Common::json_array($info);
 		return ReturnMessage::successData($info);
 	}
 	/**
