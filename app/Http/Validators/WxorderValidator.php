@@ -24,8 +24,8 @@ class WxorderValidator
 			'origin' => 'required',
 			'end' => 'required',
 			'car_series' => 'required',
-			'orders_name' => 'required',
-			'orders_phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
+			/*'orders_name' => 'required',
+			'orders_phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',*/
 			'appointment' => 'required',
 			'user_id' => 'required|exists:personal_user,id',
 		];
