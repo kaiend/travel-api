@@ -16,7 +16,7 @@ class WxorderValidator
 	 * */
 	public static function topUp( Request $request )
 	{
-		$only = ['user_id','type','price','vehicle','vehicle_number','origin','end','car_series','orders_name','orders_phone','appointment','passenger_name','passenger_phone','cip','origin_position','end_position','city','remarks'];
+		$only = ['user_id','type','price','vehicle','vehicle_number','origin','end','car_series','orders_name','orders_phone','appointment','passenger_name','passenger_phone','cip','origin_position','end_position','city','remarks','custom'];
 
 		$rules = [
 			'type' => 'required',

@@ -41,26 +41,51 @@ class OrderController extends Controller
         }
         $order['order_number'] = $input['order_number'];
         try {
-            DB::table('order')->insert([
-                'user_id'=>$input['user_id'],
-                'hotel_id'=>$input['city'],
-                'car_id'=>$input['car_series'],
-                'end'=>$input['end'],
-                'origin'=>$input['origin'],
-                'price'=>$input['price'],
-                'type'=>$input['type'],
-                'orders_name'=>$input['orders_name'],
-                'orders_phone'=>$input['orders_phone'],
-                'passenger_name'=>$input['passenger_name'],
-                'passenger_phone'=>$input['passenger_phone'],
-                'appointment'=>$input['appointment'],
-                'created_at'=>time(),
-                'remarks'=>$input['remarks'],
-                'judgment'=>4,
-                'origin_position'=>$input['origin_position'],
-                'end_position'=>$input['end_position']
+            if(empty($input['custom'])){
+                DB::table('order')->insert([
+                    'user_id'=>$input['user_id'],
+                    'hotel_id'=>$input['city'],
+                    'car_id'=>$input['car_series'],
+                    'end'=>$input['end'],
+                    'origin'=>$input['origin'],
+                    'price'=>$input['price'],
+                    'type'=>$input['type'],
+                    'orders_name'=>$input['orders_name'],
+                    'orders_phone'=>$input['orders_phone'],
+                    'passenger_name'=>$input['passenger_name'],
+                    'passenger_phone'=>$input['passenger_phone'],
+                    'appointment'=>$input['appointment'],
+                    'created_at'=>time(),
+                    'remarks'=>$input['remarks'],
+                    'judgment'=>4,
+                    'origin_position'=>$input['origin_position'],
+                    'end_position'=>$input['end_position']
 
-            ]);
+                ]);
+            }else{
+                DB::table('order')->insert([
+                    'user_id'=>$input['user_id'],
+                    'hotel_id'=>$input['city'],
+                    'car_id'=>$input['car_series'],
+                    'end'=>$input['end'],
+                    'origin'=>$input['origin'],
+                    'price'=>$input['price'],
+                    'type'=>$input['type'],
+                    'orders_name'=>$input['orders_name'],
+                    'orders_phone'=>$input['orders_phone'],
+                    'passenger_name'=>$input['passenger_name'],
+                    'passenger_phone'=>$input['passenger_phone'],
+                    'appointment'=>$input['appointment'],
+                    'created_at'=>time(),
+                    'remarks'=>$input['remarks'],
+                    'judgment'=>4,
+                    'origin_position'=>$input['origin_position'],
+                    'end_position'=>$input['end_position'],
+                    'custom'=>$input['custom']
+
+                ]);
+            }
+
             //下单成功后给时代负责人发送短信
             $this->sendMessage($order['order_number']);
         } catch (\Exception $e) {
