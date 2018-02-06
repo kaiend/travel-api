@@ -232,7 +232,7 @@ class UserValidator
 	 * */
 	public static function travelCard( Request $request )
 	{
-		$only = ['id','travel_card','name','id_card','travel_card_number'];
+		$only = ['id','travel_card','name','travel_card_number'];
 
 		$rules = [
 			'id' => 'required|exists:user,id',
@@ -245,7 +245,6 @@ class UserValidator
 			'id.exists'=> '用户不存在',
 
 			'name.required' => '姓名不能为空',
-			'id_card.required' => '身份证号不能为空',
 		];
 
 		$input = $request->only($only);
