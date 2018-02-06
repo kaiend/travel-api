@@ -119,6 +119,41 @@ class OrderController extends Controller
         return ReturnMessage::successData(Common::formatTime(Order::orderList($input)));
 
     }
+    /*
+     * 航站楼返回
+     */
+    public function flight(Request $request){
+        $input = $request->input();
+        if($input['city'] == '北京市'){
+            $data = [
+                [
+                    'coordinate'=> '116.594566,40.086792',
+                    'name' => '北京首都机场T1航站楼'
+                ],
+                [
+                    'coordinate'=> '116.600726,40.086705',
+                    'name' => '北京首都机场T2航站楼'
+                ],
+                [
+                    'coordinate'=> '116.619758,40.072776',
+                    'name' => '北京首都机场T3航站楼'
+                ],
+                [
+                    'coordinate'=> '116.400712,39.790456',
+                    'name' => '北京南苑机场'
+                ],
+            ];
+            return ReturnMessage::successData($data);
+        }else{
+            $data = [
+                [
+                    'coordinate'=> '117.368077,39.13701',
+                    'name' => '天津滨海国际机场T2航站楼'
+                ]
+            ];
+            return ReturnMessage::successData($data);
+        }
+    }
 
 
 }

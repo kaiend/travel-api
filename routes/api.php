@@ -167,6 +167,8 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::any('/typeCar', 'Wechat\ServiceController@typeCar');
         //企业申请
         \Dingo\Api\Facade\Route::any('/business', 'Wechat\UserController@business');
+        //航站楼返回
+        \Dingo\Api\Facade\Route::get('/flight', 'Wechat\OrderController@flight');
     });
 
 });
