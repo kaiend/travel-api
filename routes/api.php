@@ -169,16 +169,16 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::any('/business', 'Wechat\UserController@business');
         //航站楼返回
         \Dingo\Api\Facade\Route::get('/flight', 'Wechat\OrderController@flight');
-        //获取优惠券
+        //获取我的优惠券
         \Dingo\Api\Facade\Route::get('/coupon', 'Wechat\CouponController@getCoupon');
         //用户领取优惠券
         \Dingo\Api\Facade\Route::post('/getUserCoupon', 'Wechat\CouponController@getUserCoupon');
         //获取出行卡
         \Dingo\Api\Facade\Route::get('/getCard', 'Wechat\CouponController@getCard');
         //出行卡绑定
-        \Dingo\Api\Facade\Route::get('/cardBind', 'Wechat\CouponController@cardBind');
+        \Dingo\Api\Facade\Route::post('/cardBind', 'Wechat\CouponController@cardBind');
         //我的出行卡
-        \Dingo\Api\Facade\Route::get('/getMyCard', 'Wechat\CouponController@getMyCard');
+        \Dingo\Api\Facade\Route::post('/getMyCard', 'Wechat\CouponController@getMyCard');
     });
 
 });
