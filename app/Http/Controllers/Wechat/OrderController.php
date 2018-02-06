@@ -56,6 +56,7 @@ class OrderController extends Controller
                     'passenger_phone'=>$input['passenger_phone'],
                     'appointment'=>$input['appointment'],
                     'created_at'=>time(),
+                    'order_number'=>$input['order_number'],
                     'remarks'=>$input['remarks'],
                     'judgment'=>4,
                     'origin_position'=>$input['origin_position'],
@@ -78,6 +79,7 @@ class OrderController extends Controller
                     'appointment'=>$input['appointment'],
                     'created_at'=>time(),
                     'remarks'=>$input['remarks'],
+                    'order_number'=>$input['order_number'],
                     'judgment'=>4,
                     'origin_position'=>$input['origin_position'],
                     'end_position'=>$input['end_position'],
@@ -87,7 +89,7 @@ class OrderController extends Controller
             }
 
             //下单成功后给时代负责人发送短信
-            $this->sendMessage($order['order_number']);
+            $this->sendMessage($input['order_number']);
         } catch (\Exception $e) {
             return ReturnMessage::success('添加订单失败',1002);
         }
