@@ -33,6 +33,7 @@ class OrderController extends Controller
     public function createOrder( Request $request )
     {
         $input = WxorderValidator::topUp($request);
+        dd($input);die;
         if(empty($input['passenger_name'])){
             $input['passenger_name'] = $input['orders_name'];
         }
@@ -60,7 +61,7 @@ class OrderController extends Controller
                     'remarks'=>$input['remarks'],
                     'judgment'=>4,
                     'origin_position'=>$input['origin_position'],
-                    'end_position'=>$input['end_position']
+                    'end_position'=>$input['end_position'],
 
                 ]);
             }else{
@@ -89,7 +90,7 @@ class OrderController extends Controller
             }
 
             //下单成功后给时代负责人发送短信
-           // $this->sendMessage($order['order_number']);
+            $this->sendMessage($order['order_number']);
         } catch (\Exception $e) {
             return ReturnMessage::success('添加订单失败',1002);
         }

@@ -16,7 +16,7 @@ class WxorderValidator
 	 * */
 	public static function topUp( Request $request )
 	{
-		$only = ['user_id','type','price','vehicle','vehicle_number','origin','end','car_series','orders_name','orders_phone','appointment','passenger_name','passenger_phone','cip','origin_position','end_position','city','remarks','custom'];
+		$only = ['user_id','type','price','origin','end','car_series','orders_name','orders_phone','appointment','passenger_name','passenger_phone','cip','origin_position','end_position','city','remarks','custom'];
 
 		$rules = [
 			'type' => 'required',
@@ -59,10 +59,15 @@ class WxorderValidator
 
 		$input = $request->only($only);
 
+
 		$validator = Validator::make($input, $rules, $messages);
 
-		if ($validator->fails())
-			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+		/*if ($validator->fails()){
+            echo  111;die;
+            exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+        }else{
+			    echo 222;die;
+    }*/
 
 		if (empty($input['cip']))
 			unset($input['cip']);
