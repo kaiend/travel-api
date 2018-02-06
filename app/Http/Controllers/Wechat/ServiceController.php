@@ -161,4 +161,36 @@ class ServiceController extends Controller
         }
     }
 
+    /*
+     * 用户优惠券
+     */
+    public function coupon(Request $request){
+        $res = $request->only('user_id');
+        if($res){
+
+        }else{
+            return ReturnMessage::success('参数不能为空','1003');
+        }
+
+    }
+
+    /*
+     * 服务类型下的车系
+     */
+    public function typeCar(Request $request){
+        $par = $request->only('type');
+        $data = DB::table('personal_charges_rule')
+            ->join('car_series','personal_charges_rule.cars_id','=','car_series.id')
+            ->where('personal_charges_rule.service_id',$par['type'])
+            ->select('type','price','cars_id','service_id','series_name','image','status','parent_id','market_price')
+            ->distinct('personal_charges_rule.cars_id')
+            ->get();
+        $data = Common::json_array($data);
+        if($data){
+            return ReturnMessage::successData($data);
+        }else{
+            return ReturnMessage::success('暂无数据','1001');
+        }
+    }
+
 }

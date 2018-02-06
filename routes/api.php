@@ -163,6 +163,8 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::get('/status', 'Wechat\ServiceController@changeStatus');
         //账户充值
         \Dingo\Api\Facade\Route::any('/topUp', 'Wechat\PayController@topUp');
+        //根据类型找到车系
+        \Dingo\Api\Facade\Route::any('/typeCar', 'Wechat\ServiceController@typeCar');
     });
 
 });
