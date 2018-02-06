@@ -27,7 +27,7 @@ class WxorderValidator
 			'orders_name' => 'required',
 			'orders_phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
 			'appointment' => 'required',
-			'user_id' => 'required|exists:user,id',
+			'user_id' => 'required|exists:personal_user,id',
 		];
 
 		$messages = [
@@ -85,7 +85,7 @@ class WxorderValidator
 		$only = ['user_id','order_number'];
 
 		$rules = [
-			'user_id' => 'required|exists:user,id',
+			'user_id' => 'required|exists:personal_user,id',
 			'order_number' => 'required|exists:wx_order,order_number',
 		];
 
