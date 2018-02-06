@@ -33,6 +33,12 @@ class OrderController extends Controller
     public function createOrder( Request $request )
     {
         $input = WxorderValidator::topUp($request);
+        if(empty($input['passenger_name'])){
+            $input['passenger_name'] = $input['orders_name'];
+        }
+        if(empty($input['passenger_phone'])){
+            $input['passenger_name'] = $input['orders_phone'];
+        }
         $order['order_number'] = $input['order_number'];
         try {
             DB::table('order')->insert([
