@@ -44,10 +44,10 @@ class WxorderValidator
 
 			'type.required' => '服务类型不能为空',
 
-			'orders_name.required' => '下单人姓名不能为空',
+		/*	'orders_name.required' => '下单人姓名不能为空',
 
 			'orders_phone.required' => '下单人手机号不能为空',
-			'orders_phone.regex' => '下单人手机号错误',
+			'orders_phone.regex' => '下单人手机号错误',*/
 
 			'appointment.required' => '预约时间不能为空',
             'origin_position.required' => '起点经纬度不能为空',
