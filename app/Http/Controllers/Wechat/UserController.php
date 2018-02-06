@@ -305,4 +305,22 @@ class UserController extends Controller
         return ReturnMessage::successData([$data['travel_card']]);
 
     }
+    /*
+     * 提交企业申请
+     */
+    public function business(Request $request){
+        $input = $request->input();
+        $data = DB::table('business')->insert([
+            'user_id'=>$input['user_id'],
+            'company_name'=>$input['company_name'],
+            'user_name'=>$input['user_name'],
+            'user_position'=>$input['user_position'],
+            'user_phone'=>$input['user_phone'],
+        ]);
+        if($data){
+            return ReturnMessage::success('申请成功',1000);
+        }else{
+            return ReturnMessage::success('申请失败',1002);
+        }
+    }
 }
