@@ -106,7 +106,7 @@ class ServiceController extends Controller
             return ReturnMessage::success('失败','1001');
         }
         $user_data=DB::table('personal_user')
-            ->join('card_audit','user.id','=','card_audit.uid')
+            ->join('card_audit','personal_user.id','=','card_audit.uid')
             ->where('phone',$arr['phone'])
             ->orderBy('card_audit.id','desc')
             ->first();
