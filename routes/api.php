@@ -144,7 +144,7 @@ $api->version('v1', [
         //注册
         \Dingo\Api\Facade\Route::post('/register' ,'Wechat\UserController@register');
         //下订单
-        \Dingo\Api\Facade\Route::any('/createOrder' ,'Wechat\OrderController@createOrder');
+        \Dingo\Api\Facade\Route::post('/createOrder' ,'Wechat\OrderController@createOrder');
         //订单列表
         \Dingo\Api\Facade\Route::get('/orderList', 'Wechat\OrderController@orderList');
         //注销
