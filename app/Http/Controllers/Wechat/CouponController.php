@@ -95,6 +95,23 @@ class CouponController extends Controller
         $input = CouponValidator::buyCoupon($request);
 
         try {
+            if(!empty($input['activity_id'])){
+
+                $activity = DB::table('coupon_activity')
+                            ->where([
+                                ['activity_id',$input['activity_id']],
+                                ['user_id',$input['user_id']]
+                            ])
+                            ->first();
+
+                if(!empty($activity)){
+                    return response()->json([
+                        'code' =>'1012',
+                        'info' => 'success',
+                        'data' => []
+                    ]);
+                }
+            }
             //拆开coupon_id
             $coupon = explode(',',$input['coupon_id']);
 
@@ -119,6 +136,13 @@ class CouponController extends Controller
                     ->whereIn('coupon_user.id',$coupons)
                     ->select('coupon_user.coupon_code','coupon_user.coupon_pass','coupon_groups.name','coupon_groups.price','coupon_groups.end_time','coupon_groups.rule')
                     ->get();
+
+                DB::table('coupon_activity')->insertGetId([
+                    'user_id' => $input['user_id'],
+                    'activity_id' => $input['activity_id'],
+                    'create_at' => time(),
+                ]);
+
                 $data = json_decode(json_encode($dat),true);
                 return response()->json([
                     'code' =>'1000',

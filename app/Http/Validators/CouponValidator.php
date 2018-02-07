@@ -51,7 +51,7 @@ class CouponValidator
      * */
     public static function buyCoupon( Request $request )
     {
-        $only = ['user_id','coupon_id'];
+        $only = ['user_id','coupon_id','activity_id'];
 
         $rules = [
             'user_id' => 'required|exists:personal_user,id',
