@@ -35,6 +35,8 @@ class PayValidator
 
 		$input = $request->only($only);
 
+		dump($input);die;
+
 		$validator = Validator::make($input, $rules, $messages);
 
 		if ($validator->fails())
