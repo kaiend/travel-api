@@ -181,5 +181,74 @@ class OrderController extends Controller
         return ReturnMessage::success('添加支付信息成功',1000);
     }
 
+    /**
+     * 订单支付
+     *
+     * @param $request
+     * @return mixed
+     * */
+    public function orderPay( Request $request )
+    {
+        $input = OrderValidator::orderPay($request);
+
+        $whereUser['id'] = $input['user_id'];
+        $whereOrder['order_number'] = $input['order_number'];
+        $user = User::getUserFirst($whereUser);
+        $order = Order::getOrderFirst($whereOrder)->toArray();
+
+        if ($order['status'] == $this->order_pay)
+            return ReturnMessage::success('订单已支付，请勿重复支付',1002);
+
+        if ($user['travel_card_money'] >= $order['price']){
+            $res['travel_card_money'] = $order['price'];
+        }else{
+            if ($user['travel_card_money'] > 0 ){
+                if ($user['travel_card_money'] + $user['balance'] >= $order['price']){
+                    $res['travel_card_money'] = $user['travel_card_money'];
+                    $res['balance'] = $order['price'] - $user['travel_card_money'];
+                }else{
+                    return ReturnMessage::success('账户金额不足',1002);
+                }
+            }else{
+                if ($user['balance'] >= $order['price']){
+                    $res['balance'] = $order['price'];
+                }else{
+                    return ReturnMessage::success('账户金额不足',1002);
+                }
+            }
+        }
+
+        $data['pay_status'] = $this->order_pay;
+        $trading['order_number'] = $input['order_number'];
+        $trading['user_id'] = $input['user_id'];
+        $trading['created_at'] = time();
+
+        DB::beginTransaction();
+        try {
+            if (isset($res['travel_card_money'])){
+                User::where('id',$input['user_id'])->decrement('travel_card_money',$res['travel_card_money']);
+                $trading['money'] = $res['travel_card_money'];
+                $trading['pay_way'] = 'card';
+
+                Trading::create($trading);
+            }
+            if (isset($res['balance'])){
+                User::where('id',$input['user_id'])->decrement('balance',$res['balance']);
+                $trading['money'] = $res['balance'];
+                $trading['pay_way'] = 'balance';
+                Trading::create($trading);
+            }
+
+            Order::modifyOrder($whereOrder,$data);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ReturnMessage::success('支付失败',1002);
+        }
+
+        return ReturnMessage::success();
+
+    }
+
 
 }
