@@ -36,14 +36,14 @@ class PayValidator
 		$input = $request->only($only);
 
 
-
+/*
 		$validator = Validator::make($input, $rules, $messages);
 
 		if ($validator->fails())
-			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));*/
 
 
-		$input['out_trade_no'] = self::createNumber();
+        $input['out_trade_no'] = self::createTopUpNumber($input['user_id']);
 		return $input;
 	}
 
