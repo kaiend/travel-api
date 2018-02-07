@@ -14,6 +14,7 @@ use App\Helpers\ReturnMessage;
 use App\Http\Validators\OrderValidator;
 use App\Models\Trading;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Config;
 use SebastianBergmann\CodeCoverage\Exception;
 
 
@@ -230,8 +231,75 @@ class CouponController extends Controller
             return ReturnMessage::success('获取我的出行卡失败',1011);
         }
     }
+    /**
+     * 获取车系以及费用
+     */
+    public function carRule( Request $request)
+    {
+        //车系以及费用
+        $input = CouponValidator::carRule($request);
 
+        try{
+//            $type = Config::get('car.'.'22');
+            if($input['type'] == 86){
+                $car_id = Config::get('car.'.$input['type'].'.'.'car');
+                foreach ($car_id as $key => $val){
+                    $data[] = array(
+                        'car_id' => $val,
+                        'car' => Config::get('car.car_series.'.$val),
+                        'rule' => $this->jishi($val,$input['dis']),
+                    );
+                }
+            }else{
+                $car_id = Config::get('car.'.$input['type'].'.'.'car');
+                $rule = Config::get('car.'.$input['type'].'.'.'rule');
+                foreach ($car_id as $key => $val){
+                    $data[] = array(
+                        'car_id' => $val,
+                        'car' => Config::get('car.car_series.'.$val),
+                        'rule' => $rule[$key],
+                    );
+                }
+            }
 
+            return response()->json([
+                'code' =>'1000',
+                'info' => 'success',
+                'data' => ReturnMessage::toString($data)
+            ]);
+        } catch (\Exception $e){
+            return ReturnMessage::success('获取车系及费用失败',1011);
+        }
+
+    }
+
+    /**
+     *  即时用车公里费用设置
+     */
+    public function jishi($car,$dis)
+    {
+        if($dis>10) {
+            if ($car == 7) {
+                return 128 + ($dis - 10) * 8.5;
+            }
+            if ($car == 6) {
+                return 158 + ($dis - 10) * 12.5;
+            }
+            if ($car == 8) {
+                return 158 + ($dis - 10) * 12.5;
+            }
+        }else{
+            if($car == 7) {
+                return 128;
+            }
+            if ($car == 6) {
+                return 158;
+            }
+            if ($car == 8) {
+                return 158;
+            }
+        }
+    }
 
     /**
      * 生成优惠券密码
@@ -266,6 +334,7 @@ class CouponController extends Controller
             return ReturnMessage::success('获取我的出行卡失败',1011);
         }
     }
+
 
     /**
      * 发送短信函数
