@@ -144,4 +144,31 @@ class CouponValidator
 
         return $input;
     }
+
+    /**
+     * 车系费用
+     * @param Request $request
+     * @return mixed
+     * */
+    public static function carRule( Request $request )
+    {
+        $only = ['type','dis'];
+
+        $rules = [
+            'type' => 'required',
+        ];
+
+        $messages = [
+            'type.required' => '用户id不能为空',
+        ];
+
+        $input = $request->only($only);
+
+        $validator = Validator::make($input, $rules, $messages);
+
+        if ($validator->fails())
+            exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+
+        return $input;
+    }
 }
