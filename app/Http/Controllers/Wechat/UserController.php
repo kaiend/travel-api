@@ -376,7 +376,9 @@ class UserController extends Controller
             ->select('coupon_groups.id','coupon_user.coupon_code','coupon_groups.name','coupon_groups.price','coupon_groups.end_time')
             ->get();
 
-            return ReturnMessage::successData($data);
+        $datas = common::json_array($data);
+
+            return ReturnMessage::successData($datas);
 
 
     }
