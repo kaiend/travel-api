@@ -373,7 +373,7 @@ class UserController extends Controller
                 ['coupon_groups.type',$input['type']],
                 ['coupon_user.is_used',1],
             ])
-            ->select('coupon_groups.id','coupon_user.coupon_code','coupon_groups.name','coupon_groups.price','coupon_groups.end_time')
+            ->select('coupon_user.coupon_id','coupon_user.coupon_code','coupon_groups.name','coupon_groups.price','coupon_groups.end_time')
             ->get();
 
         $datas = common::json_array($data);
