@@ -159,4 +159,27 @@ class OrderController extends Controller
     }
 
 
+    /**
+     * 接收支付信息
+     * @param $request
+     * @return mixed
+     * */
+    public function createPayInfo( Request $request )
+    {
+        $input = $request->input();
+
+        try {
+            DB::table('pay_order')->insert([
+                'price'=>$input['price'],
+                'openid'=>$input['openid'],
+                'type'=>$input['type'],
+            ]);
+
+        } catch (\Exception $e) {
+            return ReturnMessage::success('添加支付信息失败',1002);
+        }
+        return ReturnMessage::success('添加支付信息成功',1000);
+    }
+
+
 }

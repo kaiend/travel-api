@@ -181,6 +181,8 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::post('/getMyCard', 'Wechat\CouponController@getMyCard');
         //支付
         \Dingo\Api\Facade\Route::post('/WxOrder', 'Wechat\PayController@WxOrder');
+        //接收支付信息
+        \Dingo\Api\Facade\Route::post('/createPayInfo', 'Wechat\OrderController@createPayInfo');
     });
 
 });
