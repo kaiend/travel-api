@@ -114,7 +114,6 @@ class CouponController extends Controller
             if(empty($coupons)){
                 return ReturnMessage::success('数据创建失败',1011);
             }else{
-
                 $dat = DB::table('coupon_groups')
                     ->leftJoin('coupon_user','coupon_user.coupon_id','=','coupon_groups.id')
                     ->whereIn('coupon_user.id',$coupons)
