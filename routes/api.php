@@ -135,6 +135,7 @@ $api->version('v1', [
 
     //小程序
     $api->group(['prefix'=>'wechat'],function(){
+        \Dingo\Api\Facade\Route::get('/distance' ,'Wechat\UserController@getDistance');
         //获取验证码
         \Dingo\Api\Facade\Route::get('/code' ,'Wechat\UserController@sendCode');
         //验证验证码

@@ -323,4 +323,38 @@ class UserController extends Controller
             return ReturnMessage::success('申请失败',1002);
         }
     }
+    /**
+     * 测距
+     * @param \Illuminate\Http\Request $request
+     * @return bool|mixed
+     */
+    public function getDistance(Request $request)
+    {
+        $arr =$request->only('origins','destinations');
+        $url ='http://api.map.baidu.com/routematrix/v2/driving?output=json&origins='.$arr['origins'].'&destinations='.$arr['destinations'].'&ak=RGwhFRkSZfva32BN96csoObm4FIfiCAY';
+        function getUrl($url, $timeout = 5)
+        {
+            $url = str_replace("&amp;", "&", urldecode(trim($url)));
+            //$cookie = tempnam ("/tmp", "CURLCOOKIE");
+            $ch = curl_init();
+            //curl_setopt( $ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; rv:1.7.3) Gecko/20041001 Firefox/0.10.1" );
+            curl_setopt($ch, CURLOPT_URL, $url);
+            //curl_setopt( $ch, CURLOPT_COOKIEJAR, $cookie );
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_ENCODING, "");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);    # required for https urls
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+            curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+            curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+            $content = curl_exec($ch);
+            $response = curl_getinfo($ch);
+            if ($response['http_code'] != 200) {
+                return false;
+            }
+            return $content;
+        }
+        return getUrl($url);
+    }
 }
