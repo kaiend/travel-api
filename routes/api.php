@@ -175,7 +175,7 @@ $api->version('v1', [
         //获取我的优惠券
         \Dingo\Api\Facade\Route::get('/coupon', 'Wechat\CouponController@getCoupon');
         //用户领取优惠券
-        \Dingo\Api\Facade\Route::post('/getUserCoupon', 'Wechat\CouponController@getUserCoupon');
+        \Dingo\Api\Facade\Route::get('/getUserCoupon', 'Wechat\CouponController@getUserCoupon');
         //获取出行卡
         \Dingo\Api\Facade\Route::get('/getCard', 'Wechat\CouponController@getCard');
         //出行卡绑定
