@@ -362,7 +362,7 @@ class UserController extends Controller
      * @param $request
      * @return array
      * */
-    public function coupon( Request $request )
+    public function user_coupon( Request $request )
     {
         $input = $request->input();
 
