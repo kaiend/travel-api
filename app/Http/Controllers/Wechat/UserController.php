@@ -373,11 +373,34 @@ class UserController extends Controller
                 ['coupon_groups.type',$input['type']],
                 ['coupon_user.is_used',1],
             ])
-            ->select('coupon_user.coupon_code','coupon_groups.name','coupon_groups.price','coupon_groups.end_time')
+            ->select('coupon_groups.id,coupon_user.coupon_code','coupon_groups.name','coupon_groups.price','coupon_groups.end_time')
             ->get();
 
             return ReturnMessage::successData($data);
 
 
     }
+
+    /**
+     * 修改用户优惠券
+     * @param $request
+     * @return array
+     * */
+    public function Updatecoupon( Request $request )
+    {
+        $input = $request->input();
+
+        $dat['is_used'] = 2;
+        $where['coupon_id'] = $input['coupon_id'];
+        $where['user_id'] = $input['user_id'];
+        $result = Db::table('coupon_user')->where($where)->update($dat);
+        if($result){
+            return ReturnMessage::success('使用成功',1000);
+        }else{
+            return ReturnMessage::success('使用失败',1001);
+        }
+
+
+    }
+
 }
