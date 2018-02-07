@@ -40,12 +40,14 @@ class ReturnMessage
 	 */
 	public static function successData($data, $info='success')
 	{
-		$code = "1000";
+
 
 		if (is_object($data))
+            $code = "1000";
 			$data = $data->toArray();
 
 		if (!is_array($data) || empty($data)) {
+            $code = "1001";
 			$info = '暂无数据';
 			$data = false;
 		}
