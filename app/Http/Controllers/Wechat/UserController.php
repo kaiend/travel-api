@@ -377,8 +377,12 @@ class UserController extends Controller
             ->get();
 
         $datas = common::json_array($data);
+            if($datas){
+                return ReturnMessage::successData($datas);
+            }else{
+                return ReturnMessage::success('暂无数据',1001);
+            }
 
-            return ReturnMessage::successData($datas);
 
 
     }
