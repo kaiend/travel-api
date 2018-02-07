@@ -18,10 +18,10 @@ class OrderController extends Controller
 {
 
     //订单状态 已支付
-    private $order_pay = 'pay';
+    private $order_pay = '2';
 
     //订单状态  已取消
-    private $order_undo = 'undo';
+    private $order_undo = '3';
 
     private $phone ='18311161659';
     /**
@@ -205,7 +205,7 @@ class OrderController extends Controller
         $order = Order::getOrderFirst($whereOrder);
 
 
-        if ($order['status'] == $this->order_pay)
+        if ($order['pay_status'] == $this->order_pay)
             return ReturnMessage::success('订单已支付，请勿重复支付',1002);
 
         if ($user['travel_card_money'] >= $order['price']){
