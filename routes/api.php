@@ -191,7 +191,9 @@ $api->version('v1', [
         //获取车系以及费用
         \Dingo\Api\Facade\Route::post('/carRule', 'Wechat\CouponController@carRule');
         //查询用户优惠券
-        \Dingo\Api\Facade\Route::any('/user_coupon', 'Wechat\UserController@coupon');
+        \Dingo\Api\Facade\Route::any('/user_coupon', 'Wechat\UserController@user_coupon');
+        //修改优惠券状态
+        \Dingo\Api\Facade\Route::any('/Updatecoupon', 'Wechat\UserController@Updatecoupon');
     });
 
 });
