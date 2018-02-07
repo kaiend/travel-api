@@ -371,6 +371,7 @@ class UserController extends Controller
             ->where([
                 ['coupon_user.user_id',$input['user_id']],
                 ['coupon_groups.type',$input['type']],
+                ['coupon_user.is_used',1],
             ])
             ->select('coupon_user.coupon_code','coupon_groups.name','coupon_groups.price','coupon_groups.end_time')
             ->get();
