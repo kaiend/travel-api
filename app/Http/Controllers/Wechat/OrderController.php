@@ -41,7 +41,7 @@ class OrderController extends Controller
             $input['passenger_name'] = $input['orders_phone'];
         }
         $order['order_number'] = $input['order_number'];
-        try {
+//        try {
             if(empty($input['custom'])){
                 DB::table('order')->insert([
                     'user_id'=>$input['user_id'],
@@ -90,11 +90,11 @@ class OrderController extends Controller
             }
 
             //下单成功后给时代负责人发送短信
-            $this->sendMessage($order['order_number']);
-        } catch (\Exception $e) {
-            return ReturnMessage::success('添加订单失败',1002);
-        }
-        return ReturnMessage::successData($order);
+//            $this->sendMessage($order['order_number']);
+//        } catch (\Exception $e) {
+//            return ReturnMessage::success('添加订单失败',1002);
+//        }
+//        return ReturnMessage::successData($order);
     }
 
     /**
