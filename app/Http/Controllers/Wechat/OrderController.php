@@ -202,7 +202,8 @@ class OrderController extends Controller
         $whereUser['id'] = $input['user_id'];
         $whereOrder['order_number'] = $input['order_number'];
         $user = User::getUserFirst($whereUser);
-        $order = Order::getOrderFirst($whereOrder)->toArray();
+        $order = Order::getOrderFirst($whereOrder);
+
 
         if ($order['status'] == $this->order_pay)
             return ReturnMessage::success('订单已支付，请勿重复支付',1002);
