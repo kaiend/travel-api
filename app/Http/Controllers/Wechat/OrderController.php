@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use App\Http\Validators\UserValidator;
 use App\Http\Controllers\Controller;
 use App\Helpers\ReturnMessage;
-use App\Http\Validators\OrderValidator;
 use App\Http\Validators\WxorderValidator;
 use App\Models\Trading;
 use Illuminate\Support\Facades\DB;
@@ -19,10 +18,10 @@ class OrderController extends Controller
 {
 
     //订单状态 已支付
-    private $order_pay = 'pay';
+    private $order_pay = '2';
 
     //订单状态  已取消
-    private $order_undo = 'undo';
+    private $order_undo = '3';
 
     private $phone ='18311161659';
     /**
@@ -119,7 +118,16 @@ class OrderController extends Controller
         if (!$input['user_id'])
             return ReturnMessage::success('用户不能为空',1002);
 
-        return ReturnMessage::successData(Common::formatTime(Order::orderList($input)));
+
+        $obj = Order::orderList($input);
+        foreach($obj as $key=>$val){
+           // echo $val['type'];
+            $types = Db::table("server_item")->where("id",$val['type'])->pluck('name');
+            $obj[$key]['types'] = $types[0];
+        }
+
+
+        return ReturnMessage::successData(Common::formatTime($obj));
 
     }
     /*
@@ -179,6 +187,76 @@ class OrderController extends Controller
             return ReturnMessage::success('添加支付信息失败',1002);
         }
         return ReturnMessage::success('添加支付信息成功',1000);
+    }
+
+    /**
+     * 订单支付
+     *
+     * @param $request
+     * @return mixed
+     * */
+    public function orderPay( Request $request )
+    {
+        $input = WxorderValidator::orderPay($request);
+
+        $whereUser['id'] = $input['user_id'];
+        $whereOrder['order_number'] = $input['order_number'];
+        $user = User::getUserFirst($whereUser);
+        $order = Order::getOrderFirst($whereOrder);
+
+
+        if ($order['pay_status'] == $this->order_pay)
+            return ReturnMessage::success('订单已支付，请勿重复支付',1002);
+
+        if ($user['travel_card_money'] >= $order['price']){
+            $res['travel_card_money'] = $order['price'];
+        }else{
+            if ($user['travel_card_money'] > 0 ){
+                if ($user['travel_card_money'] + $user['balance'] >= $order['price']){
+                    $res['travel_card_money'] = $user['travel_card_money'];
+                    $res['balance'] = $order['price'] - $user['travel_card_money'];
+                }else{
+                    return ReturnMessage::success('账户金额不足',1002);
+                }
+            }else{
+                if ($user['balance'] >= $order['price']){
+                    $res['balance'] = $order['price'];
+                }else{
+                    return ReturnMessage::success('账户金额不足',1002);
+                }
+            }
+        }
+
+        $data['pay_status'] = $this->order_pay;
+        $trading['order_number'] = $input['order_number'];
+        $trading['user_id'] = $input['user_id'];
+        $trading['created_at'] = time();
+
+        DB::beginTransaction();
+        try {
+            if (isset($res['travel_card_money'])){
+                User::where('id',$input['user_id'])->decrement('travel_card_money',$res['travel_card_money']);
+                $trading['money'] = $res['travel_card_money'];
+                $trading['pay_way'] = 'card';
+
+                Trading::create($trading);
+            }
+            if (isset($res['balance'])){
+                User::where('id',$input['user_id'])->decrement('balance',$res['balance']);
+                $trading['money'] = $res['balance'];
+                $trading['pay_way'] = 'balance';
+                Trading::create($trading);
+            }
+
+            Order::modifyOrder($whereOrder,$data);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ReturnMessage::success('支付失败',1002);
+        }
+
+        return ReturnMessage::success();
+
     }
 
 

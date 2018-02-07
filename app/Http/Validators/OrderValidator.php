@@ -345,4 +345,40 @@ class OrderValidator
         return $input;
     }
 
+    /**
+     * 订单支付数据验证
+     *
+     * @param Request $request
+     * @return mixed
+     * */
+    public static function orderPay( Request $request )
+    {
+        $only = ['user_id','order_number'];
+
+        $rules = [
+            'user_id' => 'required|exists:personal_user,id',
+            'order_number' => 'required|exists:wx_order,order_number',
+        ];
+
+        $messages = [
+            'user_id.required' => '用户id不能为空',
+            'user_id.exists' => '用户不存在',
+
+            'order_number.required' => '订单编号不能为空',
+            'order_number.exists' => '订单不存在'
+
+        ];
+
+        $input = $request->only($only);
+
+        $validator = Validator::make($input, $rules, $messages);
+
+        if ($validator->fails())
+            exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
+
+
+        return $input;
+    }
+
+
 }

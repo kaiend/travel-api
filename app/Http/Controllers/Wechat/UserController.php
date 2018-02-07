@@ -357,4 +357,26 @@ class UserController extends Controller
         }
         return getUrl($url);
     }
+    /**
+     * 获取用户优惠券
+     * @param $request
+     * @return array
+     * */
+    public function coupon( Request $request )
+    {
+        $input = $request->input();
+
+        $data = DB::table('coupon_user')
+            ->leftJoin('coupon_groups','coupon_user.coupon_id','=','coupon_groups.id')
+            ->where([
+                ['coupon_user.user_id',$input['user_id']],
+                ['coupon_groups.type',$input['type']],
+            ])
+            ->select('coupon_user.coupon_code','coupon_groups.name','coupon_groups.price','coupon_groups.end_time')
+            ->get();
+
+            return ReturnMessage::successData($data);
+
+
+    }
 }
