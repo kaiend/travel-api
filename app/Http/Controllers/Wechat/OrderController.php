@@ -34,8 +34,6 @@ class OrderController extends Controller
     {
         $input = WxorderValidator::topUp($request);
 
-        dump($input);die;
-
         if(empty($input['passenger_name'])){
             $input['passenger_name'] = $input['orders_name'];
         }
