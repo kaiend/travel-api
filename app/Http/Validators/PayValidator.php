@@ -35,7 +35,7 @@ class PayValidator
 
 		$input = $request->only($only);
 
-		
+
 
 		$validator = Validator::make($input, $rules, $messages);
 
@@ -43,7 +43,7 @@ class PayValidator
 			exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1002']));
 
 
-//		$input['out_trade_no'] = self::createNumber();
+		$input['out_trade_no'] = self::createNumber();
 		return $input;
 	}
 
