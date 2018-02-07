@@ -374,7 +374,8 @@ class UserController extends Controller
                 ['coupon_user.is_used',1],
             ])
             ->select('coupon_user.coupon_id','coupon_user.coupon_code','coupon_groups.name','coupon_groups.price','coupon_groups.end_time')
-            ->get();
+            ->orderBy("coupon_groups.price","desc")
+            ->first();
 
         $datas = common::json_array($data);
             if($datas){
