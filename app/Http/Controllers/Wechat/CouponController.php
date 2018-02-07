@@ -14,6 +14,7 @@ use App\Helpers\ReturnMessage;
 use App\Http\Validators\OrderValidator;
 use App\Models\Trading;
 use Illuminate\Support\Facades\DB;
+use SebastianBergmann\CodeCoverage\Exception;
 
 
 class CouponController extends Controller
@@ -91,9 +92,11 @@ class CouponController extends Controller
     public function getUserCoupon( Request $request)
     {
         $input = CouponValidator::buyCoupon($request);
+
         try {
             //拆开coupon_id
             $coupon = explode(',',$input['coupon_id']);
+
             foreach ($coupon as $val){
                 $genre = DB::table('coupon_groups')->where('id',$val)->value('genre');
                 $param = array(
@@ -104,13 +107,24 @@ class CouponController extends Controller
                     'redeem_time' => time(),
                     'genre' => $genre
                 );
-                $coupon[] = DB::table('coupon_user')->insertGetId($param);
+                $coupons[] = DB::table('coupon_user')->insertGetId($param);
             }
 
-            if(empty($coupon)){
+            if(empty($coupons)){
                 return ReturnMessage::success('数据创建失败',1011);
             }else{
-                return ReturnMessage::success();
+
+                $dat = DB::table('coupon_groups')
+                    ->leftJoin('coupon_user','coupon_user.coupon_id','=','coupon_groups.id')
+                    ->whereIn('coupon_user.id',$coupons)
+                    ->select('coupon_user.coupon_code','coupon_user.coupon_pass','coupon_groups.name','coupon_groups.price','coupon_groups.end_time','coupon_groups.rule')
+                    ->get();
+                $data = json_decode(json_encode($dat),true);
+                return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'data' => ReturnMessage::toString($data)
+                ]);
             }
         } catch (\Exception $e) {
             return ReturnMessage::success('领取优惠券失败',1011);
@@ -180,32 +194,36 @@ class CouponController extends Controller
                     ])
                     ->select('id','user_nickname','phone','travel_card_money')
                     ->first();
+
             $card_time[] = DB::table('card_audit')
                         ->where([
                             ['uid',$input['user_id']]
                         ])
-                        ->order('create_time desc')
+                        ->orderBy('create_time','desc')
                         ->value('create_time');
+
             $card_time[] = DB::table('coupon_user')
                         ->where([
                             ['user_id',$input['user_id']]
                         ])
-                        ->order('use_time desc')
+                        ->orderBy('use_time','desc')
                         ->value('use_time');
+            $data = json_decode(json_encode($user),true);
             if(!empty($card_time)){
                 rsort($card_time);
-                $user['time'] = $card_time[0];
+                $data['time'] = $card_time[0];
             }else{
-                $user['time'] = 0;
+                $data['time'] = 0;
             }
 
             if(empty($user)){
                 return ReturnMessage::success('获取出行卡余额失败',1011);
             }else{
+
                 return response()->json([
                     'code' =>'1000',
                     'info' => 'success',
-                    'data' => $user
+                    'data' => ReturnMessage::toString($data)
                 ]);
             }
         } catch (\Exception $e) {
@@ -228,5 +246,33 @@ class CouponController extends Controller
             $code .= rand(0,9);
         }
         return $code;
+    }
+
+    /**
+     * 发送短信
+     */
+    public function sendSms( Request $request)
+    {
+        $input = CouponValidator::MyCard($request);
+
+        try{
+            $send = $this->sendMessage($input['phone'],$input['name'],$input['coupon_code'],$input['coupon_pass']);
+            return response()->json([
+                'code' =>'1000',
+                'info' => 'success',
+                'data' => ReturnMessage::toString($send)
+            ]);
+        } catch (\Exception $e){
+            return ReturnMessage::success('获取我的出行卡失败',1011);
+        }
+    }
+
+    /**
+     * 发送短信函数
+     */
+    private function sendMessage($phone,$name,$coupon_code,$coupon_pass)
+    {
+        $msg ='【时代出行】您已成功购买时代出行'.$name.'（卡类型），卡号：'.$coupon_code.'，密码：'.$coupon_pass.'（请妥善保管，切勿将密码告知他人）。为保证您的正常使用，请您尽快登录时代出行微信小程序完成绑定。如有任何疑问请致电010-59477666';
+        return (new Sms())->sendSMS($phone,$msg);
     }
 }

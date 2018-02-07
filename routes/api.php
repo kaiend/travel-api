@@ -183,6 +183,8 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::post('/WxOrder', 'Wechat\PayController@WxOrder');
         //接收支付信息
         \Dingo\Api\Facade\Route::post('/createPayInfo', 'Wechat\OrderController@createPayInfo');
+        //购买出行卡后发送短信
+        \Dingo\Api\Facade\Route::post('/sendSms', 'Wechat\CouponController@sendSms');
     });
 
 });

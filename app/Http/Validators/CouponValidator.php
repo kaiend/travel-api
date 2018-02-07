@@ -119,15 +119,20 @@ class CouponValidator
      * */
     public static function MyCard( Request $request )
     {
-        $only = ['user_id'];
+        $only = ['phone','name','coupon_code','coupon_pass'];
 
         $rules = [
-            'user_id' => 'required|exists:personal_user,id',
+            'phone' => 'required',
+            'name' => 'required',
+            'coupon_code' => 'required',
+            'coupon_pass' => 'required',
         ];
 
         $messages = [
-            'user_id.required' => '用户id不能为空',
-            'user_id.exists' => '用户不存在',
+            'phone.required' => '用户id不能为空',
+            'name.required' => '卡名不能为空',
+            'coupon_code.required' => '卡唯一码不能为空',
+            'coupon_pass.required' => '卡密不能为空',
         ];
 
         $input = $request->only($only);
