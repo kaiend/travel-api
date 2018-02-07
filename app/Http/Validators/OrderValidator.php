@@ -356,7 +356,7 @@ class OrderValidator
         $only = ['user_id','order_number'];
 
         $rules = [
-            'user_id' => 'required|exists:user,id',
+            'user_id' => 'required|exists:personal_user,id',
             'order_number' => 'required|exists:wx_order,order_number',
         ];
 

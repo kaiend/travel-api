@@ -119,7 +119,16 @@ class OrderController extends Controller
         if (!$input['user_id'])
             return ReturnMessage::success('用户不能为空',1002);
 
-        return ReturnMessage::successData(Common::formatTime(Order::orderList($input)));
+
+        $obj = Order::orderList($input);
+        foreach($obj as $key=>$val){
+           // echo $val['type'];
+            $types = Db::table("server_item")->where("id",$val['type'])->pluck('name');
+            $obj[$key]['types'] = $types[0];
+        }
+
+
+        return ReturnMessage::successData(Common::formatTime($obj));
 
     }
     /*
