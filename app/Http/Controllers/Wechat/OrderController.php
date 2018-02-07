@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use App\Http\Validators\UserValidator;
 use App\Http\Controllers\Controller;
 use App\Helpers\ReturnMessage;
-use App\Http\Validators\OrderValidator;
 use App\Http\Validators\WxorderValidator;
 use App\Models\Trading;
 use Illuminate\Support\Facades\DB;
@@ -198,7 +197,7 @@ class OrderController extends Controller
      * */
     public function orderPay( Request $request )
     {
-        $input = OrderValidator::orderPay($request);
+        $input = WxorderValidator::orderPay($request);
 
         $whereUser['id'] = $input['user_id'];
         $whereOrder['order_number'] = $input['order_number'];

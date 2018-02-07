@@ -91,7 +91,7 @@ class WxorderValidator
 
 		$rules = [
 			'user_id' => 'required|exists:personal_user,id',
-			'order_number' => 'required|exists:wx_order,order_number',
+			'order_number' => 'required|exists:order,order_number',
 		];
 
 		$messages = [
