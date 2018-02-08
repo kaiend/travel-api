@@ -283,5 +283,88 @@ class OrderController extends Controller
 
     }
 
+    /*
+     * 推送消息
+     */
+    public function push(Request $request){
+        $input = $request->input();
+
+        $where['condition'] = 1;
+        $where['status'] = 1;
+        $where['channel'] = 5;
+
+    $message_sql = Db::table('message')
+        ->where($where)
+        ->first();
+
+    $message_data = array(
+        'user' => $input['user_id'],
+        'time' => date('Y-m-d H:i:s',time()),
+    );
+    $result = Db::table('order')->where('order_number',$input['order_number'])->value('id');
+    $order_number_url = url('/home/homeorder/orderdetails',array('id'=>$input['order_number']));
+    $message_sql['content'] .='<a id="order_number_buchongfu" href="javascript:openapp(\''.$order_number_url.'\',\'189admin\',\'订单详情\');" class="btn btn-primary" data-dismiss="modal">订单号：'.$input['order_number'].'</a>';
+    if($message_sql){
+        $msg = $this->goEasy($result,$message_sql['id'],$message_sql['title'],'',$message_sql['content'],$message_data);
+    }
+}
+
+    //https 请求post
+    public function vpost($url,$post_data){
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);    // https请求 不验证证书和hosts
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        // post数据
+        curl_setopt($ch, CURLOPT_POST, 1);
+        // post的变量
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+
+        $output = curl_exec($ch);
+        curl_close($ch);
+
+        return $output;
+    }
+
+    /**
+     * 测试消息提醒
+     */
+    public function goEasy($order_id,$mid,$title,$mark,$content,$data)
+    {
+
+
+        if(strpos($content,'xxx') !== false){
+            $preg = preg_replace("[xxx]", $data['user'], $content);
+        }
+
+        if(strpos($content,'time') !== false){
+            $preg = preg_replace("[time]", $data['time'], $preg);
+        }
+        if(!isset($preg)){
+            $preg = $content;
+        }
+
+        $msg = array(
+            'order_id' => $order_id,
+            'mid' => $mid,
+            'title' => $title,
+            'content' => $preg,
+            'create_time' => time(),
+        );
+        $list_id = Db::table('message_list')->insertGetId($msg);
+
+        $data = array(
+            'appkey' => 'BC-af1909bf4e844d7f8d9d18604a910fc4',
+            'channel' => $mark,
+            'content' => $list_id,
+        );
+
+        $url = 'http://rest-hangzhou.goeasy.io/publish';
+
+        $result = $this->vpost($url,$data);
+        return $result;
+    }
+
 
 }
