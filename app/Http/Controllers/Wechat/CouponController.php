@@ -185,10 +185,11 @@ class CouponController extends Controller
                     ->where([
                         ['coupon_code',$input['coupon_code']],
                         ['coupon_pass',$input['coupon_pass']],
+                        ['is_used',1]
                     ])
                     ->first();
             if(empty($coupon)){
-                return ReturnMessage::success('出行卡绑定失败，请检查您的账号和密码是否正确',1011);
+                return ReturnMessage::success('出行卡绑定失败，请检查您的账号和密码是否正确,或该卡已绑定。',1011);
             }else{
                 $time = time();
                 //如果有该出行卡则绑定，更改出行卡状态为已使用，时间为创建时间
