@@ -179,7 +179,7 @@ $api->version('v1', [
         //获取出行卡
         \Dingo\Api\Facade\Route::get('/getCard', 'Wechat\CouponController@getCard');
         //出行卡绑定
-        \Dingo\Api\Facade\Route::post('/cardBind', 'Wechat\CouponController@cardBind');
+        \Dingo\Api\Facade\Route::get('/cardBind', 'Wechat\CouponController@cardBind');
         //我的出行卡
         \Dingo\Api\Facade\Route::post('/getMyCard', 'Wechat\CouponController@getMyCard');
         //支付
