@@ -194,6 +194,8 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::any('/user_coupon', 'Wechat\UserController@user_coupon');
         //修改优惠券状态
         \Dingo\Api\Facade\Route::any('/Updatecoupon', 'Wechat\UserController@Updatecoupon');
+        //撤销订单
+        \Dingo\Api\Facade\Route::any('/undoOrder', 'Wechat\OrderController@undoOrder');
     });
 
 });

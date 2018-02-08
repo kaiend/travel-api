@@ -261,5 +261,26 @@ class OrderController extends Controller
 
     }
 
+    /**
+     * 取消订单
+     *
+     * @param $request
+     * @return mixed
+     * */
+    public function undoOrder( Request $request )
+    {
+        $input = WxorderValidator::orderPay($request);
+
+        $data['status'] = 0;
+
+        try {
+            Order::modifyOrder($input,$data);
+        } catch (\Exception $e) {
+            return ReturnMessage::success('撤销订单失败',1002);
+        }
+        return ReturnMessage::success();
+
+    }
+
 
 }
