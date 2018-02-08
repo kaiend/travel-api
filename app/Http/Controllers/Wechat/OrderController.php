@@ -272,6 +272,7 @@ class OrderController extends Controller
         $input = WxorderValidator::orderPay($request);
 
         $data['status'] = 0;
+        $data['pay_status'] = 3;
 
         try {
             Order::modifyOrder($input,$data);
