@@ -67,7 +67,7 @@ class CouponController extends Controller
                     ['coupon_user.is_used',1],
                     ['coupon_user.genre','!=',3]
                 ])
-                ->select('coupon_user.coupon_code','coupon_groups.name','coupon_groups.price','coupon_groups.end_time','coupon_groups.rule')
+                ->select('coupon_user.coupon_id','coupon_user.coupon_code','coupon_groups.name','coupon_groups.price','coupon_groups.end_time','coupon_groups.rule')
                 ->get();
 
             if(empty($coupon)){
@@ -75,12 +75,17 @@ class CouponController extends Controller
             }else{
                 $data = json_decode(json_encode($coupon),true);
                 foreach ($data as $key=>$val){
-                    $data[$key]['end_time'] = date('y-m-d H:i',$val['end_time']);
+                        $datas[$val['coupon_id']] = array(
+                                'name' => $val['name'],
+                                'price' => $val['price'],
+                                'end_time' => date('Y-m-d H:i',$val['end_time']),
+                                'rule' => $val['rule'],
+                        );
                 }
                 return response()->json([
                     'code' =>'1000',
                     'info' => 'success',
-                    'data' => ReturnMessage::toString($data)
+                    'data' => ReturnMessage::toString($datas)
                 ]);
             }
         } catch (\Exception $e) {
