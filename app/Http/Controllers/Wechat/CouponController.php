@@ -74,6 +74,9 @@ class CouponController extends Controller
                 return ReturnMessage::success('数据为空',1011);
             }else{
                 $data = json_decode(json_encode($coupon),true);
+                foreach ($data as $key=>$val){
+                    $data[$key]['end_time'] = date('y-m-d H:i',$val['end_time']);
+                }
                 return response()->json([
                     'code' =>'1000',
                     'info' => 'success',
