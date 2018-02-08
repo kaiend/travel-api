@@ -126,7 +126,9 @@ class OrderController extends Controller
            // echo $val['type'];
             $types = Db::table("server_item")->where("id",$val['type'])->pluck('name');
             $obj[$key]['types'] = $types[0];
+            $obj[$key]['price'] = $val['price'] * 100;
         }
+        dump($obj);die;
 
 
         return ReturnMessage::successData(Common::formatTime($obj));
