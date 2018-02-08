@@ -179,8 +179,10 @@ class OrderController extends Controller
         try {
             DB::table('pay_order')->insert([
                 'price'=>$input['price'],
+                'order_number'=>$input['order_number'],
                 'openid'=>$input['openid'],
                 'type'=>$input['type'],
+                'create_at'=>time()
             ]);
 
         } catch (\Exception $e) {
