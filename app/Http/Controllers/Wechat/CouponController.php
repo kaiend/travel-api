@@ -363,10 +363,11 @@ class CouponController extends Controller
 
         try{
             $send = $this->sendMessage($input['phone'],$input['name'],$input['coupon_code'],$input['coupon_pass']);
+
             return response()->json([
                 'code' =>'1000',
                 'info' => 'success',
-                'data' => ReturnMessage::toString($send)
+                'data' => json_decode($send,true)
             ]);
         } catch (\Exception $e){
             return ReturnMessage::success('获取我的出行卡失败',1011);
@@ -379,7 +380,7 @@ class CouponController extends Controller
      */
     private function sendMessage($phone,$name,$coupon_code,$coupon_pass)
     {
-        $msg ='【时代出行】您已成功购买时代出行'.$name.'（卡类型），卡号：'.$coupon_code.'，密码：'.$coupon_pass.'（请妥善保管，切勿将密码告知他人）。为保证您的正常使用，请您尽快登录时代出行微信小程序完成绑定。如有任何疑问请致电010-59477666';
+        $msg ='您已成功购买时代出行'.$name.'（卡类型），卡号：'.$coupon_code.'，密码：'.$coupon_pass.'（请妥善保管，切勿将密码告知他人）。为保证您的正常使用，请您尽快登录时代出行微信小程序完成绑定。如有任何疑问请致电010-59477666 【时代出行】';
         return (new Sms())->sendSMS($phone,$msg);
     }
 }
