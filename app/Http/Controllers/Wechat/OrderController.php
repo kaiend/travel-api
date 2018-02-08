@@ -128,7 +128,7 @@ class OrderController extends Controller
             $obj[$key]['types'] = $types[0];
             $obj[$key]['price'] = $val['price'] * 100;
         }
-        dump($obj);die;
+        
 
 
         return ReturnMessage::successData(Common::formatTime($obj));
