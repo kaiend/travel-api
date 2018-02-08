@@ -73,7 +73,8 @@ class CouponController extends Controller
             if(empty($coupon)){
                 return ReturnMessage::success('数据为空',1011);
             }else{
-                $data = json_decode(json_encode($coupon),JSON_FORCE_OBJECT);
+                $data = json_decode(json_encode($coupon),true);
+                $count = count($data);
                 foreach ($data as $key=>$val){
                         $datas[$val['coupon_id']] = array(
                                 'name' => $val['name'],
@@ -86,9 +87,11 @@ class CouponController extends Controller
                                 ])->count()
                         );
                 }
+
                 return response()->json([
                     'code' =>'1000',
                     'info' => 'success',
+                    'count' => $count,
                     'data' => ReturnMessage::toString($datas)
                 ]);
             }
