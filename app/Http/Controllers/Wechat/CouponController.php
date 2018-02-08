@@ -80,7 +80,10 @@ class CouponController extends Controller
                                 'price' => $val['price'],
                                 'end_time' => date('Y-m-d H:i',$val['end_time']),
                                 'rule' => $val['rule'],
-                                'count' => DB::table('coupon_user')->where('coupon_id',$val['coupon_id'])->count()
+                                'count' => DB::table('coupon_user')->where([
+                                    ['coupon_id',$val['coupon_id']],
+                                    ['is_used',1],
+                                ])->count()
                         );
                 }
                 return response()->json([
