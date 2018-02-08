@@ -83,10 +83,13 @@ class HotelController extends Controller
             $result = Db::table('hotel_user')->where('id',$info['id'])->update($dat);
             if( $result ){
                 $new_Data= DB::table('hotel_user')
-                    ->where('id',$info['id'])
+                    ->join('hotel','hotel_user.hotel_id','=','hotel.id')
+                    ->where('hotel_user.id',$info['id'])
                     ->first();
                 $new_Datas = json_decode(json_encode($new_Data),true);
-
+                if(!is_null($new_Datas['hotel_logo'])){
+                    $new_Datas['hotel_logo']='http://travel.shidaichuxing.com/upload/'.$new_Datas['hotel_logo'];
+                }
                 $new_Datas['token'] = $this->token( $new_Datas['id'] );
                 return ReturnMessage::successData($new_Datas);
             }else{
