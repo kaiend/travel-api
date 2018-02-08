@@ -33,6 +33,8 @@ class OrderController extends Controller
     {
         $input = WxorderValidator::topUp($request);
 
+        $price = $input['price'] / 100;
+
         if(empty($input['passenger_name'])){
             $input['passenger_name'] = $input['orders_name'];
         }
@@ -48,7 +50,7 @@ class OrderController extends Controller
                     'car_id'=>$input['car_series'],
                     'end'=>$input['end'],
                     'origin'=>$input['origin'],
-                    'price'=>$input['price'],
+                    'price'=>$price,
                     'type'=>$input['type'],
                     'orders_name'=>$input['orders_name'],
                     'orders_phone'=>$input['orders_phone'],
