@@ -198,7 +198,7 @@ class UserValidator
         $only = ['phone','code','user_pass'];
 
         $rules = [
-            'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/|exists:user,phone',
+            'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/|exists:personal_user,phone',
             'code' => 'required',
             'user_pass' => 'required',
         ];
