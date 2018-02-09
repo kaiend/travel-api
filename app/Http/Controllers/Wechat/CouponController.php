@@ -110,7 +110,7 @@ class CouponController extends Controller
     {
         $input = CouponValidator::buyCoupon($request);
 
-//        try {
+        try {
             if(!empty($input['activity_id'])){
 
                 $activity = DB::table('coupon_activity')
@@ -166,9 +166,9 @@ class CouponController extends Controller
                     'data' => ReturnMessage::toString($data)
                 ]);
             }
-//        } catch (\Exception $e) {
-//            return ReturnMessage::success('领取优惠券失败',1011);
-//        }
+        } catch (\Exception $e) {
+            return ReturnMessage::success('领取优惠券失败',1011);
+        }
     }
 
     /**
