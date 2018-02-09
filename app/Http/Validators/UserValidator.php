@@ -195,12 +195,12 @@ class UserValidator
     * */
     public static function modifyPassword( Request $request )
     {
-        $only = ['phone','code','user_pass'];
+        $only = ['phone','code','password'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/|exists:personal_user,phone',
             'code' => 'required',
-            'user_pass' => 'required',
+            'password' => 'required',
         ];
 
         $messages = [
@@ -209,7 +209,7 @@ class UserValidator
             'phone.exists'=> '用户不存在',
 
             'code.required' => '验证码不能为空',
-            'user_pass.required' => '密码不能为空',
+            'password.required' => '密码不能为空',
         ];
 
         $input = $request->only($only);
