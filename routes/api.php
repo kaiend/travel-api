@@ -139,7 +139,7 @@ $api->version('v1', [
         //获取验证码
         \Dingo\Api\Facade\Route::get('/code' ,'Wechat\UserController@sendCode');
         //验证验证码
-        \Dingo\Api\Facade\Route::post('/verification' ,'Wechat\UserController@verifyCode');
+        \Dingo\Api\Facade\Route::get('/verification' ,'Wechat\UserController@verifyCode');
         //登陆
         \Dingo\Api\Facade\Route::post('/login' ,'Wechat\UserController@login');
         //注册
@@ -175,7 +175,7 @@ $api->version('v1', [
         //获取我的优惠券
         \Dingo\Api\Facade\Route::get('/coupon', 'Wechat\CouponController@getCoupon');
         //用户领取优惠券
-        \Dingo\Api\Facade\Route::get('/getUserCoupon', 'Wechat\CouponController@getUserCoupon');
+        \Dingo\Api\Facade\Route::post('/getUserCoupon', 'Wechat\CouponController@getUserCoupon');
         //获取出行卡
         \Dingo\Api\Facade\Route::get('/getCard', 'Wechat\CouponController@getCard');
         //出行卡绑定
@@ -198,9 +198,8 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::any('/undoOrder', 'Wechat\OrderController@undoOrder');
         //推送消息
         \Dingo\Api\Facade\Route::any('/push', 'Wechat\OrderController@push');
-        //推送消息
+        //修改密码
         \Dingo\Api\Facade\Route::post('/modifyPassword', 'Wechat\UserController@modifyPassword');
-
     });
 
 });
