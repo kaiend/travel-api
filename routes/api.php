@@ -198,6 +198,8 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::any('/undoOrder', 'Wechat\OrderController@undoOrder');
         //推送消息
         \Dingo\Api\Facade\Route::any('/push', 'Wechat\OrderController@push');
+        //推送消息
+        \Dingo\Api\Facade\Route::post('/modifyPassword', 'Wechat\UserController@modifyPassword');
 
     });
 
