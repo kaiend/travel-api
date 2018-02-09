@@ -176,12 +176,12 @@ class UserController extends Controller
 	{
 		$input = UserValidator::modifyPassword($request);
 
-		$data['password'] = Common::createPassword($input['password']);
+		$data['user_pass'] = Common::createPassword($input['password']);
 
-		$where['mobile'] = $input['phone'];
+		$where['phone'] = $input['phone'];
 		try {
 			User::modifyUser($where,$data);
-            if($input['jsoncallback']=='callback'){
+            /*if($input['jsoncallback']=='callback'){
                 $data = [
                     'code' =>1000,
                     'info'   =>'success'
@@ -189,9 +189,9 @@ class UserController extends Controller
                 $result =json_encode($data);
                 $callback=$input['jsoncallback'];
                 return $callback."($result)";
-            }else{
+            }else{*/
                 return ReturnMessage::success();
-            }
+          //  }
 		} catch (\Exception $e) {
 			return ReturnMessage::success('修改密码失败',1002);
 		}
