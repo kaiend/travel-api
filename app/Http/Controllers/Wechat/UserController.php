@@ -221,6 +221,10 @@ class UserController extends Controller
 
         $info = Common::json_array($info);
 
+        foreach ($info as $key=>$val){
+            $info[$key]['balance'] = $val['balance'] * 100;
+        }
+
 		return ReturnMessage::successData($info);
 	}
 
