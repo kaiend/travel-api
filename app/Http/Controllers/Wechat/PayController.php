@@ -39,12 +39,12 @@ class PayController extends Controller
 
 		$postXml = file_get_contents("php://input"); //接收微信参数
         $attr = $this->xmlToArray($postXml);
-        print_r($attr);exit;
+
 		if (empty($postXml)) {
 			return $res;
 		}
 
-//		$attr = $this->xmlToArray($postXml);
+		$attr = $this->xmlToArray($postXml);
 
 		$total_fee = $attr['total_fee'];
 		$open_id = $attr['openid'];
@@ -116,7 +116,6 @@ class PayController extends Controller
 	 * */
 	public function topUp( Request $request )
 	{
-        print_r(PayValidator::topUp($request));exit;
 		$res = (new WxPay())->createOrder(PayValidator::topUp($request));
 		header("Content-Type: application/json");
 		echo $res;
@@ -131,13 +130,13 @@ class PayController extends Controller
 	 * */
 	private function topUpDate( $data )
 	{
-		DB::beginTransaction();
+//		DB::beginTransaction();
 		try {
 //			TopUp::create($data);
 //			User::where('id',$data['user_id'])->increment('balance',$data['price']);
 			DB::table('top_up')->insertGetId($data);
             DB::table('personal_user')->where('id',$data['user_id'])->increment('balance',$data['price']);
-//			print_r($data);exit;
+
 			DB::commit();
 			return true;
 		} catch (\Exception $e) {
