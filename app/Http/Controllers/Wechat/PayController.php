@@ -38,11 +38,13 @@ class PayController extends Controller
 		$res = false;
 
 		$postXml = file_get_contents("php://input"); //接收微信参数
+        $attr = $this->xmlToArray($postXml);
+        print_r($attr);exit;
 		if (empty($postXml)) {
 			return $res;
 		}
 
-		$attr = $this->xmlToArray($postXml);
+//		$attr = $this->xmlToArray($postXml);
 
 		$total_fee = $attr['total_fee'];
 		$open_id = $attr['openid'];
@@ -51,7 +53,7 @@ class PayController extends Controller
 
 		//CZ 170509 0000129001
 		$type = substr( $out_trade_no , 0 , 2 );
-        print_r($out_trade_no);exit;
+
 		//判断类型 充值
 		if ( $type == 'CZ' ) {
 			$userId = (int)substr( $out_trade_no , 8 , 6 );
