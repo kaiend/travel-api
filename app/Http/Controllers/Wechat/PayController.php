@@ -57,13 +57,11 @@ class PayController extends Controller
 		//判断类型 充值
 		if ( $type == 'CZ' ) {
 			$userId = (int)substr( $out_trade_no , 8 , 6 );
-            Log::info($userId.'-----'.$out_trade_no.'-----'.$total_fee.'---价格不一致');
 			$data['user_id'] = $userId;
 			$data['price'] = (int)$total_fee;
 			$data['number'] = $out_trade_no;
 			$data['created_at'] = time();
 			$res = self::topUpDate($data);
-
 		}
 		else {
 
@@ -184,17 +182,4 @@ class PayController extends Controller
                     </xml>';
 		echo $xml_post;exit;
 	}
-
-    /*
-     * 给微信发送确认订单金额和签名正确，SUCCESS信息 -xzz0521
-     */
-    private function return_success_test($data){
-        $return['return_code'] = 'SUCCESS';
-        $return['return_msg'] = $data;
-        $xml_post = '<xml>
-                    <return_code>'.$return['return_code'].'</return_code>
-                    <return_msg>'.$return['return_msg'].'</return_msg>
-                    </xml>';
-        echo $xml_post;exit;
-    }
 }

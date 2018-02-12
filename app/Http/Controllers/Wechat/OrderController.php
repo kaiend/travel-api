@@ -287,6 +287,34 @@ class OrderController extends Controller
 
     }
 
+    /**
+     * 充值成功数据操作
+     *
+     * @author yxk
+     * @param $data
+     * @return bool
+     * */
+    private function topUpDate(  Request $request)
+    {
+        $input = $request;
+        $data = array(
+            'user_id' => $input['user_id'],
+            'price' => $input['price'],
+            'created_at' => time(),
+        );
+        DB::beginTransaction();
+        try {
+            TopUp::create($data);
+            $result = User::where('id',$data['user_id'])->increment('balance',$data['price']);
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::info('充值入库失败', ['context' => $e->getMessage()]);
+            return false;
+        }
+    }
+
     /*
      * 推送消息
      */
