@@ -59,7 +59,7 @@ class PayController extends Controller
 			$data['number'] = $out_trade_no;
 			$data['created_at'] = time();
 			$res = self::topUpDate($data);
-			print_r($res);exit;
+			print_r($data);exit;
 		}
 		else {
 
