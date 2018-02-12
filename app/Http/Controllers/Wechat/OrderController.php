@@ -294,7 +294,7 @@ class OrderController extends Controller
      * @param $data
      * @return bool
      * */
-    private function topUpDate(  Request $request)
+    public function topUpDate(  Request $request)
     {
         $input = $request;
         $data = array(
