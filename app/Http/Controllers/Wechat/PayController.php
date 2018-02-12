@@ -128,9 +128,11 @@ class PayController extends Controller
 	{
 		DB::beginTransaction();
 		try {
-			TopUp::create($data);
-			User::where('id',$data['user_id'])->increment('balance',$data['price']);
-			print_r($data);exit;
+//			TopUp::create($data);
+//			User::where('id',$data['user_id'])->increment('balance',$data['price']);
+			DB::table('top_up')->insertGetId($data);
+            DB::table('personal_user')->where('id',$data['user_id'])->increment('balance',$data['price']);
+//			print_r($data);exit;
 			DB::commit();
 			return true;
 		} catch (\Exception $e) {
