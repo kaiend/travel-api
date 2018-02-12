@@ -51,6 +51,7 @@ class PayController extends Controller
 
 		//CZ 170509 0000129001
 		$type = substr( $out_trade_no , 0 , 2 );
+        print_r($out_trade_no);exit;
 		//判断类型 充值
 		if ( $type == 'CZ' ) {
 			$userId = (int)substr( $out_trade_no , 8 , 6 );
@@ -59,7 +60,7 @@ class PayController extends Controller
 			$data['number'] = $out_trade_no;
 			$data['created_at'] = time();
 			$res = self::topUpDate($data);
-			print_r($data);exit;
+
 		}
 		else {
 
