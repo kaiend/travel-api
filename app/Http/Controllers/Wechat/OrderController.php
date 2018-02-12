@@ -299,7 +299,7 @@ class OrderController extends Controller
         $input = $request;
         $data = array(
             'user_id' => $input['user_id'],
-            'price' => $input['price'],
+            'price' => $input['total_fee'],
             'created_at' => time(),
         );
         DB::beginTransaction();
@@ -307,7 +307,7 @@ class OrderController extends Controller
             TopUp::create($data);
             $result = User::where('id',$data['user_id'])->increment('balance',$data['price']);
             DB::commit();
-            return true;
+            return ReturnMessage::success('添加支付信息成功',1000);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::info('充值入库失败', ['context' => $e->getMessage()]);

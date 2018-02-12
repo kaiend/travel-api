@@ -200,6 +200,8 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::any('/push', 'Wechat\OrderController@push');
         //修改密码
         \Dingo\Api\Facade\Route::post('/modifyPassword', 'Wechat\UserController@modifyPassword');
+        //推送消息
+        \Dingo\Api\Facade\Route::post('/topUpDate', 'Wechat\OrderController@topUpDate');
     });
 
 });
