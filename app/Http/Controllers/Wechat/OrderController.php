@@ -302,7 +302,6 @@ class OrderController extends Controller
             'price' => $input['total_fee'],
             'created_at' => time(),
         );
-
         try {
             DB::table('top_up')->insert($data);
             DB::table('personal_user')->where('id',$data['user_id'])->increment('balance',$data['price']);
