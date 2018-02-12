@@ -117,6 +117,18 @@ class PayController extends Controller
 	public function topUp( Request $request )
 	{
 		$res = (new WxPay())->createOrder(PayValidator::topUp($request));
+		if($res){
+            DB::beginTransaction();
+            $data = array(
+                'user_id' => $res['user_id'],
+                'price' => $res['total_fee'],
+                'number' => $res['out_trade_no'],
+                'created_at' => time(),
+            );
+            TopUp::create($data);
+            $result = User::where('id',$data['user_id'])->increment('balance',$data['price']);
+            DB::commit();
+        }
 		header("Content-Type: application/json");
 		echo $res;
 	}
@@ -130,13 +142,12 @@ class PayController extends Controller
 	 * */
 	private function topUpDate( $data )
 	{
-//		DB::beginTransaction();
+		DB::beginTransaction();
 		try {
-//			TopUp::create($data);
-//			User::where('id',$data['user_id'])->increment('balance',$data['price']);
-			DB::table('top_up')->insertGetId($data);
-            DB::table('personal_user')->where('id',$data['user_id'])->increment('balance',$data['price']);
-
+			TopUp::create($data);
+			$result = User::where('id',$data['user_id'])->increment('balance',$data['price']);
+//			DB::table('top_up')->insertGetId($data);
+//            DB::table('personal_user')->where('id',$data['user_id'])->increment('balance',$data['price']);
 			DB::commit();
 			return true;
 		} catch (\Exception $e) {
