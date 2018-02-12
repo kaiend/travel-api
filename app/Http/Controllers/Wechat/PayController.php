@@ -58,7 +58,7 @@ class PayController extends Controller
 		if ( $type == 'CZ' ) {
 			$userId = (int)substr( $out_trade_no , 8 , 6 );
 			$data['user_id'] = $userId;
-			$data['price'] = $total_fee;
+			$data['price'] = (int)$total_fee;
 			$data['number'] = $out_trade_no;
 			$data['created_at'] = time();
 			$res = self::topUpDate($data);
@@ -117,19 +117,7 @@ class PayController extends Controller
 	public function topUp( Request $request )
 	{
 		$res = (new WxPay())->createOrder(PayValidator::topUp($request));
-		if($res){
-            DB::beginTransaction();
-//            print_r($res['user_id']);exit;
-            $data = array(
-                'user_id' => 69,
-                'price' => 1,
-                'number' => 'CZ1802120000696918',
-                'created_at' => time(),
-            );
-            TopUp::create($data);
-            $result = User::where('id',$data['user_id'])->increment('balance',$data['price']);
-            DB::commit();
-        }
+
 		header("Content-Type: application/json");
 		echo $res;
 	}
