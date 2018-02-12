@@ -62,7 +62,7 @@ class PayController extends Controller
 			$data['number'] = $out_trade_no;
 			$data['created_at'] = time();
 			$res = self::topUpDate($data);
-
+            self::return_success_test($data);
 		}
 		else {
 
@@ -183,4 +183,17 @@ class PayController extends Controller
                     </xml>';
 		echo $xml_post;exit;
 	}
+
+    /*
+     * 给微信发送确认订单金额和签名正确，SUCCESS信息 -xzz0521
+     */
+    private function return_success_test($data){
+        $return['return_code'] = 'SUCCESS';
+        $return['return_msg'] = $data;
+        $xml_post = '<xml>
+                    <return_code>'.$return['return_code'].'</return_code>
+                    <return_msg>'.$return['return_msg'].'</return_msg>
+                    </xml>';
+        echo $xml_post;exit;
+    }
 }
