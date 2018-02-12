@@ -57,12 +57,13 @@ class PayController extends Controller
 		//判断类型 充值
 		if ( $type == 'CZ' ) {
 			$userId = (int)substr( $out_trade_no , 8 , 6 );
+            Log::info($userId.'-----'.$out_trade_no.'-----'.$total_fee.'---价格不一致');
 			$data['user_id'] = $userId;
 			$data['price'] = (int)$total_fee;
 			$data['number'] = $out_trade_no;
 			$data['created_at'] = time();
 			$res = self::topUpDate($data);
-            self::return_success_test($data);
+
 		}
 		else {
 
