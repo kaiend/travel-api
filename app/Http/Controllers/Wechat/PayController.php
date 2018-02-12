@@ -119,6 +119,7 @@ class PayController extends Controller
 		$res = (new WxPay())->createOrder(PayValidator::topUp($request));
 		if($res){
             DB::beginTransaction();
+            print_r($res);exit;
             $data = array(
                 'user_id' => $res['user_id'],
                 'price' => $res['total_fee'],
