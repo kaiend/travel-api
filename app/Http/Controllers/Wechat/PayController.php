@@ -83,9 +83,6 @@ class PayController extends Controller
 			}else{
 				Log::info($open_id.'-----'.$out_trade_no.'-----'.$total_fee.'---价格不一致');
 			}
-
-
-
 		}
 
 		if ($res)
@@ -133,6 +130,7 @@ class PayController extends Controller
 		try {
 			TopUp::create($data);
 			User::where('id',$data['user_id'])->increment('balance',$data['price']);
+			print_r($data);exit;
 			DB::commit();
 			return true;
 		} catch (\Exception $e) {
