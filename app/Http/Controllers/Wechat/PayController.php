@@ -116,9 +116,9 @@ class PayController extends Controller
 	 * */
 	public function topUp( Request $request )
 	{
+        print_r(PayValidator::topUp($request));exit;
 		$res = (new WxPay())->createOrder(PayValidator::topUp($request));
 		header("Content-Type: application/json");
-		print_r($res);exit;
 		echo $res;
 	}
 
