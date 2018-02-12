@@ -302,16 +302,14 @@ class OrderController extends Controller
             'price' => $input['total_fee'],
             'created_at' => time(),
         );
-        DB::beginTransaction();
+
         try {
-            TopUp::create($data);
-            $result = User::where('id',$data['user_id'])->increment('balance',$data['price']);
-            DB::commit();
+            DB::table('top_up')->insert($data);
+            DB::table('personal_user')->where('id',$data['user_id'])->increment('balance',$data['price']);
+
             return ReturnMessage::success('添加支付信息成功',1000);
         } catch (\Exception $e) {
-            DB::rollBack();
-            Log::info('充值入库失败', ['context' => $e->getMessage()]);
-            return false;
+            return ReturnMessage::success('添加支付信息失败',1002);
         }
     }
 
