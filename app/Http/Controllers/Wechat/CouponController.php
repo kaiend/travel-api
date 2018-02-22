@@ -136,7 +136,7 @@ class CouponController extends Controller
                 $param = array(
                     'coupon_id' => $val,
                     'user_id' => $input['user_id'],
-                    'coupon_code' => common::createNumber(),
+                    'coupon_code' => common::createNumbers(),
                     'coupon_pass' => $this->createPass(),
                     'redeem_time' => time(),
                     'genre' => $genre

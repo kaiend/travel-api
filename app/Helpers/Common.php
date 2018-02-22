@@ -23,6 +23,15 @@ class Common
 		return date('ymds').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 7);
         //return md5('chuxing'.time());
 	}
+
+    /**
+     * 生成优惠券唯一编码
+     * */
+    public static function createNumbers()
+    {
+        return date('ymds').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 4).rand(111,999);
+        //return md5('chuxing'.time());
+    }
 	/**
 	 * 转时间格式
 	 * @param $data
