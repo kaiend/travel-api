@@ -175,7 +175,7 @@ $api->version('v1', [
         //获取我的优惠券
         \Dingo\Api\Facade\Route::get('/coupon', 'Wechat\CouponController@getCoupon');
         //用户领取优惠券
-        \Dingo\Api\Facade\Route::get('/getUserCoupon', 'Wechat\CouponController@getUserCoupon');
+        \Dingo\Api\Facade\Route::post('/getUserCoupon', 'Wechat\CouponController@getUserCoupon');
         //获取出行卡
         \Dingo\Api\Facade\Route::get('/getCard', 'Wechat\CouponController@getCard');
         //出行卡绑定
@@ -198,9 +198,10 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::any('/undoOrder', 'Wechat\OrderController@undoOrder');
         //推送消息
         \Dingo\Api\Facade\Route::any('/push', 'Wechat\OrderController@push');
-        //推送消息
+        //修改密码
         \Dingo\Api\Facade\Route::post('/modifyPassword', 'Wechat\UserController@modifyPassword');
-
+        //推送消息
+        \Dingo\Api\Facade\Route::post('/topUpDate', 'Wechat\OrderController@topUpDate');
     });
 
 });

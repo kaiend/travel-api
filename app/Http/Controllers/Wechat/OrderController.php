@@ -287,6 +287,31 @@ class OrderController extends Controller
 
     }
 
+    /**
+     * 充值成功数据操作
+     *
+     * @author yxk
+     * @param $data
+     * @return bool
+     * */
+    public function topUpDate(  Request $request)
+    {
+        $input = $request;
+        $data = array(
+            'user_id' => $input['user_id'],
+            'price' => $input['total_fee'],
+            'created_at' => time(),
+        );
+        try {
+            DB::table('top_up')->insert($data);
+            DB::table('personal_user')->where('id',$data['user_id'])->increment('balance',$data['price']);
+
+            return ReturnMessage::success('添加支付信息成功',1000);
+        } catch (\Exception $e) {
+            return ReturnMessage::success('添加支付信息失败',1002);
+        }
+    }
+
     /*
      * 推送消息
      */

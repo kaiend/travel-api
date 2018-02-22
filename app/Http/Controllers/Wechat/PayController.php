@@ -38,6 +38,8 @@ class PayController extends Controller
 		$res = false;
 
 		$postXml = file_get_contents("php://input"); //接收微信参数
+        $attr = $this->xmlToArray($postXml);
+
 		if (empty($postXml)) {
 			return $res;
 		}
@@ -51,11 +53,12 @@ class PayController extends Controller
 
 		//CZ 170509 0000129001
 		$type = substr( $out_trade_no , 0 , 2 );
+
 		//判断类型 充值
 		if ( $type == 'CZ' ) {
 			$userId = (int)substr( $out_trade_no , 8 , 6 );
 			$data['user_id'] = $userId;
-			$data['price'] = $total_fee;
+			$data['price'] = (int)$total_fee;
 			$data['number'] = $out_trade_no;
 			$data['created_at'] = time();
 			$res = self::topUpDate($data);
@@ -83,9 +86,6 @@ class PayController extends Controller
 			}else{
 				Log::info($open_id.'-----'.$out_trade_no.'-----'.$total_fee.'---价格不一致');
 			}
-
-
-
 		}
 
 		if ($res)
@@ -116,6 +116,7 @@ class PayController extends Controller
 	public function topUp( Request $request )
 	{
 		$res = (new WxPay())->createOrder(PayValidator::topUp($request));
+
 		header("Content-Type: application/json");
 		echo $res;
 	}
@@ -132,7 +133,9 @@ class PayController extends Controller
 		DB::beginTransaction();
 		try {
 			TopUp::create($data);
-			User::where('id',$data['user_id'])->increment('balance',$data['price']);
+			$result = User::where('id',$data['user_id'])->increment('balance',$data['price']);
+//			DB::table('top_up')->insertGetId($data);
+//            DB::table('personal_user')->where('id',$data['user_id'])->increment('balance',$data['price']);
 			DB::commit();
 			return true;
 		} catch (\Exception $e) {

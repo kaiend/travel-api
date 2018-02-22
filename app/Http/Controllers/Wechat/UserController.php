@@ -222,6 +222,9 @@ class UserController extends Controller
 
         $info = Common::json_array($info);
 
+        $info['balance'] = $info['balance'] / 100;
+
+
 		return ReturnMessage::successData($info);
 	}
 

@@ -82,6 +82,7 @@ class CouponController extends Controller
                                 'end_time' => date('Y-m-d H:i',$val['end_time']),
                                 'rule' => $val['rule'],
                                 'count' => DB::table('coupon_user')->where([
+                                    ['user_id',$input['user_id']],
                                     ['coupon_id',$val['coupon_id']],
                                     ['is_used',1],
                                 ])->count()
