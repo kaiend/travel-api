@@ -136,11 +136,12 @@ class CouponController extends Controller
                 $param = array(
                     'coupon_id' => $val,
                     'user_id' => $input['user_id'],
-                    'coupon_code' => common::createNumbers(),
+                    'coupon_code' => $this->createCoupon(),
                     'coupon_pass' => $this->createPass(),
                     'redeem_time' => time(),
                     'genre' => $genre
                 );
+
                 $coupons[] = DB::table('coupon_user')->insertGetId($param);
             }
 
@@ -354,6 +355,24 @@ class CouponController extends Controller
             $code .= rand(0,9);
         }
         return $code;
+    }
+
+    /**
+     * 生成优惠券唯一码
+     * @author lb
+     * @param int $num  长度
+     * @return int $code
+     */
+    private function createCoupon()
+    {
+        $coupon = common::createNumbers();
+
+        $sql = DB::table('coupon_user')->where('coupon_code',$coupon)->first();
+        if($sql){
+            $coupon = $this->createCoupon();
+        }else{
+            return $coupon;
+        }
     }
 
     /**
