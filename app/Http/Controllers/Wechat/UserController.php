@@ -100,6 +100,7 @@ class UserController extends Controller
                 DB::table('personal_user')->insert([
                     'phone' => $input['phone'],
                     'user_pass' => $input['user_pass'],
+                    'create_time'=>time()
                 ]);
             }else{
                 return ReturnMessage::success('该手机号已注册',1005);
