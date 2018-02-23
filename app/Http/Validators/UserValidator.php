@@ -235,7 +235,7 @@ class UserValidator
 		$only = ['id','travel_card','name','travel_card_number'];
 
 		$rules = [
-			'id' => 'required|exists:user,id',
+			'id' => 'required|exists:personal_user,id',
 			'name' => 'required',
 			'id_card' => 'required',
 		];
