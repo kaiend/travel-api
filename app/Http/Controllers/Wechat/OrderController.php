@@ -209,18 +209,18 @@ class OrderController extends Controller
         $whereOrder['order_number'] = $input['order_number'];
         $user = User::getUserFirst($whereUser);
         $order = Order::getOrderFirst($whereOrder);
-
+        $price = $order['price'] * 100;
 
         if ($order['pay_status'] == $this->order_pay)
             return ReturnMessage::success('订单已支付，请勿重复支付',1002);
 
-        if ($user['travel_card_money'] >= $order['price']){
-            $res['travel_card_money'] = $order['price'];
+        if ($user['travel_card_money'] >= $price){
+            $res['travel_card_money'] = $price;
         }else{
             if ($user['travel_card_money'] > 0 ){
-                if ($user['travel_card_money'] + $user['balance'] >= $order['price']){
+                if ($user['travel_card_money'] + $user['balance'] >= $price){
                     $res['travel_card_money'] = $user['travel_card_money'];
-                    $res['balance'] = $order['price'] - $user['travel_card_money'];
+                    $res['balance'] = $price - $user['travel_card_money'];
                 }else{
                     return ReturnMessage::success('账户金额不足',1002);
                 }
