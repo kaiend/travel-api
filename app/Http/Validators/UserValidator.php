@@ -237,7 +237,7 @@ class UserValidator
 		$rules = [
 			'id' => 'required|exists:personal_user,id',
 			'name' => 'required',
-			'id_card' => 'required',
+			//'id_card' => 'required',
 		];
 
 		$messages = [
