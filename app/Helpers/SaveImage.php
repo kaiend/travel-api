@@ -25,7 +25,8 @@ class SaveImage
 
 		try {
 			$a = Image::make($file)->save(public_path().$destinationPath . $filename);
-			dd($a);die;
+			return $a;
+			//dd($a);die;
 		} catch (\Exception $e) {
 		   // dd(222);die;
 			Log::info('save-img-avatar', ['context' => $e->getMessage()]);
