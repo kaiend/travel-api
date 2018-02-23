@@ -255,8 +255,6 @@ class PushController extends Controller
                                 }else{
                                     return ReturnMessage::success('失败','1011');
                                 }
-                            }else{
-                                return ReturnMessage::success('缺少推送码','1011');
                             }
                         }
                     }
