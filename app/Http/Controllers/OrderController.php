@@ -781,6 +781,11 @@ class OrderController extends  Controller
                 }
                 DB::commit();
                 $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id']);
+                //查询插入新订单的数据
+                $new_data =DB::table('order')->where('id',$id)->first();
+                $new_data=Common::json_array($new_data);
+                $alert =new PushController();
+                $alert->createOrder($new_data);
                 return ReturnMessage::success();
             }catch (\Exception $e){
                 DB::rollback();
@@ -887,6 +892,11 @@ class OrderController extends  Controller
 
                 DB::commit();
                 $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id']);
+                //查询插入新订单的数据
+                $new_data =DB::table('order')->where('id',$insert_id)->first();
+                $new_data=Common::json_array($new_data);
+                $alert =new PushController();
+                $alert->createOrder($new_data);
                 return ReturnMessage::success();
             }catch (\Exception $e) {
                 DB::rollback();
@@ -964,6 +974,11 @@ class OrderController extends  Controller
                 }
                 DB::commit();
                 $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id']);
+                //查询插入新订单的数据
+                $new_data =DB::table('order')->where('id',$id)->first();
+                $new_data=Common::json_array($new_data);
+                $alert =new PushController();
+                $alert->createOrder($new_data);
                 return ReturnMessage::success();
             }catch (\Exception $e){
                 DB::rollback();
@@ -1033,6 +1048,11 @@ class OrderController extends  Controller
                 }
                 DB::commit();
                 $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id']);
+                //查询插入新订单的数据
+                $new_data =DB::table('order')->where('id',$id)->first();
+                $new_data=Common::json_array($new_data);
+                $alert =new PushController();
+                $alert->createOrder($new_data);
                 return ReturnMessage::success();
             }catch (\Exception $e){
                 DB::rollback();
@@ -1120,7 +1140,6 @@ class OrderController extends  Controller
             JWTAuth::parseToken()->getPayload();
             $data=DB::table('extra_order')
                 ->where('order_id',$id)->get();
-            dd( $data );die;
             $bdata=json_decode(json_encode($data),true);
             if( count($bdata) != 0){
 

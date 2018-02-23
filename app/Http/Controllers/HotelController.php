@@ -581,6 +581,8 @@ class HotelController extends Controller
      */
     public function test()
     {
+        $res =new Common();
+        $res->goEasy();
     }
     /**
      * 出行地

@@ -161,7 +161,14 @@ class PushController extends Controller
                 return ReturnMessage::success('失败','1011');
         }
     }
+
+    /**
+     * App下单推送
+     * @param $data
+     */
     public function createOrder($data){
+//        $data=DB::table('order')->where('id',4)->first();
+//        $data=Common::json_array($data);
         //下单推送-管理员
         //1.查询消息详情
         $where =[
@@ -170,7 +177,6 @@ class PushController extends Controller
             'condition'=>1 //1为下单
         ];
         $re =Message::getMessageFirst($where);
-        //return $re;
         $config =Config::get('order.type');
         $type =$data['type'];
         //return $config[$type];
@@ -185,15 +191,22 @@ class PushController extends Controller
                 "data" => $message,
             )
         ];
-        //$result =$this->sendNotifySpecial();
-        return $m_data;
-        return $re['content'];
-        return $re['title'];
-
-        return $data['type'];
-        return $re;
-        //$alert =$re[''];
-
+        $message_data=[];
+        $order_number_url = url('/home/homeorder/orderdetails',array('id'=>$data['order_number']));
+        $message .='<a id="order_number_buchongfu" href="javascript:openapp(\''.$order_number_url.'\',\'189admin\',\'订单详情\');" class="btn btn-primary" data-dismiss="modal">订单号：'.$input['order_number'].'</a>';
+        $res =new Common();
+        //通知组织
+        $res->goEasy($data['id'],$re['id'],$alert,$re['mark'],$message,$message_data);
+        $hotel_data =DB::table('hotel_user')->where([
+                ['hotel_id',$data['hotel_id']],
+                ['type',1]
+            ])
+            ->first();
+        $hotel_data=Common::json_array($hotel_data);
+        if($hotel_data['jpush_code']){
+            //推送手机端的管理员
+            $this->sendNotifySpecial($hotel_data['jpush_code'],$alert,$m_data,$this->appKey,$this->master_secret);
+        }
 
     }
 
