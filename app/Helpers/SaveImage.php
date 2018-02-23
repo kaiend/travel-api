@@ -24,11 +24,13 @@ class SaveImage
 //		$mark = '?v=' . time(); //修改URL
 
 		try {
+            dd(111);die;
 			Image::make($file)->save(public_path().$destinationPath . $filename);
 		} catch (\Exception $e) {
+		    dd(222);die;
 			Log::info('save-img-avatar', ['context' => $e->getMessage()]);
 		}
 
-		return $domain . $destinationPath . $filename;
+		//return $domain . $destinationPath . $filename;
 	}
 }

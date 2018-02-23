@@ -305,6 +305,7 @@ class UserController extends Controller
         $newFileName = md5(time().rand(0,10000));
 
         $data['travel_card'] = SaveImage::travelCard($newFileName,$file);
+        dd($data);die;
 
         return ReturnMessage::successData([$data['travel_card']]);
 
