@@ -295,7 +295,7 @@ class UserController extends Controller
 
         if ($file) {
             //$domain = $_SERVER['HTTP_HOST'];
-            $file_path = '/uploads/' . date("Ym") . "/";
+            $file_path = 'uploads/' . date("Ym") . "/";
             $extension = $file->getClientOriginalExtension();
             $file_name = md5(time() . mt_rand(10, 99)) . '.' . $extension;
             $info = $file->move($file_path, $file_name);
@@ -327,7 +327,7 @@ class UserController extends Controller
 
        // $newFileName = md5(time().rand(0,10000));
 
-        $data['travel_card'] = 'https://travel-api.times-vip.com'.$this->makePhoto($request);
+        $data['travel_card'] = 'https://travel-api.times-vip.com/'.$this->makePhoto($request);
 
        // $data['travel_card'] = SaveImage::travelCard($newFileName,$file);
         //dd($data);die;
