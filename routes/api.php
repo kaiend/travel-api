@@ -117,7 +117,7 @@ $api->version('v1', [
         //状态变化推送接口
         \Dingo\Api\Facade\Route::get('/order/status' ,'PushController@pushStatus');
         //状态变化推送接口
-        \Dingo\Api\Facade\Route::get('/ding' ,'PushController@makeDing');
+        \Dingo\Api\Facade\Route::post('/ding' ,'PushController@makeDing');
         //APP下单的推送接口
         \Dingo\Api\Facade\Route::get('/order/form' ,'PushController@createOrder');
 
