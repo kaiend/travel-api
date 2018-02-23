@@ -285,6 +285,29 @@ class UserController extends Controller
     }
 
     /**
+     * 子账户上传头像静态方法
+     * @param Request $request
+     * @return \App\Helpers\json|string
+     */
+    private static  function makePhoto(Request $request )
+    {
+        $file = $request->file('travelCard');
+
+        if ($file) {
+            $domain = $_SERVER['HTTP_HOST'];
+            $file_path = 'uploads/' . date("Ym") . "/";
+            $extension = $file->getClientOriginalExtension();
+            $file_name = md5(time() . mt_rand(10, 99)) . '.' . $extension;
+            $info = $file->move($file_path, $file_name);
+            if (!$info) {
+                //$error = $file->getError();
+                return ReturnMessage::success('失败', '1011');
+            }
+            return $domain . $file_path . $file_name;
+        }
+    }
+
+    /**
      * 上传出行卡
      * @param Request $request
      * @return mixed
@@ -302,9 +325,11 @@ class UserController extends Controller
             return ReturnMessage::success('文件上传出错！',1002);
         }
 
-        $newFileName = md5(time().rand(0,10000));
+       // $newFileName = md5(time().rand(0,10000));
 
-        $data['travel_card'] = SaveImage::travelCard($newFileName,$file);
+        $data['travel_card'] = $this->makePhoto($request);
+
+       // $data['travel_card'] = SaveImage::travelCard($newFileName,$file);
         //dd($data);die;
 
         return ReturnMessage::successData([$data['travel_card']]);
