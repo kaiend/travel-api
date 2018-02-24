@@ -113,22 +113,12 @@ class Common
      */
     public function goEasy($order_id,$mid,$title,$mark,$content,$data)
     {
-        if(strpos($content,'xxx') !== false){
-            $preg = preg_replace("[xxx]", $data['user'], $content);
-        }
-
-        if(strpos($content,'time') !== false){
-            $preg = preg_replace("[time]", $data['time'], $preg);
-        }
-        if(!isset($preg)){
-            $preg = $content;
-        }
 
         $msg = array(
             'order_id' => $order_id,
             'mid' => $mid,
             'title' => $title,
-            'content' => $preg,
+            'content' => $content,
             'create_time' => time(),
         );
         $list_id = DB::table('message_list')->insertGetId($msg);
