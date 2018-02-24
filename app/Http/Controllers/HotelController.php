@@ -587,8 +587,17 @@ class HotelController extends Controller
      */
     public function test()
     {
-        $res =new Common();
-        $res->goEasy();
+        $t = time();
+        $start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
+        $end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
+        $data = DB::table('order')
+            ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+            ->where('hotel_id','=',21)
+            ->whereIn('status', [1,2,3,4,5,6,7,8])
+            ->whereBetween('created_at',[$start,$end])
+            ->orderBy('id','desc')
+            ->get();
+        dd($data);
     }
     /**
      * 出行地
