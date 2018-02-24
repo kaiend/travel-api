@@ -196,7 +196,8 @@ class PushController extends Controller
         $message .='<a id="order_number_buchongfu" href="javascript:openapp(\''.$order_number_url.'\',\'189admin\',\'订单详情\');" class="btn btn-primary" data-dismiss="modal">订单号：'.$data['order_number'].'</a>';
         $res =new Common();
         //通知组织
-        $res->goEasy($data['id'],$re['id'],$alert,$re['mark'].'_'.$data['company_id'],$message,$message_data);
+        $cid =1;
+        $res->goEasy($data['id'],$re['id'],$alert,$re['mark'].'_'.$cid,$message,$message_data);
         $hotel_data =DB::table('hotel_user')->where([
                 ['hotel_id',$data['hotel_id']],
                 ['type',1]

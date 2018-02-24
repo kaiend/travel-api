@@ -587,17 +587,20 @@ class HotelController extends Controller
      */
     public function test()
     {
-        $t = time();
-        $start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
-        $end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
-        $data = DB::table('order')
-            ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
-            ->where('hotel_id','=',6)
-            //->whereIn('status', [1,2,3,4,5,6,7,8])
-            ->whereBetween('created_at',[$start,$end])
-            ->orderBy('id','desc')
-            ->get();
-        dd($data);
+//        $t = time();
+//        $start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
+//        $end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
+//        $data = DB::table('order')
+//            ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
+//            ->where('hotel_id','=',6)
+//            //->whereIn('status', [1,2,3,4,5,6,7,8])
+//            ->whereBetween('created_at',[$start,$end])
+//            ->orderBy('id','desc')
+//            ->get();
+//        dd($data);
+        $new_data =DB::table('order')->where('id',254)->first();
+        $new_data=Common::json_array($new_data);
+        dd($new_data);
     }
     /**
      * 出行地
