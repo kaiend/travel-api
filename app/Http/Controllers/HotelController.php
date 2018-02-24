@@ -52,6 +52,7 @@ class HotelController extends Controller
                 ['mobile',$input['mobile']],
                 ['password',$input['password']]
             ])->first();
+
         if (!empty($info)){
             $info = json_decode(json_encode($info),true);
             $dat['status_login'] =1;
@@ -82,8 +83,8 @@ class HotelController extends Controller
             $dat['model_status'] = $input['model_status'];
             $result = Db::table('hotel_user')->where('id',$info['id'])->update($dat);
             if( $result ){
-                $new_Data= DB::table('hotel_user')
-                    ->join('hotel','hotel_user.hotel_id','=','hotel.id')
+                $new_Data= DB::table('hotel')
+                    ->join('hotel_user','hotel.id','=','hotel_user.hotel_id')
                     ->where('hotel_user.id',$info['id'])
                     ->first();
                 $new_Datas = json_decode(json_encode($new_Data),true);
@@ -137,8 +138,8 @@ class HotelController extends Controller
         $dat['model_status'] = $input['model_status'];
         $result = Db::table('hotel_user')->where('id',$info['id'])->update($dat);
         if( $result ){
-            $new_Data= DB::table('hotel_user')
-                ->join('hotel','hotel_user.hotel_id','=','hotel.id')
+            $new_Data= DB::table('hotel')
+                ->join('hotel_user','hotel.id','=','hotel_user.hotel_id')
                 ->where('hotel_user.id',$info['id'])
                 ->first();
             $new_Datas = json_decode(json_encode($new_Data),true);
@@ -487,6 +488,11 @@ class HotelController extends Controller
         try{
 
             $re =JWTAuth::parseToken()->getPayload();
+            $new_Data= DB::table('hotel_user')
+                ->join('hotel','hotel_user.hotel_id','=','hotel.id')
+                ->where('hotel_user.id',$info['id'])
+                ->first();
+            $new_Datas = json_decode(json_encode($new_Data),true);
             return ReturnMessage::success('success','1000');
 
         }catch(JWTException $e){
