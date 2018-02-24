@@ -598,9 +598,10 @@ class HotelController extends Controller
 //            ->orderBy('id','desc')
 //            ->get();
 //        dd($data);
-        $new_data =DB::table('order')->where('id',254)->first();
-        $new_data=Common::json_array($new_data);
-        dd($new_data);
+//        $new_data =DB::table('order')->where('id',254)->first();
+//        $new_data=Common::json_array($new_data);
+//        dd($new_data);
+
     }
     /**
      * 出行地
