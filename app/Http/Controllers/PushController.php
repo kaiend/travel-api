@@ -193,7 +193,7 @@ class PushController extends Controller
         ];
         $message_data=[];
         $order_number_url = url('/home/homeorder/orderdetails',array('id'=>$data['order_number']));
-        $message .='<a id="order_number_buchongfu" href="javascript:openapp(\''.$order_number_url.'\',\'189admin\',\'订单详情\');" class="btn btn-primary" data-dismiss="modal">订单号：'.$input['order_number'].'</a>';
+        $message .='<a id="order_number_buchongfu" href="javascript:openapp(\''.$order_number_url.'\',\'189admin\',\'订单详情\');" class="btn btn-primary" data-dismiss="modal">订单号：'.$data['order_number'].'</a>';
         $res =new Common();
         //通知组织
         $res->goEasy($data['id'],$re['id'],$alert,$re['mark'],$message,$message_data);

@@ -954,7 +954,7 @@ class OrderController extends  Controller
                         'type' =>  $type,
                         'orders_name' => $user_data['name'],
                         'orders_phone' => $user_data['mobile'],
-                        'user_id' =>$user_data['id'],
+                        'user_id' =>$id,
                         'hotel_id'  =>$user_data['hotel_id'],
                         'judgment' => 1,
                         'bottom_number' =>$arr['hotel_number'],
