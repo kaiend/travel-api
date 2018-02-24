@@ -200,7 +200,7 @@ class OrderController extends  Controller
                 case 'today':
                     $data = DB::table('order')
                         ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
-                        ->where('hotel_id','=',21)
+                        ->where('hotel_id','=',$hid)
                         ->whereIn('status', [1,2,3,4,5,6,7,8])
                         ->whereBetween('created_at',[$start,$end])
                         ->orderBy('id','desc')
