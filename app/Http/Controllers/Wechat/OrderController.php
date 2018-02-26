@@ -411,7 +411,7 @@ class OrderController extends Controller
             DB::table('order_cip_number')->inster($input['data']);
 
             return response()->json([
-                'code' => '1012',
+                'code' => '1000',
                 'info' => 'success',
                 'data' => []
             ]);
