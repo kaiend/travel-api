@@ -395,5 +395,29 @@ class OrderController extends Controller
         return $result;
     }
 
+    /**
+     * cip
+     */
+    public function getCip( Request $request )
+    {
+        $input = $request->input();
+        try {
+            foreach ($input['data'] as $k => $v) {
+                $input['data'][$k]['order_number'] = $input['order_number'];
+            }
 
+
+            DB::table('order')->where('order_number',$input['order_number'])->update(['cip_number' => count($input['data'])]);
+            DB::table('order_cip_number')->inster($input['data']);
+
+            return response()->json([
+                'code' => '1012',
+                'info' => 'success',
+                'data' => []
+            ]);
+
+        } catch (\Exception $e) {
+            return ReturnMessage::success('添加CIP人数失败', 1002);
+        }
+    }
 }

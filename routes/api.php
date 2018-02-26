@@ -204,6 +204,8 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::post('/modifyPassword', 'Wechat\UserController@modifyPassword');
         //推送消息
         \Dingo\Api\Facade\Route::post('/topUpDate', 'Wechat\OrderController@topUpDate');
+        //添加CIP人数
+        \Dingo\Api\Facade\Route::post('/getCip', 'Wechat\OrderController@getCip');
     });
 
 });
