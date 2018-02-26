@@ -63,7 +63,7 @@ class OrderController extends Controller
                     'judgment'=>4,
                     'origin_position'=>$input['origin_position'],
                     'end_position'=>$input['end_position'],
-
+                    'cip_number' => $input['cip_number']
                 ]);
             }else{
                 DB::table('order')->insert([
@@ -85,8 +85,8 @@ class OrderController extends Controller
                     'judgment'=>4,
                     'origin_position'=>$input['origin_position'],
                     'end_position'=>$input['end_position'],
-                    'custom'=>$input['custom']
-
+                    'custom'=>$input['custom'],
+                    'cip_number' => $input['cip_number']
                 ]);
             }
 
