@@ -401,15 +401,27 @@ class OrderController extends Controller
     public function getCip( Request $request )
     {
         $input = $request->input();
-        print_r($input);exit;
-        try {
-            foreach ($input['cip'] as $k => $v) {
-                $input['cip'][$k]['order_number'] = $input['order_number'];
+
+//        try {
+
+            $json = json_decode($input['cip'],true);
+
+            $cip[] = (array)$json;
+
+            foreach ($cip as $k => $v) {
+
+                $data[] = array(
+                    'order_number' => $input['order_number'],
+                    'name' => $v['name'],
+                    'phone' => $v['phone']
+                );
+
             }
 
 
-            DB::table('order')->where('order_number',$input['order_number'])->update(['cip_number' => count($input['cip'])]);
-            DB::table('order_cip_number')->inster($input['cip']);
+
+            DB::table('order')->where('order_number',$input['order_number'])->update(['cip_number' => count($data)]);
+            DB::table('order_cip_number')->inster($cip);
 
             return response()->json([
                 'code' => '1000',
@@ -417,9 +429,9 @@ class OrderController extends Controller
                 'data' => []
             ]);
 
-        } catch (\Exception $e) {
-            return ReturnMessage::success('添加CIP人数失败', 1002);
-        }
+//        } catch (\Exception $e) {
+//            return ReturnMessage::success('添加CIP人数失败', 1002);
+//        }
 
 
     }
