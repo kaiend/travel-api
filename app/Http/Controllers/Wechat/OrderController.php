@@ -401,6 +401,7 @@ class OrderController extends Controller
     public function getCip( Request $request )
     {
         $input = $request->input();
+        print_r($input);exit;
         try {
             foreach ($input['cip'] as $k => $v) {
                 $input['cip'][$k]['order_number'] = $input['order_number'];
