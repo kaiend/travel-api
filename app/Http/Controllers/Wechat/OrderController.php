@@ -402,11 +402,10 @@ class OrderController extends Controller
     {
         $input = $request->input();
 
-//        try {
+        try {
 
-            $json = json_decode($input['cip'],true);
-
-            $cip[] = (array)$json;
+            $cip = json_decode($input['cip'],true);
+            
 
             foreach ($cip as $k => $v) {
 
@@ -421,7 +420,7 @@ class OrderController extends Controller
 
 
             DB::table('order')->where('order_number',$input['order_number'])->update(['cip_number' => count($data)]);
-            DB::table('order_cip_number')->inster($cip);
+            DB::table('order_cip_number')->inster($data);
 
             return response()->json([
                 'code' => '1000',
@@ -429,9 +428,9 @@ class OrderController extends Controller
                 'data' => []
             ]);
 
-//        } catch (\Exception $e) {
-//            return ReturnMessage::success('添加CIP人数失败', 1002);
-//        }
+        } catch (\Exception $e) {
+            return ReturnMessage::success('添加CIP人数失败', 1002);
+        }
 
 
     }
