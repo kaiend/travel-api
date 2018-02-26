@@ -404,8 +404,9 @@ class OrderController extends Controller
 
         try {
 
-            $cip = json_decode($input['cip'],true);
-            
+            $json = json_decode($input['cip'],true);
+
+            $cip = (array)$json;
 
             foreach ($cip as $k => $v) {
 
@@ -420,7 +421,7 @@ class OrderController extends Controller
 
 
             DB::table('order')->where('order_number',$input['order_number'])->update(['cip_number' => count($data)]);
-            DB::table('order_cip_number')->inster($data);
+            DB::table('order_cip_number')->insert($data);
 
             return response()->json([
                 'code' => '1000',
