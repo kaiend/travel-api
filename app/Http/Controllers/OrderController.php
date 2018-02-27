@@ -386,7 +386,7 @@ class OrderController extends  Controller
                 }else{
                     //2.司机信息
                     $chauffer_data=Chauffeur::getUserFirst($bdata['chauffeur_id']);
-                    if(!empty($chauffer_data['car_id'])){
+                    if($chauffer_data['car_id']!= 0){
                         //司机的车详细信息
                         $new_Data =DB::table('cars')
                             ->join('car_series','cars.series_id','=','car_series.id')
