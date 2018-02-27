@@ -1217,6 +1217,14 @@ class OrderController extends  Controller
                 'status'       =>$status
             ]);
             if($re){
+                DB::table('order')->where('id',$arr['order_id'])->update(['status' => $status ]);
+                //取消订单插入一条记录
+                DB::table('order_status')
+                    ->insert([
+                        'order_number'=>$order_data['order_number'],
+                        'status'=> $status,
+                        'update_time' =>time()
+                    ]);
                 return ReturnMessage::success();
             }else{
                 return ReturnMessage::success('失败','1001');
