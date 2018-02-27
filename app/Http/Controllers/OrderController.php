@@ -1204,9 +1204,10 @@ class OrderController extends  Controller
             //查询当前订单信息
             $order_data =Order::getOrderFirst(['id'=>$arr['order_id']]);
             $status =0;
+            $o_stataus=0;
             switch ($arr['type']){
-                case 'agree':$status = 1 ;break;
-                case 'reject':$status = 2; break;
+                case 'agree':$status = 1 ;$o_stataus =1;break;
+                case 'reject':$status = 2;$o_stataus =0 ;break;
                 default:ReturnMessage::success('失败','1011');
             }
             $re =DB::table('order_audit_content')->insert([
@@ -1217,12 +1218,12 @@ class OrderController extends  Controller
                 'status'       =>$status
             ]);
             if($re){
-                DB::table('order')->where('id',$arr['order_id'])->update(['status' => $status ]);
+                DB::table('order')->where('id',$arr['order_id'])->update(['status' => $o_stataus ]);
                 //取消订单插入一条记录
                 DB::table('order_status')
                     ->insert([
                         'order_number'=>$order_data['order_number'],
-                        'status'=> $status,
+                        'status'=> $o_stataus,
                         'update_time' =>time()
                     ]);
                 return ReturnMessage::success();
