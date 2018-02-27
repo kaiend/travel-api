@@ -1210,7 +1210,7 @@ class OrderController extends  Controller
                 default:ReturnMessage::success('失败','1011');
             }
             $re =DB::table('order_audit_content')->insert([
-                'order_number' =>$order_data['order_data'],
+                'order_number' =>$order_data['order_number'],
                 'content'      =>$arr['reason'],
                 'user_id'      =>$id,
                 'created_at'   =>time(),

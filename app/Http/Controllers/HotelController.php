@@ -11,6 +11,8 @@ use App\Helpers\ReturnMessage;
 use App\Helpers\Sms;
 use App\Http\Validators\UserValidator;
 use App\Models\Hotel;
+use App\Models\Hotels;
+use App\Models\Log;
 use App\Models\Order;
 use App\Models\ServerItem;
 use Dingo\Api\Http\Request;
@@ -587,21 +589,8 @@ class HotelController extends Controller
      */
     public function test()
     {
-//        $t = time();
-//        $start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
-//        $end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
-//        $data = DB::table('order')
-//            ->select('id','end','origin','type','orders_name','orders_phone','order_number','created_at','appointment','status','bottom_number')
-//            ->where('hotel_id','=',6)
-//            //->whereIn('status', [1,2,3,4,5,6,7,8])
-//            ->whereBetween('created_at',[$start,$end])
-//            ->orderBy('id','desc')
-//            ->get();
-//        dd($data);
-//        $new_data =DB::table('order')->where('id',254)->first();
-//        $new_data=Common::json_array($new_data);
-//        dd($new_data);
-
+        $token =$this->token(27);
+        dd($token);
     }
     /**
      * 出行地
@@ -788,5 +777,111 @@ class HotelController extends Controller
         }
 
     }
+    /**
+     * 获得日志列表
+     * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
+     */
+    public function getLog()
+    {
+        try {
+            $user = JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+            $user_data =Hotel::getUserFirst($id);
+            $log_data =Log::getLogList(['hotelId'=>$user_data['hotel_id']]);
+            if( count($log_data) != 0){
+                return ReturnMessage::successData($log_data);
+            }else{
+                return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'data' => []
+                ]);
+            }
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+    }
+    /**
+     * 获得当前的酒店员工
+     * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
+     */
+    public function getHotelUser()
+    {
+        try {
+            $user = JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+            $user_data =Hotel::getUserFirst($id);
+            $users =DB::table('hotel_user')
+                ->where('hotel_id',$user_data['hotel_id'])
+                ->select('id','name')
+                ->get();
+            $users =Common::json_array($users);
+            if( count($users) != 0){
+                return ReturnMessage::successData($users);
+            }else{
+                return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'data' => []
+                ]);
+            }
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+    }
+    /**
+     * 日志筛选
+     * @param Request $request
+     * @return \App\Helpers\json|\Illuminate\Http\JsonResponse|mixed
+     */
+    public function filterLog(Request $request)
+    {
+        $arr =$request ->only('id','start','end');
+        try {
+            $user = JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
 
+            //查询当前用户的酒店ID和type
+            $user_data = Hotel::getUserFirst($id);
+            $handle = DB::table('log');
+            $where =[
+               ['hotelId',$user_data['hotel_id']]
+            ];
+            $arr['userId'] =$arr['id'];
+            unset($arr['id']);
+            foreach( $arr as $k =>$v){
+                if( $v ){
+                    $where[$k] = $v;
+                }
+            }
+            unset($where['start']);
+            unset($where['end']);
+            $start =intval( $arr['start'] );
+            $end =  intval( $arr['end'] );
+            if( !empty( $start ) && !empty( $end )){
+                $data =$handle
+                    ->where($where)
+                    ->whereBetween('createTime', [$start, $end])->get();
+            }else{
+                $data =$handle
+                    ->where($where)
+                    ->get();
+            }
+            $bdata=json_decode(json_encode($data),true);
+            if( count($bdata) != 0){
+                $final=ReturnMessage::toString($bdata);
+
+                return ReturnMessage::successData($final);
+
+            }else{
+                return response()->json([
+                    'code' =>'1000',
+                    'info' => 'success',
+                    'data' => []
+                ]);
+            }
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+    }
 }

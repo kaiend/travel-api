@@ -49,6 +49,11 @@ $api->version('v1', [
     $api->get('/version','VersionController@getVersion');
     //APP投诉建议
     $api->post('/suggest','OrderController@getSuggest');
+    //APP日志列表
+    $api->get('/log','HotelController@getLog');
+    //App该酒店的所有员工
+    $api->get('/hotel/user','HotelController@getHotelUser');
+    $api->post('/log/search','HotelController@filterLog');
     //APP订单接口
     $api->group(['prefix' => 'order'] , function(){
         //APP订单列表(我的订单)
