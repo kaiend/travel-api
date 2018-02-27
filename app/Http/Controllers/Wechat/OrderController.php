@@ -63,7 +63,7 @@ class OrderController extends Controller
                     'judgment'=>4,
                     'origin_position'=>$input['origin_position'],
                     'end_position'=>$input['end_position'],
-                    'cip_number' => $input['cip_number']
+                    'passenger_people' => $input['passenger_people']
                 ]);
             }else{
                 DB::table('order')->insert([
@@ -86,7 +86,7 @@ class OrderController extends Controller
                     'origin_position'=>$input['origin_position'],
                     'end_position'=>$input['end_position'],
                     'custom'=>$input['custom'],
-                    'cip_number' => $input['cip_number']
+                    'passenger_people' => $input['passenger_people']
                 ]);
             }
 
@@ -418,8 +418,6 @@ class OrderController extends Controller
 
             }
 
-
-
             DB::table('order')->where('order_number',$input['order_number'])->update(['cip_number' => count($data)]);
             DB::table('order_cip_number')->insert($data);
 
@@ -432,7 +430,6 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             return ReturnMessage::success('添加CIP人数失败', 1002);
         }
-
 
     }
 }
