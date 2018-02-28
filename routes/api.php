@@ -151,6 +151,8 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::post('/login' ,'Wechat\UserController@login');
         //注册
         \Dingo\Api\Facade\Route::post('/register' ,'Wechat\UserController@register');
+        //查询用户
+        \Dingo\Api\Facade\Route::any('/registers' ,'Wechat\UserController@registers');
         //下订单
         \Dingo\Api\Facade\Route::post('/createOrder' ,'Wechat\OrderController@createOrder');
         //订单列表

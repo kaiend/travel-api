@@ -119,6 +119,27 @@ class UserController extends Controller
         $info=Common::json_array($info);
 		return ReturnMessage::successData($info);
 	}
+	//查询用户
+    public function registers( Request $request )
+    {
+        //$input = UserValidator::register($request);
+        $input = $request->input();
+
+            $datas = DB::table('personal_user')
+                ->where([
+                    ['phone',$input['phone']],
+                ])->first();
+            if(empty($datas)){
+              /*  DB::table('personal_user')->insert([
+                    'phone' => $input['phone'],
+                    'user_pass' => $input['user_pass'],
+                    'create_time'=>time()
+                ]);*/
+                return ReturnMessage::success('该手机号未注册',1000);
+            }else{
+                return ReturnMessage::success('该手机号已注册',1005);
+            }
+    }
 	/**
 	 * 登录
 	 *
