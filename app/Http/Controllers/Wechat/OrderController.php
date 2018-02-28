@@ -171,8 +171,8 @@ class OrderController extends Controller
         }
     }
 
-    /*
- * 航站楼返回
+/*
+ * 接送站返回
  */
     public function trainStation(Request $request){
         $input = $request->input();
