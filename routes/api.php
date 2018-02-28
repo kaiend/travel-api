@@ -213,6 +213,8 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::post('/topUpDate', 'Wechat\OrderController@topUpDate');
         //添加CIP人数
         \Dingo\Api\Facade\Route::post('/getCip', 'Wechat\OrderController@getCip');
+        //推送消息
+        \Dingo\Api\Facade\Route::post('/trainStation', 'Wechat\OrderController@trainStation');
     });
 
 });
