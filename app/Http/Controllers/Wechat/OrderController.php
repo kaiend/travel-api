@@ -171,6 +171,82 @@ class OrderController extends Controller
         }
     }
 
+    /*
+ * 航站楼返回
+ */
+    public function trainStation(Request $request){
+        $input = $request->input();
+        if($input['city'] == '北京市'){
+            $data = [
+                [
+                    'coordinate'=> '116.433737,39.90978',
+                    'name' => '北京站'
+                ],
+                [
+                    'coordinate'=> '116.359489,39.951655',
+                    'name' => '北京北站'
+                ],
+                [
+                    'coordinate'=> '116.385814,39.871182',
+                    'name' => '北京南站'
+                ],
+                [
+                    'coordinate'=> '116.328097,39.900858',
+                    'name' => '北京西站'
+                ],
+                [
+                    'coordinate'=> '116.489951,39.907681',
+                    'name' => '北京东站'
+                ],
+            ];
+            return ReturnMessage::successData($data);
+        }else{
+            $data = [
+                [
+                    'coordinate'=> '117.216586,39.141773',
+                    'name' => '天津站'
+                ],
+                [
+                    'coordinate'=> '117.169986,39.16427',
+                    'name' => '天津西站'
+                ],
+                [
+                    'coordinate'=> '117.067499,39.062802',
+                    'name' => '天津南站'
+                ],
+                [
+                    'coordinate'=> '117.215946,39.172524',
+                    'name' => '天津北站'
+                ],
+                [
+                    'coordinate'=> '117.649419,39.031483',
+                    'name' => '塘沽站'
+                ],
+                [
+                    'coordinate'=> '117.689958,39.011058',
+                    'name' => '于家堡站'
+                ],
+                [
+                    'coordinate'=> '117.404624,40.032737',
+                    'name' => '蓟州站'
+                ],
+                [
+                    'coordinate'=> '117.008631,39.148694',
+                    'name' => '杨柳青站'
+                ],
+                [
+                    'coordinate'=> '117.617575,39.085301',
+                    'name' => '滨海站'
+                ],
+                [
+                    'coordinate'=> '117.767464,39.241501',
+                    'name' => '滨海北站'
+                ],
+            ];
+            return ReturnMessage::successData($data);
+        }
+    }
+
 
     /**
      * 接收支付信息
