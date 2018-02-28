@@ -28,7 +28,7 @@ class WxorderValidator
 			'orders_phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',*/
 			'appointment' => 'required',
 			'user_id' => 'required|exists:personal_user,id',
-            'passenger_people' => 'required',
+            //'passenger_people' => 'required',
 		];
 
 		$messages = [
@@ -54,7 +54,7 @@ class WxorderValidator
             'origin_position.required' => '起点经纬度不能为空',
             'end_position.required' => '终点经纬度不能为空',
             'city.required' => '城市编码不能为空',
-            'passenger_people.required' => '乘车人数不能为空',
+            //'passenger_people.required' => '乘车人数不能为空',
 
 
 		];
