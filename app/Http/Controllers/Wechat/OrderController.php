@@ -23,7 +23,7 @@ class OrderController extends Controller
     //订单状态  已取消
     private $order_undo = '3';
 
-    private $phone ='18311161659';
+    private $phone ='18510570020';
     /**
      * 下订单
      * @param $request
