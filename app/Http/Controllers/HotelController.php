@@ -46,7 +46,7 @@ class HotelController extends Controller
     public function login(Request $request)
     {
         $input = UserValidator::hotelLogin($request);
-        dd($input);
+
         $input['mobile'] =$input['phone'];
         unset($input['phone']);
         $info = DB::table('hotel_user')
@@ -54,7 +54,7 @@ class HotelController extends Controller
                 ['mobile',$input['mobile']],
                 ['password',$input['password']]
             ])->first();
-
+        dd($input);
         if (!empty($info)){
             $info = json_decode(json_encode($info),true);
             $dat['status_login'] =1;
