@@ -54,7 +54,7 @@ class HotelController extends Controller
                 ['mobile',$input['mobile']],
                 ['password',$input['password']]
             ])->first();
-        dd($input);
+        dd($info);
         if (!empty($info)){
             $info = json_decode(json_encode($info),true);
             $dat['status_login'] =1;
