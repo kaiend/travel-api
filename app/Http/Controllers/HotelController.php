@@ -46,7 +46,7 @@ class HotelController extends Controller
     public function login(Request $request)
     {
         $input = UserValidator::hotelLogin($request);
-
+        dd($input);
         $input['mobile'] =$input['phone'];
         unset($input['phone']);
         $info = DB::table('hotel_user')
@@ -587,10 +587,13 @@ class HotelController extends Controller
      * 测试api
      * @return int
      */
-    public function test()
+    public function test( Request $request)
     {
-        $token =$this->token(27);
-        dd($token);
+        $a = '[苏荷]在[2018-03-05 16:56:46]，下了一个订单。<a id="order_number_buchongfu" href="javascript:openapp(\'/home/homeorder/orderdetails/id/180305461014897.html\',\'189admin\',\'订单详情\');" class="btn btn-primary" data-dismiss="modal">订单号：180305461014897</a>';
+
+        $str = htmlspecialchars_decode($a);
+        $str = preg_replace("/<a[^>]*>(.*?)<\/a>/is", "$1",  $str);
+        echo $str;
     }
     /**
      * 出行地
@@ -641,8 +644,16 @@ class HotelController extends Controller
             $unpaid = $collection->sum('total_fee');
             //账户流水明细
             $detail =$collection->groupBy('date')->toArray();
-//            if($user_data['rebate']){
-//                //查询结算表的返佣情况
+//            if($user_data['rebate'] == 0 ){
+//                //不返佣
+//                $rebate =[];
+//            }else{
+//                //查询返佣角色的详细信息
+//                $rebate =DB::table('hotel_roles')->where('id',$user_data['rebate'])->first();
+//                $rebate =Common::json_array($rebate);
+//                //返佣的比率
+//                $rebate_detail =intval($rebate['rebate'])/100;
+//
 //            }
             $last_data=[
                 'new' =>$new_order,
