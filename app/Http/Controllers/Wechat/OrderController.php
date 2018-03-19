@@ -92,8 +92,8 @@ class OrderController extends Controller
             }
 
             DB::table('way_to')->insert([
-                ['order_id' => $result,'name' => 'origin', 'content' => $input['origin']],
-                ['order_id' => $result,'name' => 'end', 'content' => $input['end']]
+                ['order_id' => $result,'name' => 'origin', 'content' => json_encode([$input['origin']])],
+                ['order_id' => $result,'name' => 'end', 'content' => json_encode([$input['end']])]
             ]);
 
             //下单成功后给时代负责人发送短信
