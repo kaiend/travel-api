@@ -523,9 +523,10 @@ class HotelController extends Controller
      * 首页获得服务类目
      * @return \App\Helpers\json|mixed
      */
-    public function getServer()
+    public function getServer(Request $request)
     {
         try {
+            $arr =$request->only('service_type');
             $user = JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
             //查询当前用户的酒店ID和type
@@ -533,11 +534,13 @@ class HotelController extends Controller
             $hid = $user_data['hotel_id'];
             $data =DB::table('hotel_server')
                 ->join('server_item','hotel_server.server_id','server_item.id')
-                ->where('hotel_id',$hid)
+                ->where([
+                    'hotel_id'=>$hid,
+                    'service_type' =>$arr['service_type']
+                ])
                 ->select('server_item.id','parent_id','name','picture')
                 ->get();
             $data =Common::json_array( $data );
-
             $items = array();
             foreach( $data as $k=>$v){
                 if($v['id'] ==20){
@@ -586,13 +589,9 @@ class HotelController extends Controller
      * 测试api
      * @return int
      */
-    public function test( Request $request)
+    public function test()
     {
-        $a = '[苏荷]在[2018-03-05 16:56:46]，下了一个订单。<a id="order_number_buchongfu" href="javascript:openapp(\'/home/homeorder/orderdetails/id/180305461014897.html\',\'189admin\',\'订单详情\');" class="btn btn-primary" data-dismiss="modal">订单号：180305461014897</a>';
 
-        $str = htmlspecialchars_decode($a);
-        $str = preg_replace("/<a[^>]*>(.*?)<\/a>/is", "$1",  $str);
-        echo $str;
     }
     /**
      * 出行地
@@ -890,6 +889,23 @@ class HotelController extends Controller
                     'data' => []
                 ]);
             }
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token' ,'1009');
+        }
+    }
+
+    public function getLogName()
+    {
+        try {
+            $user = JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+            $user_data =Hotel::getUserFirst($id);
+            $name = Db::table('hotel_user')
+                ->where("hotel_id",$user_data['hotel_id'])
+                ->select('id','name')
+                ->get();
+            $users =Common::json_array($name);
+            return ReturnMessage::successData($users);
         }catch (JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
         }
