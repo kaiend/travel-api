@@ -654,7 +654,7 @@ class HotelController extends Controller
 //
 //            }
             $last_data=[
-                'new' =>$new_order,
+                'news' =>$new_order,
                 'count'=>$month_sum,
                 'unpaid'=>$unpaid,
                 'detail' =>$detail

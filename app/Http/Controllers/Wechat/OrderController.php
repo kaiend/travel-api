@@ -45,7 +45,7 @@ class OrderController extends Controller
 
         try {
             if(empty($input['custom'])){
-                DB::table('order')->insert([
+                $result = DB::table('order')->insertGetId([
                     'user_id'=>$input['user_id'],
                     'hotel_id'=>$input['city'],
                     'car_id'=>$input['car_series'],
@@ -67,7 +67,7 @@ class OrderController extends Controller
                     'passenger_people' => $input['passenger_people']
                 ]);
             }else{
-                DB::table('order')->insert([
+                $result = DB::table('order')->insertGetId([
                     'user_id'=>$input['user_id'],
                     'hotel_id'=>$input['city'],
                     'car_id'=>$input['car_series'],
@@ -90,6 +90,11 @@ class OrderController extends Controller
                     'passenger_people' => $input['passenger_people']
                 ]);
             }
+
+            DB::table('way_to')->insert([
+                ['order_id' => $result,'name' => 'origin', 'content' => json_encode([$input['origin']])],
+                ['order_id' => $result,'name' => 'end', 'content' => json_encode([$input['end']])]
+            ]);
 
             //下单成功后给时代负责人发送短信
             $this->sendMessage($order['order_number']);
