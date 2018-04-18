@@ -51,6 +51,8 @@ $api->version('v1', [
     $api->post('/suggest','OrderController@getSuggest');
     //APP日志列表
     $api->get('/log','HotelController@getLog');
+    //APP
+    $api->get('/log/user','HotelController@getLogName');
     //App该酒店的所有员工
     $api->get('/hotel/user','HotelController@getHotelUser');
     $api->post('/log/search','HotelController@filterLog');
