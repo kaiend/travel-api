@@ -635,8 +635,11 @@ class HotelController extends Controller
                 }else{
                     $order_data[$k]['total_fee'] =$v['price'];
                 }
+                $order_data[$k]['server_title'] = DB::table('server_item')->where('id',$v['type'])->value('name');
+                $order_data[$k]['car_name'] = Config::get('order.car_series.'.$v['car_id']);
                 $order_data[$k]['date'] =date('Y-m',$v['created_at']);
             }
+
             $collection = collect($order_data);
             //待结算费用
             $unpaid = $collection->sum('total_fee');

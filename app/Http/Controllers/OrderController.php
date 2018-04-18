@@ -356,6 +356,7 @@ class OrderController extends  Controller
     public function getDetail( $id )
     {
         $id = intval( $id ) ;
+
         try {
             JWTAuth::parseToken()->getPayload();
             $data=DB::table('order')
@@ -463,7 +464,7 @@ class OrderController extends  Controller
                 $b = $bdata['car_id'];
                 $detail['car_id'] = Config::get('order.car_series.'.$b);
                 //$detail['price']=$bdata['price'];
-
+                $bdata['car_name'] = $detail['car_id'];
                 $detail['bottom_number']=$bdata['bottom_number'];
                 $detail['remarks']=$bdata['remarks'];
 
