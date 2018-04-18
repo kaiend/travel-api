@@ -719,7 +719,7 @@ class HotelController extends Controller
 //                //查询结算表的返佣情况
 //            }
             $last_data=[
-                'new' =>$m_fee,
+                'news' =>$m_fee,
                 'count'=>$month_sum,
                 'unpaid'=>$unpaid,
                 'detail' =>$detail
