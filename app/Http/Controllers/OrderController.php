@@ -762,7 +762,8 @@ class OrderController extends  Controller
                         'hotel_id'  =>$user_data['hotel_id'],
                         'judgment' => 1,
                         'bottom_number' =>$arr['hotel_number'],
-                        'status' =>$status
+                        'status' =>$status,
+                        'service_type' =>$arr['service_type']
 
                     ]
                 );
@@ -806,7 +807,7 @@ class OrderController extends  Controller
      */
     public function getPackage(  )
     {
-       $id = 21;
+        $id = 21;
         try {
             JWTAuth::parseToken()->getPayload();
             //查询该一级服务下的服务详情
@@ -874,7 +875,8 @@ class OrderController extends  Controller
                         'hotel_id'  =>$user_data['hotel_id'],
                         'judgment' => 1,
                         'bottom_number' =>$arr['hotel_number'],
-                        'status' =>$status
+                        'status' =>$status,
+                        'service_type' =>$arr['service_type']
                     ]
                 );
                 //插入展字段
@@ -959,7 +961,8 @@ class OrderController extends  Controller
                         'judgment' => 1,
                         'bottom_number' =>$arr['hotel_number'],
                         'cip' => $arr['cip'],
-                        'status' =>$status
+                        'status' =>$status,
+                        'service_type' =>$arr['service_type']
                     ]
                 );
                 //插入展字段
@@ -1033,7 +1036,8 @@ class OrderController extends  Controller
                         'hotel_id'  =>$user_data['hotel_id'],
                         'judgment' => 1,
                         'bottom_number' =>$arr['hotel_number'],
-                        'status' =>$status
+                        'status' =>$status,
+                        'service_type' =>$arr['service_type']
                     ]
                 );
                 //插入展字段
