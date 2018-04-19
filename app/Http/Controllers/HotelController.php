@@ -694,6 +694,7 @@ class HotelController extends Controller
                 }else{
                     $m_data[$key]['total_fee'] =$val['price'];
                 }
+                $m_data[$key]['server_title'] = DB::table('server_item')->where('id',$val['type'])->value('name');
             }
             $collection = collect($m_data);
             //本月消费金额结算费用
