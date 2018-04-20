@@ -208,7 +208,6 @@ class PushController extends Controller
             //推送手机端的管理员
             $this->sendNotifySpecial($hotel_data['jpush_code'],$alert,$m_data,$this->appKey,$this->master_secret);
         }
-
     }
 
     /**

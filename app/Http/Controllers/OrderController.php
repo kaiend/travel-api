@@ -20,6 +20,7 @@ use App\Models\User;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use JPush\Client;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -1191,7 +1192,6 @@ class OrderController extends  Controller
         }catch (JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
         }
-
     }
     /**
      * 订单审核、驳回
@@ -1200,20 +1200,27 @@ class OrderController extends  Controller
      */
     public function makeCheck( Request $request)
     {
-        $arr =OrderValidator::check($request);
+        $arr = OrderValidator::check($request);
         try {
             $user = JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
             //查询当前用户的酒店ID和type
-            //$user_data = Hotel::getUserFirst($id);
+//            $user_data = Hotel::getUserFirst($id);
             //查询当前订单信息
-            $order_data =Order::getOrderFirst(['id'=>$arr['order_id']]);
-            $status =0;
-            $o_stataus=0;
-            switch ($arr['type']){
-                case 'agree':$status = 1 ;$o_stataus =1;break;
-                case 'reject':$status = 2;$o_stataus =0 ;break;
-                default:ReturnMessage::success('失败','1011');
+            $order_data = Order::getOrderFirst(['id' => $arr['order_id']]);
+            $status = 0;
+            $o_stataus = 0;
+            switch ($arr['type']) {
+                case 'agree':
+                    $status = 1;
+                    $o_stataus = 1;
+                    break;
+                case 'reject':
+                    $status = 2;
+                    $o_stataus = 0;
+                    break;
+                default:
+                    ReturnMessage::success('失败', '1011');
             }
             $re =DB::table('order_audit_content')->insert([
                 'order_number' =>$order_data['order_number'],
@@ -1223,7 +1230,46 @@ class OrderController extends  Controller
                 'status'       =>$status
             ]);
             if($re){
-                DB::table('order')->where('id',$arr['order_id'])->update(['status' => $o_stataus ]);
+                DB::table('order')->where('id', $arr['order_id'])->update(['status' => $o_stataus]);
+
+                //判断该订单是否审核通过，通过则进行员工消息推送
+                if ($o_stataus == 1) {
+                    //获取审核通过消息格式
+                    $message_list = Common::json_array(Db::table('message')->where('id', 10)->first());
+                    //获取员工姓名
+                    $user_name = DB::table('hotel_user')->where('id',$arr['user_id'])->value('name');
+                    $preg = '/\[([^\[\]]*)\]/';
+                    $preg_message_list = preg_replace($preg,$user_name,$message_list['content']);
+
+                    //获取该订单的员工信息
+                    $order_sql = Common::json_array(Db::table('order')->where('id', $arr['order_id'])->first());
+                    $user_reg = Db::table('hotel_user')->where('id', $order_sql['user_id'])->value('jpush_code');
+
+                    //新建消息信息
+                    $message = DB::table('message_list')->insert([
+                        'mid' => $message_list['id'],
+                        'order_id' => $arr['order_id'],
+                        'title' => $message_list['title'],
+                        'content' => $preg_message_list,
+                        'create_time' => time(),
+                        'user_id' => $order_sql['user_id']
+                    ]);
+
+                    //新建成功后推送消息
+                    if($message){
+                        $alert = $preg_message_list;
+                        $messages =[
+                            "extras" => array(
+                                'status'=> '126',
+                                "data" => ['order_id' =>$arr['order_id']],
+                            )
+                        ];
+                        $appKey = '50505e64af2ea4b5e8e27e26';
+                        $master_secret = 'f90b3ccdce62056bb134aaaf';
+                        $result =$this ->sendNotifySpecial($user_reg,$alert,$messages,$appKey,$master_secret);
+                    }
+                }
+
                 //取消订单插入一条记录
                 DB::table('order_status')
                     ->insert([
@@ -1231,6 +1277,7 @@ class OrderController extends  Controller
                         'status'=> $o_stataus,
                         'update_time' =>time()
                     ]);
+
                 return ReturnMessage::success();
             }else{
                 return ReturnMessage::success('失败','1001');
@@ -1239,6 +1286,8 @@ class OrderController extends  Controller
             return ReturnMessage::success('非法token', '1009');
         }
     }
+
+
     /**
      * 投诉建议
      * @param Request $request
@@ -1272,6 +1321,42 @@ class OrderController extends  Controller
             return ReturnMessage::success('非法token', '1009');
         }
     }
+
+    /**
+     * 我的消息
+     * @param Request request
+     * @return \App\Helpers\json
+     */
+    public function myNews( Request $request)
+    {
+        $param = OrderValidator::news($request);
+
+        try{
+            //获取消息列表里面的数据
+            $massage = DB::table('message')
+                ->where('id',10)
+                ->get();
+
+            //获取消息列表里面的数据
+            $user_message = DB::table('message_list')
+                ->where([
+                    ['mid', '=', 10],
+                    ['user_id' ,'=', $param['user_id']]
+                ])
+                ->get();
+            //获取
+            $user_message = Common::json_array($user_message);
+
+            if($user_message){
+                return ReturnMessage::success('success', '1000',$user_message);
+            }else{
+                return ReturnMessage::success('非法token', '1009');
+            }
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token', '1009');
+        }
+    }
+
     /**
      * 荒废方法
      * @param array $user_data
@@ -1294,5 +1379,27 @@ class OrderController extends  Controller
         if($message){
             $msg = $common->goEasy($result,$message['id'],$message['title'],$message['mark'].'_'.$user_data['hotel_id'],$message['content'],$message_data);
         }
+    }
+
+    /**
+     * 向特定设备推送消息
+     * @param $regid   接收推送的设备标识
+     * @param $alert   消息标题
+     * @param $message 需要推送的消息体
+     * @return mixed
+     */
+    public function sendNotifySpecial($regid, $alert, $message,$appkey,$secret)
+    {
+        $client = new Client($appkey,$secret);
+
+        $result = $client->push()
+            ->setPlatform('all')
+            ->options(['apns_production'=>true])
+            ->addRegistrationId($regid)
+            ->iosNotification($alert, $message)
+            ->androidNotification($alert, $message)
+            ->send();
+
+        return Common::json_array($result);
     }
 }

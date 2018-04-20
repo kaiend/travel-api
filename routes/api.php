@@ -86,7 +86,8 @@ $api->version('v1', [
 //        \Dingo\Api\Facade\Route::get('/extra/detail/{id}' ,'OrderController@getExtraDetail');
         //APP订单审核
         \Dingo\Api\Facade\Route::post('/check' ,'OrderController@makeCheck');
-
+        //我的消息接口
+        \Dingo\Api\Facade\Route::post('/mynews' ,'OrderController@myNews');
 
     });
 
@@ -127,7 +128,6 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::post('/ding' ,'PushController@makeDing');
         //APP下单的推送接口
         \Dingo\Api\Facade\Route::get('/order/form' ,'PushController@createOrder');
-
     });
     //APP账户统计
     $api->group(['prefix' => 'account'] , function(){

@@ -321,16 +321,18 @@ class OrderValidator
 
     public static function check( Request $request)
     {
-        $only = ['type','order_id','reason'];
+        $only = ['type','order_id','user_id','reason'];
 
         $rules = [
             'type' =>'required',
-            'order_id' => 'required'
+            'order_id' => 'required',
+            'user_id' => 'required'
         ];
 
         $messages = [
             'type.required'  => '操作类型不能为空',
             'order_id.required'  => '订单id不能为空',
+            'user_id.required'  => '用户id不能为空',
         ];
 
         $input = $request->only($only);
@@ -380,5 +382,33 @@ class OrderValidator
         return $input;
     }
 
+    /**
+     * 我的消息
+     *
+     * @param Request $request
+     * @return post
+     */
+    public static function news(Request $request)
+    {
+        $only = ['user_id'];
 
+        $rules = [
+            'user_id' =>'required',
+        ];
+
+        $messages = [
+            'user_id.required'  => '用户ID不能为空',
+        ];
+
+        $input = $request->only($only);
+
+
+        $validator = Validator::make($input, $rules, $messages);
+
+
+        if ($validator->fails())
+            exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1011']));
+
+        return $input;
+    }
 }
