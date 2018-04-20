@@ -15,7 +15,7 @@ class OrderValidator
      */
 	public static function sendSpecial( Request $request)
     {
-        $only = ['time','name','phone','people','room_number','remarks','car_id','end','origin','price','type','end_position','origin_position','hotel_number'];
+        $only = ['time','name','phone','people','room_number','remarks','car_id','end','origin','price','type','end_position','origin_position','hotel_number','service_type'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
@@ -68,7 +68,7 @@ class OrderValidator
      */
     public static function sendPackage( Request $request )
     {
-        $only = ['time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','hotel_number'];
+        $only = ['time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','hotel_number','service_type'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
@@ -116,7 +116,7 @@ class OrderValidator
      */
     public static function getFlight( Request $request )
     {
-        $only = ['flight_number','terminal','time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','cip','hotel_number'];
+        $only = ['flight_number','terminal','time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','cip','hotel_number','getFlight','sendFlight'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
@@ -231,7 +231,7 @@ class OrderValidator
      */
     public static function takeTrain( Request $request )
     {
-        $only = ['trips','train_station','time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','hotel_number'];
+        $only = ['trips','train_station','time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','hotel_number','service_type'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',

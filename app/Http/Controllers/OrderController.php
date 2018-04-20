@@ -852,6 +852,7 @@ class OrderController extends  Controller
             $user_data= Hotel::getUserFirst($id);
             $status=$this->orderStatus($user_data);
             DB::beginTransaction();
+
             try{
                 //插入数据
                 $insert_id =DB::table('order')->insertGetId(
@@ -881,8 +882,10 @@ class OrderController extends  Controller
                         'service_type' =>$arr['service_type']
                     ]
                 );
+
                 //插入展字段
                 $field =DB::table('server_item')->where('id',$arr['type']) ->value('field_name');
+
                 $field_mame = json_decode($field);
                 if(!is_null($field_mame)){
                     foreach(  $field_mame as $k =>$v){
