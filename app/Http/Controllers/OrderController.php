@@ -1336,18 +1336,19 @@ class OrderController extends  Controller
             $massage = DB::table('message')
                 ->where('id',10)
                 ->get();
-
+            //获取用户消息
+            $user_id = DB::table('hotel_user')->where('mobile',$param['mobile'])->value('id');
             //获取消息列表里面的数据
             $user_message = DB::table('message_list')
                 ->where([
                     ['mid', '=', 10],
-                    ['user_id' ,'=', $param['user_id']]
+                    ['user_id' ,'=', $user_id]
                 ])
                 ->get();
             //获取
             $user_message = Common::json_array($user_message);
 
-            if($user_message){
+            if(!empty($user_message)){
                 return ReturnMessage::success('success', '1000',$user_message);
             }else{
                 return ReturnMessage::success('内容为空', '1011');
