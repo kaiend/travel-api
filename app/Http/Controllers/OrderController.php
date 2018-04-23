@@ -1383,13 +1383,6 @@ class OrderController extends  Controller
                     ->get();
             //获取
             $order = Common::json_array($order);
-            $tobesettled = array_sum(Common::json_array(DB::table('settlement_log')
-                ->where([
-                    ['hotel_id','=',$user_data['hotel_id']],
-                    ['credentials_type','=',1],
-                ])
-                ->pluck('settlement_amount')));
-
             if(!empty($order)){
                 //重组数组
                 $data = array(
