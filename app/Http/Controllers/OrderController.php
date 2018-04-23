@@ -1375,7 +1375,7 @@ class OrderController extends  Controller
             $user = JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
             $user_data = Hotel::getUserFirst($id);
-
+            print_r($user_data);exit;
             $order = DB::table('settlement_log')
                     ->where([
                         ['hotel_id','=',$user_data['hotel_id']]
