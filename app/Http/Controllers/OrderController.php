@@ -1339,6 +1339,7 @@ class OrderController extends  Controller
             $user = JWTAuth::parseToken()->getPayload();
             $id = $user['foo'];
             $user_data = Hotel::getUserFirst($id);
+
             //获取消息列表里面的数据
             $massage = DB::table('message')
                 ->where('id',10)
@@ -1375,17 +1376,43 @@ class OrderController extends  Controller
             $id = $user['foo'];
             $user_data = Hotel::getUserFirst($id);
 
-            $order = DB::table('order')
+            $order = DB::table('settlement_log')
                     ->where([
-                        ['user_id','=',$id],
-                        ['clearing_type','=',$param['type']]
+                        ['hotel_id','=',$user_data['hotel_id']]
                     ])
                     ->get();
             //获取
-            $data = Common::json_array($order);
+            $order = Common::json_array($order);
+            $tobesettled = array_sum(Common::json_array(DB::table('settlement_log')
+                ->where([
+                    ['hotel_id','=',$user_data['hotel_id']],
+                    ['credentials_type','=',1],
+                ])
+                ->pluck('settlement_amount')));
 
-            if(!empty($data)){
-                return ReturnMessage::success('success', '1000',$data);
+            if(!empty($order)){
+                //重组数组
+                $data = array(
+                    'tobesettled' => array_sum(Common::json_array(DB::table('settlement_log')
+                                    ->where([
+                                        ['hotel_id','=',$user_data['hotel_id']],
+                                        ['credentials_type','=',1],
+                                    ])
+                                    ->pluck('settlement_amount'))),
+                    'settled' => array_sum(Common::json_array(DB::table('settlement_log')
+                                ->where([
+                                    ['hotel_id','=',$user_data['hotel_id']],
+                                    ['credentials_type','=',3],
+                                ])
+                                ->pluck('settlement_amount'))),
+                    'data' => $order
+                );
+
+                if(!empty($data)){
+                    return ReturnMessage::success('success', '1000',$data);
+                }else{
+                    return ReturnMessage::success('内容为空', '1011');
+                }
             }else{
                 return ReturnMessage::success('内容为空', '1011');
             }
