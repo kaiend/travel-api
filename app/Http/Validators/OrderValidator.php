@@ -390,14 +390,14 @@ class OrderValidator
      */
     public static function news(Request $request)
     {
-        $only = ['user_id'];
+        $only = ['token'];
 
         $rules = [
-            'user_id' =>'required',
+            'token' =>'required',
         ];
 
         $messages = [
-            'user_id.required'  => '用户ID不能为空',
+            'token.required'  => '用户token不能为空',
         ];
 
         $input = $request->only($only);

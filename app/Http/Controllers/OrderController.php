@@ -313,6 +313,7 @@ class OrderController extends  Controller
         }
 
     }
+
     /**
      * APP 取消订单
      * @param $id
@@ -1335,17 +1336,18 @@ class OrderController extends  Controller
         $param = OrderValidator::news($request);
 
         try{
+            $user = JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+            $user_data = Hotel::getUserFirst($id);
             //获取消息列表里面的数据
             $massage = DB::table('message')
                 ->where('id',10)
                 ->get();
-            //获取用户消息
-            $user_id = DB::table('hotel_user')->where('mobile',$param['mobile'])->value('id');
             //获取消息列表里面的数据
             $user_message = DB::table('message_list')
                 ->where([
                     ['mid', '=', 10],
-                    ['user_id' ,'=', $user_id]
+                    ['user_id' ,'=', $id]
                 ])
                 ->get();
             //获取
@@ -1353,6 +1355,37 @@ class OrderController extends  Controller
 
             if(!empty($user_message)){
                 return ReturnMessage::success('success', '1000',$user_message);
+            }else{
+                return ReturnMessage::success('内容为空', '1011');
+            }
+        }catch (JWTException $e){
+            return ReturnMessage::success('非法token', '1009');
+        }
+    }
+
+    /**
+     * 财务结算表
+     */
+    public function getMyFinance(Request $request)
+    {
+        $param = OrderValidator::news($request);
+
+        try{
+            $user = JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+            $user_data = Hotel::getUserFirst($id);
+
+            $order = DB::table('order')
+                    ->where([
+                        ['user_id','=',$id],
+                        ['clearing_type','=',$param['type']]
+                    ])
+                    ->get();
+            //获取
+            $data = Common::json_array($order);
+
+            if(!empty($data)){
+                return ReturnMessage::success('success', '1000',$data);
             }else{
                 return ReturnMessage::success('内容为空', '1011');
             }
