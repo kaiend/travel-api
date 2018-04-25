@@ -88,8 +88,10 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::post('/check' ,'OrderController@makeCheck');
         //我的消息接口
         \Dingo\Api\Facade\Route::post('/mynews' ,'OrderController@myNews');
-        //财务详情接口
+        //我的财务接口
         \Dingo\Api\Facade\Route::post('/myfinance' ,'OrderController@getMyFinance');
+        //财务详情接口
+        \Dingo\Api\Facade\Route::post('/getfinance' ,'OrderController@getFinance');
     });
 
     //APP个人中心
