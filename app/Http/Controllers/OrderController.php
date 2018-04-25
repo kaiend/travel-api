@@ -1365,46 +1365,22 @@ class OrderController extends  Controller
     }
 
     /**
-     * 财务结算表
+     * 财务详情表
      */
     public function getMyFinance(Request $request)
     {
-        $param = OrderValidator::news($request);
+        $param = OrderValidator::newsFinance($request);
 
         try{
-            $user = JWTAuth::parseToken()->getPayload();
-            $id = $user['foo'];
-            $user_data = Hotel::getUserFirst($id);
             $order = DB::table('settlement_log')
                     ->where([
-                        ['hotel_id','=',$user_data['hotel_id']]
+                        ['id','=',$param['log_id']]
                     ])
-                    ->get();
+                    ->first();
             //获取
             $order = Common::json_array($order);
             if(!empty($order)){
-                //重组数组
-                $data = array(
-                    'tobesettled' => array_sum(Common::json_array(DB::table('settlement_log')
-                                    ->where([
-                                        ['hotel_id','=',$user_data['hotel_id']],
-                                        ['credentials_type','=',1],
-                                    ])
-                                    ->pluck('settlement_amount'))),
-                    'settled' => array_sum(Common::json_array(DB::table('settlement_log')
-                                ->where([
-                                    ['hotel_id','=',$user_data['hotel_id']],
-                                    ['credentials_type','=',3],
-                                ])
-                                ->pluck('settlement_amount'))),
-                    'data' => $order
-                );
-
-                if(!empty($data)){
-                    return ReturnMessage::success('success', '1000',$data);
-                }else{
-                    return ReturnMessage::success('内容为空', '1011');
-                }
+                return ReturnMessage::success('success', '1000',$order);
             }else{
                 return ReturnMessage::success('内容为空', '1011');
             }

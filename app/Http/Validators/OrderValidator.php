@@ -116,7 +116,7 @@ class OrderValidator
      */
     public static function getFlight( Request $request )
     {
-        $only = ['flight_number','terminal','time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','cip','hotel_number','getFlight','sendFlight'];
+        $only = ['flight_number','terminal','time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','cip','hotel_number','getFlight','sendFlight','service_type'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
@@ -134,6 +134,7 @@ class OrderValidator
             'flight_number' =>'required',
             'terminal' => 'required',
             'cip' =>'required',
+            'service_type' => 'required'
             //'hotel_number' =>'required'
         ];
 
@@ -154,7 +155,7 @@ class OrderValidator
             'flight_number.required' =>'航班号不能为空',
             'terminal.required' => '航站楼不能为空',
             'cip.required' =>'cip服务不能为空',
-
+            'service_type.required' =>'类型不能为空',
             //'hotel_number.required' =>'酒店订单号不能为空'
         ];
 
@@ -175,7 +176,7 @@ class OrderValidator
      */
     public static function sendFlight( Request $request)
     {
-        $only = ['time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','cip','hotel_number','terminal'];
+        $only = ['time','name','phone','people','room_number','remarks','car_id','type','price','end','origin','end_position','origin_position','cip','hotel_number','terminal','service_type'];
 
         $rules = [
             'phone' => 'required|regex:/^1[34578]{1}[\d]{9}$/',
@@ -192,6 +193,7 @@ class OrderValidator
             'end_position'=>'required',
             'cip' =>'required',
             'terminal' => 'required',
+            'service_type' => 'required'
             //'hotel_number'=>'required'
         ];
 
@@ -211,6 +213,7 @@ class OrderValidator
             'type.required'  => '服务类型不能为空',
             'cip.required' =>'cip服务不能为空',
             'terminal.required' => '航站楼不能为空',
+            'service_type.required' => '类型不能为空'
             //'hotel_number.required' =>'酒店订单不能为空'
         ];
 
@@ -398,6 +401,38 @@ class OrderValidator
 
         $messages = [
             'token.required'  => '用户token不能为空',
+        ];
+
+        $input = $request->only($only);
+
+
+        $validator = Validator::make($input, $rules, $messages);
+
+
+        if ($validator->fails())
+            exit(json_encode(['info'=>$validator->errors()->first(),'code'=>'1011']));
+
+        return $input;
+    }
+
+    /**
+     * 我的消息
+     *
+     * @param Request $request
+     * @return post
+     */
+    public static function newsFinance(Request $request)
+    {
+        $only = ['token','log_id'];
+
+        $rules = [
+            'token' =>'required',
+            'log_id' =>'required',
+        ];
+
+        $messages = [
+            'token.required'  => '用户token不能为空',
+            'log_id.required'  => '用户ID不能为空',
         ];
 
         $input = $request->only($only);

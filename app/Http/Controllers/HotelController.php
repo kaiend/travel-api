@@ -536,7 +536,7 @@ class HotelController extends Controller
                 ->join('server_item','hotel_server.server_id','server_item.id')
                 ->where([
                     'hotel_id'=>$hid,
-                    'service_type' =>$arr['service_type']
+                        'service_type' =>$arr['service_type']
                 ])
                 ->select('server_item.id','parent_id','name','picture')
                 ->get();
@@ -576,8 +576,10 @@ class HotelController extends Controller
 
                 }
             }
+
             foreach($tree as $k=>$v){
                 $tree[$k]['picture'] ='http://travel.shidaichuxing.com/upload/'.$tree[$k]['picture'];
+                $tree[$k]['service_type'] = $arr['service_type'];
             }
 
             return ReturnMessage::successData($tree);
