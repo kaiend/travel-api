@@ -573,7 +573,6 @@ class HotelController extends Controller
                     $jdata[$item['parent_id']]['son'][] = &$jdata[$item['id']];
                 }else{
                     $tree[] = &$jdata[$item['id']];
-
                 }
             }
 
@@ -581,8 +580,23 @@ class HotelController extends Controller
                 $tree[$k]['picture'] ='http://travel.shidaichuxing.com/upload/'.$tree[$k]['picture'];
                 $tree[$k]['service_type'] = $arr['service_type'];
             }
+            //如果service_type = 2的话，拼装免费里程数据
+            if($arr['service_type'] == 2){
+                //免费里程
+                $free = Common::json_array(DB::table('hotel_fee')->where('company_id',$hid)->first());
+                $tdata = array(
+                    'free_time' => date('Y年m月',time()),
+                    'free_mileage' => $free['free_mileage'],
+                    'free_mileage_compute' => empty($free['free_mileage_compute']) ? 0 : $free['free_mileage_compute'],
+                    'free_mileage_remaining' => $free['free_mileage'] - $free['free_mileage_compute'],
+                    'data' => $tree
+                );
+                return ReturnMessage::successData($tdata);
+            }else{
 
-            return ReturnMessage::successData($tree);
+                return ReturnMessage::successData($tree);
+            }
+
         }catch (JWTException $e){
             return ReturnMessage::success('非法token', '1009');
         }
