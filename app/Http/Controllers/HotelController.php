@@ -678,7 +678,11 @@ class HotelController extends Controller
                 'detail' =>$detail
             ];
             $last_data=ReturnMessage::toString($last_data);
-            return ReturnMessage::successData($last_data);
+            if(!empty($last_data)){
+                return ReturnMessage::successData($last_data);
+            }else{
+                return ReturnMessage::success('内容为空', '1011');
+            }
         }catch (JWTException $e){
             return ReturnMessage::success('非法token', '1009');
         }
@@ -741,7 +745,11 @@ class HotelController extends Controller
                 'detail' =>$detail
             ];
             $last_data=ReturnMessage::toString($last_data);
-            return ReturnMessage::successData($last_data);
+            if(!empty($last_data)){
+                return ReturnMessage::successData($last_data);
+            }else{
+                return ReturnMessage::success('内容为空', '1011');
+            }
         }catch (JWTException $e){
             return ReturnMessage::success('非法token', '1009');
         }
