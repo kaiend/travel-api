@@ -741,6 +741,7 @@ class OrderController extends  Controller
             $status=$this->orderStatus($user_data);
             DB::beginTransaction();
             try{
+                $order_number = Common::createNumber();
                 //查询
                 $id = DB::table('order')->insertGetId(
                     [
@@ -749,7 +750,7 @@ class OrderController extends  Controller
                         'passenger_phone' => $arr['phone'],
                         'passenger_people' => $arr['people'],
                         'room_number' => $arr['room_number'],
-                        'order_number' =>Common::createNumber(),
+                        'order_number' =>$order_number,
                         'remarks' => $arr['remarks'],
                         'car_id'  => $arr['car_id'],
                         'created_at'  =>time(),
@@ -784,7 +785,7 @@ class OrderController extends  Controller
                     ]);
                 }
                 DB::commit();
-                $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id']);
+                $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id'],$order_number);
                 //查询插入新订单的数据
                 $new_data =DB::table('order')->where('id',$id)->first();
                 $new_data=Common::json_array($new_data);
@@ -855,6 +856,7 @@ class OrderController extends  Controller
             DB::beginTransaction();
 
             try{
+                $order_number = Common::createNumber();
                 //插入数据
                 $insert_id =DB::table('order')->insertGetId(
                     [
@@ -863,7 +865,7 @@ class OrderController extends  Controller
                         'passenger_phone' => $arr['phone'],
                         'passenger_people' => $arr['people'],
                         'room_number' => $arr['room_number'],
-                        'order_number' =>Common::createNumber(),
+                        'order_number' =>$order_number,
                         'remarks' => $arr['remarks'],
                         'car_id'  => $arr['car_id'],
                         'created_at'  =>time(),
@@ -899,7 +901,7 @@ class OrderController extends  Controller
                 }
 
                 DB::commit();
-                $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id'],$insert_id);
+                $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id'],$order_number);
                 //查询插入新订单的数据
                 $new_data =DB::table('order')->where('id',$insert_id)->first();
                 $new_data=Common::json_array($new_data);
@@ -942,6 +944,7 @@ class OrderController extends  Controller
             $status=$this->orderStatus($user_data);
             DB::beginTransaction();
             try{
+                $order_number = Common::createNumber();
                 //插入基础数据
                 $id= DB::table('order')->insertGetId(
                     [
@@ -950,7 +953,7 @@ class OrderController extends  Controller
                         'passenger_phone' => $arr['phone'],
                         'passenger_people' => $arr['people'],
                         'room_number' => $arr['room_number'],
-                        'order_number' =>Common::createNumber(),
+                        'order_number' =>$order_number,
                         'remarks' => $arr['remarks'],
                         'car_id'  => $arr['car_id'],
                         'created_at'  =>time(),
@@ -982,7 +985,7 @@ class OrderController extends  Controller
                     ]);
                 }
                 DB::commit();
-                $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id']);
+                $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id'],$order_number);
                 //查询插入新订单的数据
                 $new_data =DB::table('order')->where('id',$id)->first();
                 $new_data=Common::json_array($new_data);
@@ -1018,6 +1021,7 @@ class OrderController extends  Controller
             $status=$this->orderStatus($user_data);
             DB::beginTransaction();
             try{
+                $order_number = Common::createNumber();
                 //插入基础数据
                 $id= DB::table('order')->insertGetId(
                     [
@@ -1026,7 +1030,7 @@ class OrderController extends  Controller
                         'passenger_phone' => $arr['phone'],
                         'passenger_people' => $arr['people'],
                         'room_number' => $arr['room_number'],
-                        'order_number' =>Common::createNumber(),
+                        'order_number' =>$order_number,
                         'remarks' => $arr['remarks'],
                         'car_id'  => $arr['car_id'],
                         'created_at'  =>time(),
@@ -1057,7 +1061,7 @@ class OrderController extends  Controller
                     ]);
                 }
                 DB::commit();
-                $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id']);
+                $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id'],$order_number);
                 //查询插入新订单的数据
                 $new_data =DB::table('order')->where('id',$id)->first();
                 $new_data=Common::json_array($new_data);
@@ -1127,7 +1131,7 @@ class OrderController extends  Controller
                 ]);
             }
             if( $re ){
-                $this->hotelLog($id,$user_data['name'],'APP追加了订单',$user_data['hotel_id']);
+                $this->hotelLog($id,$user_data['name'],'APP追加了订单',$user_data['hotel_id'],$arr['order_number']);
                 return ReturnMessage::success();
             }else{
                 return ReturnMessage::success('失败','1011');

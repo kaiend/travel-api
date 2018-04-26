@@ -19,7 +19,7 @@ class Controller extends BaseController
      * @param $operation
      * @param $hotelId
      */
-    public function hotelLog($userid,$username,$operation,$hotelId,$content){
+    public function hotelLog($userid,$username,$operation,$hotelId,$content = ''){
         $data['userId'] = $userid;
         $data['name'] = $username;
         $data['operation'] = $operation;
