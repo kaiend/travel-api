@@ -593,7 +593,6 @@ class HotelController extends Controller
                 );
                 return ReturnMessage::successData($tdata);
             }else{
-
                 return ReturnMessage::successData($tree);
             }
 

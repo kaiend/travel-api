@@ -899,7 +899,7 @@ class OrderController extends  Controller
                 }
 
                 DB::commit();
-                $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id']);
+                $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id'],$insert_id);
                 //查询插入新订单的数据
                 $new_data =DB::table('order')->where('id',$insert_id)->first();
                 $new_data=Common::json_array($new_data);

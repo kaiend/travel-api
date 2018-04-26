@@ -19,13 +19,14 @@ class Controller extends BaseController
      * @param $operation
      * @param $hotelId
      */
-    public function hotelLog($userid,$username,$operation,$hotelId){
+    public function hotelLog($userid,$username,$operation,$hotelId,$content){
         $data['userId'] = $userid;
         $data['name'] = $username;
         $data['operation'] = $operation;
         $data['createTime'] = time();
         $data['hotelId'] = $hotelId;
         $data['companyId'] =$hotelId;
+        $data['content'] =$content;
 
         DB::table('log')->insert($data);
     }
