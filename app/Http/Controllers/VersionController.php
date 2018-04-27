@@ -28,7 +28,7 @@ class VersionController extends Controller
                     'code' =>'1000',
                     'info' => 'success',
                     'data' => [
-                        'code' => 5,
+                        'code' => 6,
                         'name' => '1.0.1',
                         'title' =>'发现新版本（V1.0.1）',
                         'word' =>'新增【财务管理】时刻查看财务汇总
