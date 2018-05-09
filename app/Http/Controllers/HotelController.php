@@ -658,9 +658,6 @@ class HotelController extends Controller
             $unpaid = $collection->sum('total_fee');
             //账户流水明细
             $detail =$collection->groupBy('date')->toArray();
-            if(empty($detail)){
-                $detail[0] = 0;
-            }
 //            if($user_data['rebate'] == 0 ){
 //                //不返佣
 //                $rebate =[];
@@ -672,15 +669,31 @@ class HotelController extends Controller
 //                $rebate_detail =intval($rebate['rebate'])/100;
 //
 //            }
-            $last_data=[
-                'news' =>$new_order,
-                'count'=>$month_sum,
-                'unpaid'=>$unpaid,
-                'detail' =>$detail
-            ];
-            $last_data=ReturnMessage::toString($last_data);
+            if(empty($detail)){
+                $last_data=[
+                    'news' =>$new_order,
+                    'count'=>$month_sum,
+                    'unpaid'=>$unpaid,
+                    'detail' =>new \stdClass()
+                ];
+            }else{
+                $last_data=[
+                    'news' =>$new_order,
+                    'count'=>$month_sum,
+                    'unpaid'=>$unpaid,
+                    'detail' =>$detail
+                ];
+                $last_data=ReturnMessage::toString($last_data);
+            }
+
             if(!empty($last_data)){
-                return ReturnMessage::successData($last_data);
+//                return ReturnMessage::successData($last_data);
+                $retule = array(
+                    'code' => '1000',
+                    'info' => 'success',
+                    'data' => $last_data
+                );
+                return json_encode($retule);
             }else{
                 return ReturnMessage::success('内容为空', '1011');
             }
@@ -740,18 +753,32 @@ class HotelController extends Controller
 //            if($user_data['rebate']){
 //                //查询结算表的返佣情况
 //            }
+
             if(empty($detail)){
-                $detail = 0;
+                $last_data=[
+                    'news' => $m_fee,
+                    'count' => $month_sum,
+                    'unpaid' => $unpaid,
+                    'detail' => new \stdClass()
+                ];
+            }else{
+                $last_data=[
+                    'news' => $m_fee,
+                    'count' => $month_sum,
+                    'unpaid' => $unpaid,
+                    'detail' => $detail
+                ];
+                $last_data=ReturnMessage::toString($last_data);
             }
-            $last_data=[
-                'news' =>$m_fee,
-                'count'=>$month_sum,
-                'unpaid'=>$unpaid,
-                'detail' =>$detail
-            ];
-            $last_data=ReturnMessage::toString($last_data);
+
             if(!empty($last_data)){
-                return ReturnMessage::successData($last_data);
+//                return ReturnMessage::successData($last_data);
+                $retule = array(
+                    'code' => '1000',
+                    'info' => 'success',
+                    'data' => $last_data
+                );
+                return json_encode($retule);
             }else{
                 return ReturnMessage::success('内容为空', '1011');
             }
