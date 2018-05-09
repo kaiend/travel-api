@@ -659,7 +659,7 @@ class HotelController extends Controller
             //账户流水明细
             $detail =$collection->groupBy('date')->toArray();
             if(empty($detail)){
-                $detail[] = NUll;
+                $detail[0] = 0;
             }
 //            if($user_data['rebate'] == 0 ){
 //                //不返佣
@@ -741,7 +741,7 @@ class HotelController extends Controller
 //                //查询结算表的返佣情况
 //            }
             if(empty($detail)){
-                $detail[] = NULL;
+                $detail[0] = 0;
             }
             $last_data=[
                 'news' =>$m_fee,
