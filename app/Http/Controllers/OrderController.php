@@ -122,6 +122,7 @@ class OrderController extends  Controller
                             $join->on('order.order_number','=','order_information.order_number')
                                 ->where('order_information.title','=','更换司机');
                         })
+                        ->where('order.user_id','=',$id)
                         ->select('order.id','order.end','order.origin','order.type','order.orders_name','order.orders_phone','order.order_number','order.created_at','order.appointment','order.status','order.bottom_number')
                         ->get();
                     break;
