@@ -207,13 +207,14 @@ class HotelController extends Controller
                         ['hotel_id' , $user_data['hotel_id']]
                     ])
                     ->whereIn('type', [3,4])
+                    ->orderBy('id','desc')
                     ->get();
             }else{
-
                 $data = DB::table('hotel_user')
                     ->select('id','name','mobile','position','type','avatar','status')
                     ->where('hotel_id' , $user_data['hotel_id'])
                     ->whereIn('type', [2,3,4])
+                    ->orderBy('id','desc')
                     ->get();
             }
             $bdata=json_decode(json_encode($data),true);
@@ -230,10 +231,7 @@ class HotelController extends Controller
                     }
 
                 }
-
-
                 return ReturnMessage::successData( $final);
-
             }else{
                 return response()->json([
                     'code' =>'1000',
@@ -245,7 +243,6 @@ class HotelController extends Controller
         }catch(JWTException $e){
             return ReturnMessage::success('非法token' ,'1009');
         }
-
     }
     /**
      * 个人中心--上传头像
@@ -709,11 +706,11 @@ class HotelController extends Controller
             $m_data =Common::json_array($m_data);
             foreach ($m_data as $key=>$val){
                 if($val['cip'] == 1){
-                    $m_data[$key]['total_fee'] =$val['price']+$cip_fee['cip_fee'];
+                    $m_data[$key]['total_fee'] = $val['price']+$cip_fee['cip_fee'];
                 }else{
-                    $m_data[$key]['total_fee'] =$val['price'];
+                    $m_data[$key]['total_fee'] = $val['price'];
                 }
-                $m_data[$key]['server_title'] = DB::table('server_item')->where('id',$val['type'])->value('name');
+                $m_data[$key]['type_name'] = DB::table('server_item')->where('id',$val['type'])->value('name');
             }
             $collection = collect($m_data);
             //本月消费金额结算费用
@@ -729,6 +726,7 @@ class HotelController extends Controller
                     $order_data[$k]['total_fee'] =$v['price'];
                 }
                 $order_data[$k]['date'] =date('Y-m',$v['created_at']);
+                $order_data[$k]['service_name'] = DB::table('server_item')->where('id',$v['type'])->value('name');
             }
             $collection = collect($order_data);
             //待结算费用

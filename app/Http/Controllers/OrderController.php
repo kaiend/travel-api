@@ -115,6 +115,16 @@ class OrderController extends  Controller
                         ->limit(10)
                         ->get();
                     break;
+                //已改派
+                case 'reassigned':
+                    $data = DB::table('order')
+                        ->join('order_information',function($join){
+                            $join->on('order.order_number','=','order_information.order_number')
+                                ->where('order_information.title','=','更换司机');
+                        })
+                        ->select('order.id','order.end','order.origin','order.type','order.orders_name','order.orders_phone','order.order_number','order.created_at','order.appointment','order.status','order.bottom_number')
+                        ->get();
+                    break;
                 default :
                     return ReturnMessage::success('订单类型未知' , '1006');
             }
@@ -150,7 +160,6 @@ class OrderController extends  Controller
                     'count'=>"$count",
                     'data' => $final,
                 ]);
-
             }else{
                 return response()->json([
                     'code' =>'1000',
@@ -1002,7 +1011,6 @@ class OrderController extends  Controller
         } catch (JWTException $e) {
             return ReturnMessage::success('非法token', '1009');
         }
-
     }
     /**
      * 接送站
