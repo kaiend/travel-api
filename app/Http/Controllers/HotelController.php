@@ -18,6 +18,7 @@ use App\Models\ServerItem;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use phpDocumentor\Reflection\Types\Null_;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Facades\JWTFactory;
@@ -657,6 +658,9 @@ class HotelController extends Controller
             $unpaid = $collection->sum('total_fee');
             //账户流水明细
             $detail =$collection->groupBy('date')->toArray();
+            if(empty($detail)){
+                $detail[] = NUll;
+            }
 //            if($user_data['rebate'] == 0 ){
 //                //不返佣
 //                $rebate =[];
@@ -736,6 +740,9 @@ class HotelController extends Controller
 //            if($user_data['rebate']){
 //                //查询结算表的返佣情况
 //            }
+            if(empty($detail)){
+                $detail[] = NULL;
+            }
             $last_data=[
                 'news' =>$m_fee,
                 'count'=>$month_sum,
