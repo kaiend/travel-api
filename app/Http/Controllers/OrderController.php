@@ -648,6 +648,9 @@ class OrderController extends  Controller
                 }
             }
             $bdata=json_decode(json_encode($data),true);
+            foreach($bdata as $k => $val){
+                $bdata[$k]['type_name'] = DB::table('server_item')->where('id',$val['type'])->value('name');
+            }
             if( count($bdata) != 0){
                 $final=ReturnMessage::toString($bdata);
 
