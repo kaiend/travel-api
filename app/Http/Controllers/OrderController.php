@@ -781,7 +781,6 @@ class OrderController extends  Controller
                         'bottom_number' =>$arr['hotel_number'],
                         'status' =>$status,
                         'service_type' =>$arr['service_type']
-
                     ]
                 );
                 $field =DB::table('server_item')->where('id',$type) ->first();

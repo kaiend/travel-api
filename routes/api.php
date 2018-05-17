@@ -26,7 +26,6 @@ $api->version('v1', [
     // each route have a limit of 100 of 1 minutes
     //'limit' => 100, 'expires' => 1
 ], function ($api) {
-
     //APP登录
     $api->post('/login','HotelController@login');
     //APP快捷登录

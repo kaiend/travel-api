@@ -80,7 +80,8 @@ class CarController extends Controller
             ->select('type','price','cars_id','service_id','series_name','image','status','parent_id','market_price')
             ->where([
                 ['hotel_id',$arr['hotel_id']],
-                ['car_series.parent_id',$id]
+                ['car_series.parent_id',$id],
+                ['charges_rule.service_type',$arr['service_type']]
             ])
             ->distinct('charges_rule.cars_id')
             ->get();
@@ -108,6 +109,8 @@ class CarController extends Controller
         }
 
     }
+
+
     public function getSerie( Request $request )
     {
         $arr = $request ->all();
