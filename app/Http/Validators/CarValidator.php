@@ -10,7 +10,7 @@ class CarValidator
 {
    public static function  userCar( Request $request)
    {
-       $only = ['type','hotel_id','service_type'];
+       $only = ['type','hotel_id','service_type','origins','destinations','usetime'];
 
        $rules = [
            'type' =>'required',
