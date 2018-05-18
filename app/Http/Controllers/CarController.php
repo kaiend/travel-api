@@ -146,12 +146,12 @@ class CarController extends Controller
             ])->first();
         $re=json_decode(json_encode($re),true);
         //获取该酒店的免费里程数
-        $hotel_fee = Db::table('hotel_fee')->where('hotel_id', $hotel_id)->first();
+        $hotel_fee = Db::table('hotel_fee')->where('company_id', $hotel_id)->first();
         $hotel_fee = json_decode(json_encode($hotel_fee),true);
         //如果该酒店的免费里程小于该距离则往下执行，否则价格返回0
         if($hotel_fee['free_mileage_compute'] >= $dis){
-            $free_mileage_compute = $hotel_fee['free_mileage_compute'] - $dis;
-            Db::table('hotel_fee')->where('hotel_id', $hotel_id)->update(['free_mileage_compute' => $free_mileage_compute]);
+//            $free_mileage_compute = $hotel_fee['free_mileage_compute'] - $dis;
+//            Db::table('hotel_fee')->where('company_id', $hotel_id)->update(['free_mileage_compute' => $free_mileage_compute]);
             return $return['price'] = 0;
         }
         if (!empty($re)) {
