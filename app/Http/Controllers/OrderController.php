@@ -783,7 +783,7 @@ class OrderController extends  Controller
                         'service_type' =>$arr['service_type']
                     ]
                 );
-                $field =DB::table('server_item')->where('id',$type) ->first();
+                $field =DB::table('server_item')->where('id',$type)->first();
                 $bdata = json_decode(json_encode($field), true);
                 $field_mame =json_decode($bdata['field_name']);
                 $content = json_decode($bdata['content']);
