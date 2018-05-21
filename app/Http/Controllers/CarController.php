@@ -160,10 +160,10 @@ class CarController extends Controller
             $difdis = $dis - $re['basis_km'];//实际距离与后台设置距离差
             if($difdis > 0){//实际距离大
                 $difdis2 = $dis - $re['super_km_km'];//超过多少公里以后
+                print_r($re);exit;
                 if($difdis2 < $re['super_km_shortage_km']){//不做多少公里不计费
                     $price = $re['price'];
                 }else{//计算白天和夜间的超公里收费
-                    print_r($re);exit;
                     $usetime1 = explode(' ',$usetime);
                     $usetime2 = strtotime($usetime);
                     $day_start_time = strtotime($usetime1[0] . $re['day_start_time']);
