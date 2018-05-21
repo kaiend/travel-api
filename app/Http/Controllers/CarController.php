@@ -180,6 +180,7 @@ class CarController extends Controller
                         }
                     }
                 }
+                print_r($re);exit;
             }else{//实际距离小
                 $price = $re['price'];
             }
