@@ -129,7 +129,7 @@ class CarController extends Controller
         $des = explode(',', $destinations);
         $ori = $ori[1].','.$ori[0];
         $des = $des[1].','.$des[0];
-        $url = 'http://api.map.baidu.com/routematrix/v2/driving?output=json&origins=' . $ori . '&destinations=' . $des . '&ak=RGwhFRkSZfva32BN96csoObm4FIfiCAY';
+        $url = 'https://api.map.baidu.com/routematrix/v2/driving?output=json&origins=' . $ori . '&destinations=' . $des . '&ak=RGwhFRkSZfva32BN96csoObm4FIfiCAY';
         // return  $url;
         $result = (new Sms)->get_curl_json($url);
 
