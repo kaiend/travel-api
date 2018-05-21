@@ -163,6 +163,7 @@ class CarController extends Controller
                 if($difdis2 < $re['super_km_shortage_km']){//不做多少公里不计费
                     $price = $re['price'];
                 }else{//计算白天和夜间的超公里收费
+                    print_r($re);exit;
                     $usetime1 = explode(' ',$usetime);
                     $usetime2 = strtotime($usetime);
                     $day_start_time = strtotime($usetime1[0] . $re['day_start_time']);
@@ -180,7 +181,6 @@ class CarController extends Controller
                         }
                     }
                 }
-                print_r($re);exit;
             }else{//实际距离小
                 $price = $re['price'];
             }
