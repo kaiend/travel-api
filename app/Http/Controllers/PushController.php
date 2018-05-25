@@ -35,51 +35,59 @@ class PushController extends Controller
     {
         $arr =$request->only('order_id','type');
 
+        //获取订单类型
+        $order = DB::table('order')->where('order_number',$arr['order_id'])->first();
+        $order = Common::json_array($order);
         //查询
-        $order_data =DB::table('order')
-            ->join('hotel_user','order.user_id','=','hotel_user.id')
-            ->join('hotel','order.hotel_id','=','hotel.id')
-            ->select(
-                'order.id',
-                'order.user_id',
-                'order.hotel_id',
-                'order.car_id',
-                'order_number',
-                'end',
-                'origin',
-                'order.type',
-                'orders_name',
-                'orders_phone',
-                'appointment',
-                'passenger_name',
-                'passenger_phone',
-                'passenger_people',
-                'bottom_number',
-                'room_number',
-                'chauffeur_name',
-                'chauffeur_phone',
-                'cip',
-                'created_at',
-                'order.status',
-                'chauffeur_id',
-                'remarks',
-                'origin_position',
-                'end_position',
-                'complete_at',
-                'judgment',
-                'mileage',
-                'send_id',
-                'send_type',
-                'avatar',
-                'title',
-                'principal',
-                'price',
-                'title'
-            )
-            ->where('order_number',$arr['order_id'])
-            ->first();
-
-        $bdata = Common::json_array($order_data);
+        if($order['judgment'] == 5){
+            $bdata = $order;
+        }elseif ($order['judgment'] == 4){
+            $bdata = $order;
+        }else{
+            $order_data =DB::table('order')
+                ->join('hotel_user','order.user_id','=','hotel_user.id')
+                ->join('hotel','order.hotel_id','=','hotel.id')
+                ->select(
+                    'order.id',
+                    'order.user_id',
+                    'order.hotel_id',
+                    'order.car_id',
+                    'order_number',
+                    'end',
+                    'origin',
+                    'order.type',
+                    'orders_name',
+                    'orders_phone',
+                    'appointment',
+                    'passenger_name',
+                    'passenger_phone',
+                    'passenger_people',
+                    'bottom_number',
+                    'room_number',
+                    'chauffeur_name',
+                    'chauffeur_phone',
+                    'cip',
+                    'created_at',
+                    'order.status',
+                    'chauffeur_id',
+                    'remarks',
+                    'origin_position',
+                    'end_position',
+                    'complete_at',
+                    'judgment',
+                    'mileage',
+                    'send_id',
+                    'send_type',
+                    'avatar',
+                    'title',
+                    'principal',
+                    'price',
+                    'title'
+                )
+                ->where('order_number',$arr['order_id'])
+                ->first();
+            $bdata = Common::json_array($order_data);
+        }
         $con =Config::get('order.type');
         $bdata['type_name'] =$con[$bdata['type']];
         $cid = $bdata['hotel_id'];
