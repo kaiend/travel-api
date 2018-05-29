@@ -98,10 +98,10 @@ class CarController extends Controller
                 $bdata[$k]['image'] = 'http://travel.shidaichuxing.com/upload/'.$bdata[$k]['image'];
 
                 $price = $this->fee2($arr['origins'],$arr['destinations'],$arr['usetime'],$v['cars_id'],$arr['type'],$arr['hotel_id'],$arr['service_type']);
-                print_r($price);exit;
+
                 $bdata[$k]['price'] = $price['price'];
             }
-
+            print_r($bdata);exit;
             $final=ReturnMessage::toString($bdata);
             return ReturnMessage::successData($final);
 
