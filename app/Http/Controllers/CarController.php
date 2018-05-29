@@ -158,6 +158,7 @@ class CarController extends Controller
             }
         }
         if (!empty($re)) {
+            print_r($re['basis_km']);exit;
             $difdis = $dis - $re['basis_km'];//实际距离与后台设置距离差
 
             if($difdis > 0){//实际距离大
