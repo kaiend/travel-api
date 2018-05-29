@@ -166,7 +166,11 @@ class CarController extends Controller
                     $day_start_time = strtotime($usetime1[0] . $re['day_start_time']);
                     $day_end_time = strtotime($usetime1[0] . $re['day_end_time']);
                     if(!empty($re['super_km_per_km'])){
-                        $avgdis = $difdis2 / $re['super_km_per_km'];
+                        if($re['super_km_per_km'] > 0){
+                            $avgdis = $difdis2 / $re['super_km_per_km'];
+                        }else{
+                            $avgdis = $difdis2;
+                        }
                     }
                     if($day_start_time < $usetime2 && $usetime2 < $day_end_time){
                         if(!empty($re['day_commission'])){
