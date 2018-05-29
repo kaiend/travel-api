@@ -171,14 +171,14 @@ class CarController extends Controller
                         }else{
                             $avgdis = $difdis2;
                         }
-                    }
-                    if($day_start_time < $usetime2 && $usetime2 < $day_end_time){
-                        if(!empty($re['day_commission'])){
-                            $price = $re['price'] + $avgdis * $re['day_commission'];
-                        }
-                    }else{
-                        if(!empty($re['night_commission'])) {
-                            $price = $re['price'] + $avgdis * $re['night_commission'];
+                        if($day_start_time < $usetime2 && $usetime2 < $day_end_time){
+                            if(!empty($re['day_commission'])){
+                                $price = $re['price'] + $avgdis * $re['day_commission'];
+                            }
+                        }else{
+                            if(!empty($re['night_commission'])) {
+                                $price = $re['price'] + $avgdis * $re['night_commission'];
+                            }
                         }
                     }
                 }
