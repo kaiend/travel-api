@@ -96,6 +96,7 @@ class CarController extends Controller
                 }
                 unset($bdata[$k]['market_price']);
                 $bdata[$k]['image'] = 'http://travel.shidaichuxing.com/upload/'.$bdata[$k]['image'];
+
                 $price = $this->fee2($arr['origins'],$arr['destinations'],$arr['usetime'],$v['cars_id'],$arr['type'],$arr['hotel_id'],$arr['service_type']);
 
                 $bdata[$k]['price'] = $price['price'];
@@ -158,6 +159,7 @@ class CarController extends Controller
         }
         if (!empty($re)) {
             $difdis = $dis - $re['basis_km'];//实际距离与后台设置距离差
+
             if($difdis > 0){//实际距离大
                 $difdis2 = $dis - $re['super_km_km'];//超过多少公里以后
                 if($difdis2 < $re['super_km_shortage_km']){//不做多少公里不计费
@@ -184,6 +186,7 @@ class CarController extends Controller
                 $price = $re['price'];
             }
             $diftime = $time - $re['basis_time'];
+
             if($diftime > 0){//超时
                 $diftime2 = $time - $re['starting_starting_time'];//起步后多少分钟内不收费
                 if($diftime2 < 0){
@@ -193,7 +196,11 @@ class CarController extends Controller
                     if($diftime3 < 0){
                         $price = $price;
                     }else{
-                        $avgtime = $diftime3 / $re['starting_exceed_time'];
+                        if($re['starting_exceed_time'] > 0){
+                            $avgtime = $diftime3 / $re['starting_exceed_time'];
+                        }else{
+                            $avgtime = $diftime3;
+                        }
                         $price = $price + $avgtime * $re['starting_add_money'];
                     }
                 }
