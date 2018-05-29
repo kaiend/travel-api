@@ -98,7 +98,7 @@ class CarController extends Controller
                 $bdata[$k]['image'] = 'http://travel.shidaichuxing.com/upload/'.$bdata[$k]['image'];
 
                 $price = $this->fee2($arr['origins'],$arr['destinations'],$arr['usetime'],$v['cars_id'],$arr['type'],$arr['hotel_id'],$arr['service_type']);
-
+                print_r($price);exit;
                 $bdata[$k]['price'] = $price['price'];
             }
 
@@ -184,7 +184,6 @@ class CarController extends Controller
             }else{//实际距离小
                 $price = $re['price'];
             }
-            print_r($price);exit;
             $diftime = $time - $re['basis_time'];
 
             if($diftime > 0){//超时
