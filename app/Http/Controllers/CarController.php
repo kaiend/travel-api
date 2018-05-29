@@ -90,6 +90,7 @@ class CarController extends Controller
         $bdata=json_decode(json_encode($data),true);
 
         if( count($bdata) != 0){
+            print_r($bdata);exit;
             foreach( $bdata as $k=>$v){
                 if(!is_null($v['market_price'])){
                     $bdata[$k]['price'] = $v['market_price'];
@@ -98,10 +99,8 @@ class CarController extends Controller
                 $bdata[$k]['image'] = 'http://travel.shidaichuxing.com/upload/'.$bdata[$k]['image'];
 
                 $price = $this->fee2($arr['origins'],$arr['destinations'],$arr['usetime'],$v['cars_id'],$arr['type'],$arr['hotel_id'],$arr['service_type']);
-
                 $bdata[$k]['price'] = $price['price'];
             }
-            print_r($bdata);exit;
             $final=ReturnMessage::toString($bdata);
             return ReturnMessage::successData($final);
 
