@@ -79,6 +79,8 @@ $api->version('v1', [
         \Dingo\Api\Facade\Route::post('/flight' ,'OrderController@getFlight');
         //App接站--下单接口
         \Dingo\Api\Facade\Route::post('/train' ,'OrderController@getTrain');
+        //即时用车--下单
+        \Dingo\Api\Facade\Route::post('/immediate' ,'OrderController@getImmediate');
         //APP追加订单
         \Dingo\Api\Facade\Route::post('/extra' ,'OrderController@makeExtra');
         //APP追加订单详情

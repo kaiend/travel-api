@@ -1090,6 +1090,83 @@ class OrderController extends  Controller
             return ReturnMessage::success('非法token', '1009');
         }
     }
+
+    /**
+     * 即时用车下单
+     * @param Request $request
+     * @return \App\Helpers\json
+     */
+    public function getImmediate( Request $request)
+    {
+        $arr = OrderValidator::takeImmediate($request);
+        $type = intval($arr['type']);
+        try{
+            $user=JWTAuth::parseToken()->getPayload();
+            $id = $user['foo'];
+            //查询当前用户的酒店ID和type
+            $user_data= Hotel::getUserFirst($id);
+            $status=$this->orderStatus($user_data);
+            DB::beginTransaction();
+            try{
+                $order_number = Common::createNumber();
+                //插入基础数据
+                $id= DB::table('order')->insertGetId(
+                    [
+                        'appointment' => $arr['time'],
+                        'passenger_name' => $arr['name'],
+                        'passenger_phone' => $arr['phone'],
+                        'passenger_people' => $arr['people'],
+                        'room_number' => $arr['room_number'],
+                        'order_number' =>$order_number,
+                        'remarks' => $arr['remarks'],
+                        'car_id'  => $arr['car_id'],
+                        'created_at'  =>time(),
+                        'end' => $arr['end'],
+                        'origin' => $arr['origin'],
+                        'end_position' => $arr['end_position'],
+                        'origin_position' => $arr['origin_position'],
+                        'price' => $arr['price'],
+                        'type' =>$arr['type'],
+                        'orders_name' => $user_data['name'],
+                        'orders_phone' => $user_data['mobile'],
+                        'user_id' =>$user_data['id'],
+                        'hotel_id'  =>$user_data['hotel_id'],
+                        'judgment' => 1,
+                        'bottom_number' =>$arr['hotel_number'],
+                        'status' =>$status,
+                        'service_type' =>$arr['service_type']
+                    ]
+                );
+                //插入展字段
+                $field =DB::table('server_item')->where('id',$type) ->value('field_name');
+                $field_mame = json_decode($field);
+                foreach(  $field_mame as $k =>$v){
+                    DB::table('way_to') ->insert([
+                        'order_id' =>$id,
+                        'name' =>$v,
+                        'content' =>json_encode([$arr[$v]])
+                    ]);
+                }
+                DB::commit();
+                $this->hotelLog($id,$user_data['name'],'APP创建了订单',$user_data['hotel_id'],$order_number);
+                //查询插入新订单的数据
+                $new_data =DB::table('order')->where('id',$id)->first();
+                $new_data=Common::json_array($new_data);
+                $alert =new PushController();
+                $alert->createOrder($new_data);
+                return ReturnMessage::success();
+            }catch (\Exception $e){
+                DB::rollback();
+                return response()->json([
+                    'code' => $e->getCode(),
+                    'info' => $e->getMessage(),
+                ]);
+            }
+        } catch (JWTException $e) {
+            return ReturnMessage::success('非法token', '1009');
+        }
+    }
+
     /**
      * 追加订单
      * @param Request $request
