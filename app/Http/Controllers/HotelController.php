@@ -533,8 +533,9 @@ class HotelController extends Controller
             $data =DB::table('hotel_server')
                 ->join('server_item','hotel_server.server_id','server_item.id')
                 ->where([
-                    'hotel_id'=>$hid,
-                        'service_type' =>$arr['service_type']
+                    ['hotel_id',$hid],
+                    ['service_type',$arr['service_type']],
+                    ['server_item.id','!=',86]
                 ])
                 ->select('server_item.id','parent_id','name','picture')
                 ->get();

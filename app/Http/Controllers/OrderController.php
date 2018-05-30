@@ -1126,7 +1126,7 @@ class OrderController extends  Controller
                         'end_position' => $arr['end_position'],
                         'origin_position' => $arr['origin_position'],
                         'price' => $arr['price'],
-                        'type' =>$arr['type'],
+                        'type' =>  $arr['type'],
                         'orders_name' => $user_data['name'],
                         'orders_phone' => $user_data['mobile'],
                         'user_id' =>$user_data['id'],
